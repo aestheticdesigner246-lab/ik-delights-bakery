@@ -1,0 +1,202 @@
+<div class="settings-container">
+    <form id="settingsForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- SETTINGS HEADER -->
+        <div class="settings-header">
+            <h1>Settings</h1>
+            <p>Manage your bakery website settings</p>
+        </div>
+
+        <!-- SETTINGS GRID -->
+        <div class="settings-grid">
+
+            <!-- BAKERY INFORMATION -->
+            <div class="settings-card bakery-card">
+                <div class="card-title">
+                    <i class="fas fa-store"></i>
+                    <h2>Bakery Information</h2>
+                </div>
+                <div class="bakery-content">
+                    <!-- LEFT -->
+                    <div class="bakery-form">
+                        <div class="form-group">
+                            <label>Bakery Name</label>
+                            <input type="text" name="bakery_name" value="{{ settings.bakery_name }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" value="{{ settings.email }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="text" name="phone" value="{{ settings.phone }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" name="address" value="{{ settings.address }}">
+                        </div>
+                    </div>
+
+                    <!-- RIGHT - LOGO SECTION WITH 3 LOGOS -->
+                    <div class="logo-section">
+                        <!-- MAIN LOGO -->
+                        <label>Main Logo</label>
+                        <div class="logo-preview">
+                            <img src="{% if settings.logo %}{{ settings.logo.url }}{% endif %}" id="previewLogo" alt="Logo Preview">
+                        </div>
+                        <label class="upload-btn" for="logoInput">
+                            <i class="fas fa-upload"></i> Choose Main Logo
+                        </label>
+                        <input type="file" id="logoInput" name="logo" hidden>
+                        <small>PNG, JPG (Max. 2MB)</small>
+
+                        <!-- FOOTER LOGO -->
+                        <hr>
+                        <label>Footer Logo</label>
+                        <div class="logo-preview">
+                            <img src="{% if settings.footer_logo %}{{ settings.footer_logo.url }}{% endif %}" id="footerLogoPreview" alt="Footer Logo">
+                        </div>
+                        <label class="upload-btn" for="footerLogoInput">
+                            <i class="fas fa-upload"></i> Choose Footer Logo
+                        </label>
+                        <input type="file" id="footerLogoInput" name="footer_logo" hidden>
+                        <small>PNG, JPG (Max. 2MB) - For footer section</small>
+
+                        <!-- ADMIN LOGO -->
+                        <hr>
+                        <label>Admin Logo</label>
+                        <div class="logo-preview">
+                            <img src="{% if settings.admin_logo %}{{ settings.admin_logo.url }}{% endif %}" id="adminLogoPreview" alt="Admin Logo">
+                        </div>
+                        <label class="upload-btn" for="adminLogoInput">
+                            <i class="fas fa-upload"></i> Choose Admin Logo
+                        </label>
+                        <input type="file" id="adminLogoInput" name="admin_logo" hidden>
+                        <small>PNG, JPG (Max. 2MB) - For admin panel</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOCIAL MEDIA LINKS (with TikTok) -->
+            <div class="settings-card">
+                <div class="card-title">
+                    <i class="fas fa-share-alt"></i>
+                    <h2>Social Media Links</h2>
+                </div>
+                <div class="form-group">
+                    <label>Facebook</label>
+                    <input type="text" name="facebook" value="{{ settings.facebook }}">
+                </div>
+                <div class="form-group">
+                    <label>Instagram</label>
+                    <input type="text" name="instagram" value="{{ settings.instagram }}">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp</label>
+                    <input type="text" name="whatsapp" value="{{ settings.whatsapp }}">
+                </div>
+                <div class="form-group">
+                    <label>YouTube</label>
+                    <input type="text" name="youtube" value="{{ settings.youtube }}">
+                </div>
+                <!-- ✅ TikTok field added -->
+                <div class="form-group">
+                    <label>TikTok</label>
+                    <input type="text" name="tiktok" value="{{ settings.tiktok }}">
+                </div>
+            </div>
+
+            <!-- WHATSAPP SETTINGS -->
+            <div class="settings-card">
+                <div class="card-title">
+                    <i class="fab fa-whatsapp"></i>
+                    <h2>WhatsApp Settings</h2>
+                </div>
+                <div class="form-group">
+                    <label>Admin Number</label>
+                    <input type="text" name="whatsapp_number" value="{{ settings.whatsapp_number }}">
+                </div>
+                <div class="form-group">
+                    <label>Default Message</label>
+                    <textarea name="whatsapp_message">{{ settings.whatsapp_message }}</textarea>
+                </div>
+                <div class="toggle-row">
+                    <span>Enable WhatsApp Button</span>
+                    <label class="switch">
+                        <input type="checkbox" name="whatsapp_enabled" {% if settings.whatsapp_enabled %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- THEME SETTINGS -->
+            <div class="settings-card">
+                <div class="card-title">
+                    <i class="fas fa-palette"></i>
+                    <h2>Theme Settings</h2>
+                </div>
+                <div class="form-group">
+                    <label>Primary Color</label>
+                    <div class="color-box">
+                        <input type="color" name="primary_color" value="{{ settings.primary_color }}">
+                        <input type="text" name="primary_color_text" value="{{ settings.primary_color }}">
+                    </div>
+                </div>
+                <div class="toggle-row">
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox" name="dark_mode" {% if settings.dark_mode %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- ACCOUNT SETTINGS -->
+            <div class="settings-card full-width">
+                <div class="card-title">
+                    <i class="fas fa-user-circle"></i>
+                    <h2>Account Settings</h2>
+                </div>
+                <div class="account-grid">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" value="{{ settings.username }}">
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" name="new_password" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" name="confirm_password" placeholder="Confirm new password">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACCOUNT ACTIONS -->
+            <div class="settings-card full-width danger-zone">
+                <div class="card-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h2>Account Actions</h2>
+                </div>
+                <p class="danger-text">Manage your account actions carefully.</p>
+                <div class="danger-buttons">
+                    <a href="/logout/" class="logout-setting-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                    <button type="button" class="delete-account-btn">
+                        <i class="fas fa-trash"></i> Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SAVE BUTTON -->
+        <div class="save-btn-container">
+            <button type="submit" class="save-btn">
+                <i class="fas fa-save"></i> Save Settings
+            </button>
+        </div>
+    </form>
+</div>

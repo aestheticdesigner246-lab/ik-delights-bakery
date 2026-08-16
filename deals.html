@@ -1,0 +1,80 @@
+<div class="deals-isolated-page">
+
+    <h2 class="page-title">
+        <i class="fa-solid fa-tags"></i>
+        Deals Management
+    </h2>
+
+    <div class="deals-subtitle">
+        🔥 IK Delights Flash Sale Deals
+    </div>
+
+    <div class="deals-top-bar">
+        <button class="btn-add" onclick="window.showAddDealModal()">
+            <i class="fa-solid fa-plus"></i> Add Deal
+        </button>
+    </div>
+
+    <div class="table-wrapper">
+        <div class="deals-table-responsive">
+            <table class="deals-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Expiry</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="dealsTableBody">
+                    <!-- JS DATA -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- =====================================================
+     FINAL FRONTEND DEAL POPUP (YEH RAKHNA HAI - DELETE MAT KARNA)
+====================================================== -->
+
+<div id="dealPopup"
+     class="deal-popup">
+
+    <div class="deal-popup-box">
+
+     <button id="closeDealPopup"
+        class="deal-popup-close"
+        onclick="
+            const popup = document.getElementById('dealPopup');
+            popup.classList.remove('active');
+            popup.style.display='none';
+            popup.removeAttribute('style');
+            popup.style.display='none';
+        "> ✕ </button>
+
+        <img src=""
+             id="popupImage"
+             class="deal-popup-image"
+             alt="Deal Popup">
+
+        <div id="popupTimer" class="deal-popup-timer">
+            00d 00h 00m 00s
+        </div>
+
+        <a href="#"
+           id="popupBtn"
+           class="deal-popup-btn"
+           target="_blank">
+            <i class="fa-brands fa-whatsapp"></i>
+            Grab Deal on WhatsApp
+        </a>
+
+    </div>
+
+</div>
+
+<script src="/static/js/deals.js?v=555"></script>

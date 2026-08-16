@@ -1,0 +1,383 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/reports.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="reports-isolated-page">
+
+    <!-- ========================================= -->
+    <!-- HERO SECTION -->
+    <!-- ========================================= -->
+    <div class="reports-hero-section">
+        <div class="reports-hero-left">
+            <div class="reports-hero-badge">
+                <i class="fa-solid fa-chart-line"></i> Analytics Dashboard
+            </div>
+            <h1>Reports & Analytics</h1>
+            <p>Smart insights of your bakery performance, orders, revenue, WhatsApp leads & events.</p>
+        </div>
+        <div class="reports-hero-right">
+            <div class="reports-date-filter">
+                <input type="date" id="startDate" value="{{ start_date|default:'' }}">
+                <input type="date" id="endDate" value="{{ end_date|default:'' }}">
+            </div>
+            <div class="reports-action-buttons">
+                <button class="generate-report-btn" onclick="generateCustomReport()">
+                    <i class="fa-solid fa-chart-column"></i> Generate
+                </button>
+                <button class="export-report-btn" onclick="downloadProfessionalPDF()">
+                    <i class="fa-solid fa-file-pdf"></i> PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- TOP STATS (5 Cards) -->
+    <!-- ========================================= -->
+    <div class="reports-stats-grid">
+        <div class="reports-stat-card pink-card">
+            <div class="reports-stat-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+            <div class="reports-stat-content">
+                <h4>Total Orders</h4>
+                <h2>{{ total_orders|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="reports-stat-card green-card">
+            <div class="reports-stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+            <div class="reports-stat-content">
+                <h4>Events Booked</h4>
+                <h2>{{ total_events|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="reports-stat-card purple-card">
+            <div class="reports-stat-icon"><i class="fa-solid fa-image"></i></div>
+            <div class="reports-stat-content">
+                <h4>Gallery Images</h4>
+                <h2>{{ total_gallery|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="reports-stat-card whatsapp-card">
+            <div class="reports-stat-icon"><i class="fa-brands fa-whatsapp"></i></div>
+            <div class="reports-stat-content">
+                <h4>WhatsApp Orders</h4>
+                <h2>{{ whatsapp_orders_count|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="reports-stat-card orange-card">
+            <div class="reports-stat-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+            <div class="reports-stat-content">
+                <h4>Total Revenue</h4>
+                <h2>Rs {{ total_revenue|default:"0"|floatformat:2 }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- REVENUE BREAKDOWN -->
+    <!-- ========================================= -->
+    <div class="revenue-breakdown-grid">
+        <div class="revenue-mini-card">
+            <i class="fa-solid fa-globe"></i>
+            <div><h4>Website</h4><span>Rs {{ website_revenue|default:"0"|floatformat:2 }}</span></div>
+        </div>
+        <div class="revenue-mini-card">
+            <i class="fa-solid fa-cake-candles"></i>
+            <div><h4>Custom</h4><span>Rs {{ custom_revenue|default:"0"|floatformat:2 }}</span></div>
+        </div>
+        <div class="revenue-mini-card">
+            <i class="fa-solid fa-tags"></i>
+            <div><h4>Deals</h4><span>Rs {{ deal_revenue|default:"0"|floatformat:2 }}</span></div>
+        </div>
+        <div class="revenue-mini-card">
+            <i class="fa-solid fa-calendar-days"></i>
+            <div><h4>Event Orders</h4><span>Rs {{ event_revenue|default:"0"|floatformat:2 }}</span></div>
+        </div>
+        <div class="revenue-mini-card">
+            <i class="fa-brands fa-whatsapp"></i>
+            <div><h4>WhatsApp</h4><span>Rs {{ whatsapp_revenue|default:"0"|floatformat:2 }}</span></div>
+        </div>
+        <div class="revenue-mini-card total-card">
+            <i class="fa-solid fa-chart-line"></i>
+            <div><h4>Overall</h4><span>Rs {{ overall_revenue|default:"0"|floatformat:2 }}</span></div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- CHARTS SECTION -->
+    <!-- ========================================= -->
+    <div class="top-chart-grid">
+        <div class="reports-analytics-card large-chart-card">
+            <div class="reports-card-header">
+                <h3>Orders Overview</h3>
+            </div>
+            <div class="reports-chart-wrapper">
+                <canvas id="ordersOverviewChart"></canvas>
+            </div>
+        </div>
+        <div class="reports-analytics-card small-chart-card">
+            <div class="reports-card-header">
+                <h3>Orders by Source</h3>
+            </div>
+            <div class="reports-chart-wrapper small-chart-wrapper">
+                <canvas id="ordersSourceChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- WHATSAPP CRM + EVENTS + GALLERY -->
+    <!-- ========================================= -->
+    <div class="reports-three-grid">
+        <!-- WhatsApp CRM -->
+        <div class="reports-bottom-card">
+            <div class="reports-card-header">
+                <h3><i class="fa-brands fa-whatsapp"></i> WhatsApp CRM</h3>
+                <button class="view-all-btn" onclick="loadPage('whatsapp-orders')">View All</button>
+            </div>
+            <div class="crm-stats">
+                <div class="crm-stat"><span>New Leads</span><strong>{{ total_leads|default:"0" }}</strong></div>
+                <div class="crm-stat"><span>Converted</span><strong>{{ converted_leads|default:"0" }}</strong></div>
+                <div class="crm-stat"><span>Follow-up</span><strong>{{ followup_leads|default:"0" }}</strong></div>
+                <div class="crm-stat"><span>Lost</span><strong>{{ rejected_leads|default:"0" }}</strong></div>
+            </div>
+        </div>
+
+        <!-- Events Summary -->
+        <div class="reports-bottom-card">
+            <div class="reports-card-header">
+                <h3><i class="fa-solid fa-calendar"></i> Events Summary</h3>
+                <button class="view-all-btn" onclick="loadPage('events')">View All</button>
+            </div>
+            <div class="summary-list">
+                <div class="summary-item"><span>Total Events</span><strong>{{ total_events|default:"0" }}</strong></div>
+                <div class="summary-item"><span>Upcoming</span><strong>{{ upcoming_events|default:"0" }}</strong></div>
+                <div class="summary-item"><span>Completed</span><strong>{{ completed_events|default:"0" }}</strong></div>
+                <div class="summary-item"><span>Revenue</span><strong>Rs {{ event_booking_revenue|default:"0"|floatformat:2 }}</strong></div>
+            </div>
+        </div>
+
+        <!-- Gallery Analytics -->
+        <div class="reports-bottom-card">
+            <div class="reports-card-header">
+                <h3><i class="fa-solid fa-image"></i> Gallery Analytics</h3>
+                <button class="view-all-btn" onclick="loadPage('gallery')">View All</button>
+            </div>
+            <div class="summary-list">
+                <div class="summary-item"><span>Total Images</span><strong>{{ total_gallery|default:"0" }}</strong></div>
+                <div class="summary-item"><span>Total Views</span><strong>{{ total_gallery_views|default:"0" }}</strong></div>
+                <div class="summary-item"><span>Unique Visitors</span><strong>{{ unique_visitors|default:"0" }}</strong></div>
+                <div class="summary-item"><span>Avg. Time</span><strong>{{ avg_time|default:"00:00" }} min</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- RECENT ORDERS -->
+    <!-- ========================================= -->
+    <div class="reports-card-header" style="margin-top: 24px;">
+        <h3><i class="fa-solid fa-clock"></i> Recent Orders</h3>
+        <button class="view-all-btn" onclick="loadPage('orders')">View All</button>
+    </div>
+    <div class="reports-bottom-card" style="padding: 0; overflow: hidden;">
+        <table class="reports-table">
+            <thead>
+                <tr><th>ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Type</th></tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders|slice:":8" %}
+                <tr>
+                    <td>#{{ order.id }}</a></td>
+                    <td>{{ order.name }}</a></td>
+                    <td>Rs {{ order.total|floatformat:2 }}</a></td>
+                    <td>{{ order.created_at|date:"d M Y" }}</a></td>
+                    <td><span class="order-type-badge">{{ order.order_type|default:"website"|title }}</span></a>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" style="text-align:center;">No recent orders found</a></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- TOP PRODUCTS -->
+    <!-- ========================================= -->
+    <div class="reports-card-header" style="margin-top: 24px;">
+        <h3><i class="fa-solid fa-trophy"></i> Top Products</h3>
+        <button class="view-all-btn" onclick="loadPage('products')">View All</button>
+    </div>
+    <div class="top-products-wrapper">
+        {% for product in top_products %}
+        <div class="top-product-item">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+            <i class="fa-solid fa-cake"></i>
+            {% endif %}
+            <div class="top-product-info">
+                <h4>{{ product.name|truncatechars:25 }}</h4>
+                <p>Rs {{ product.price|floatformat:2 }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty-products" style="text-align:center; width:100%; padding:20px;">No products found</div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- CHART DATA (JSON Scripts) -->
+<!-- ========================================= -->
+{{ months_labels|json_script:"monthsLabelsData" }}
+{{ website_orders_monthly|json_script:"websiteOrdersMonthlyData" }}
+{{ whatsapp_orders_monthly|json_script:"whatsappOrdersMonthlyData" }}
+
+<!-- ========================================= -->
+<!-- SCRIPTS -->
+<!-- ========================================= -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Reports Page JavaScript - Fully Dynamic
+document.addEventListener("DOMContentLoaded", function() {
+    initReportsCharts();
+});
+
+function initReportsCharts() {
+    if (typeof Chart === "undefined") {
+        console.log("Chart.js not loaded");
+        return;
+    }
+
+    // Destroy old charts
+    if (window.ordersOverviewInstance) window.ordersOverviewInstance.destroy();
+    if (window.ordersSourceInstance) window.ordersSourceInstance.destroy();
+
+    // Get data from Django
+    let monthsLabels = [];
+    let websiteMonthlyData = [];
+    let whatsappMonthlyData = [];
+
+    try {
+        const monthsElem = document.getElementById("monthsLabelsData");
+        const websiteElem = document.getElementById("websiteOrdersMonthlyData");
+        const whatsappElem = document.getElementById("whatsappOrdersMonthlyData");
+
+        if (monthsElem && monthsElem.innerHTML && monthsElem.innerHTML !== "null") {
+            monthsLabels = JSON.parse(monthsElem.innerHTML);
+        }
+        if (websiteElem && websiteElem.innerHTML && websiteElem.innerHTML !== "null") {
+            websiteMonthlyData = JSON.parse(websiteElem.innerHTML);
+        }
+        if (whatsappElem && whatsappElem.innerHTML && whatsappElem.innerHTML !== "null") {
+            whatsappMonthlyData = JSON.parse(whatsappElem.innerHTML);
+        }
+    } catch(e) {
+        console.log("Error parsing data:", e);
+    }
+
+    // Ensure arrays
+    if (!Array.isArray(monthsLabels)) monthsLabels = [];
+    if (!Array.isArray(websiteMonthlyData)) websiteMonthlyData = [];
+    if (!Array.isArray(whatsappMonthlyData)) whatsappMonthlyData = [];
+
+    // Calculate totals
+    const websiteTotal = websiteMonthlyData.reduce((a,b) => a + b, 0);
+    const whatsappTotal = whatsappMonthlyData.reduce((a,b) => a + b, 0);
+    const totalOrders = websiteTotal + whatsappTotal;
+
+    // Orders Overview Chart (Line)
+    const overviewCanvas = document.getElementById("ordersOverviewChart");
+    if (overviewCanvas && monthsLabels.length > 0) {
+        window.ordersOverviewInstance = new Chart(overviewCanvas, {
+            type: "line",
+            data: {
+                labels: monthsLabels,
+                datasets: [
+                    {
+                        label: "Website Orders",
+                        data: websiteMonthlyData,
+                        borderColor: "#ff4f81",
+                        backgroundColor: "rgba(255,79,129,0.1)",
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: "WhatsApp Orders",
+                        data: whatsappMonthlyData,
+                        borderColor: "#22c55e",
+                        backgroundColor: "rgba(34,197,94,0.1)",
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: "top" }
+                }
+            }
+        });
+    }
+
+    // Orders Source Chart (Doughnut)
+    const sourceCanvas = document.getElementById("ordersSourceChart");
+    if (sourceCanvas && totalOrders > 0) {
+        const websitePercent = Math.round((websiteTotal / totalOrders) * 100);
+        const whatsappPercent = Math.round((whatsappTotal / totalOrders) * 100);
+        
+        window.ordersSourceInstance = new Chart(sourceCanvas, {
+            type: "doughnut",
+            data: {
+                labels: ["Website", "WhatsApp"],
+                datasets: [{
+                    data: [websitePercent, whatsappPercent],
+                    backgroundColor: ["#ff4f81", "#22c55e"],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: "65%",
+                plugins: {
+                    legend: { position: "bottom" }
+                }
+            }
+        });
+    }
+}
+
+// Generate Report Function
+function generateCustomReport() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    if (startDate && endDate) {
+        window.location.href = `/admin/reports/?start=${startDate}&end=${endDate}`;
+    } else {
+        alert('Please select both start and end dates');
+    }
+}
+
+// Download PDF Function
+function downloadProfessionalPDF() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    let pdfUrl = '/admin/reports/pdf/';
+    if (startDate && endDate) pdfUrl += `?start=${startDate}&end=${endDate}`;
+    window.open(pdfUrl, '_blank');
+}
+
+// Load Page Function
+function loadPage(pageName) {
+    window.location.href = `/admin/${pageName}/`;
+}
+
+// Global exports
+window.initReportsCharts = initReportsCharts;
+window.generateCustomReport = generateCustomReport;
+window.downloadProfessionalPDF = downloadProfessionalPDF;
+window.loadPage = loadPage;
+</script>

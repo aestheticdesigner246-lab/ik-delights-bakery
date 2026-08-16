@@ -1,0 +1,1053 @@
+<!-- =========================================
+FINAL COMPLETE CUSTOMIZATION MODAL - ALL PRODUCTS
+ADDED: Payment info box with business number
+========================================= -->
+
+<!-- CUSTOMIZATION MODAL -->
+<div id="customizationModal" style="
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.85);
+backdrop-filter: blur(8px);
+display: none;
+justify-content: center;
+align-items: center;
+z-index: 999999;
+padding: 20px;
+">
+
+<div style="
+width: 100%;
+max-width: 580px;
+background: #fff;
+border-radius: 32px;
+padding: 24px;
+position: relative;
+max-height: 90vh;
+overflow-y: auto;
+animation: popup 0.3s ease;
+box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+">
+
+<!-- HEADER -->
+<div style="
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding-bottom: 16px;
+margin-bottom: 20px;
+border-bottom: 2px solid #f3dbe2;
+">
+
+<h3 style="
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: 1.3rem;
+color: #4a2c2c;
+margin: 0;
+">
+
+{% if settings.footer_logo %}
+<img src="{{ settings.footer_logo.url }}"
+style="
+width: 45px;
+height: 45px;
+border-radius: 50%;
+object-fit: cover;
+box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+border: 2px solid #c46a84;
+">
+{% endif %}
+
+<span>Customize Your Order</span>
+
+</h3>
+
+<button onclick="closeCustomizationModal()" style="
+width: 36px;
+height: 36px;
+border: none;
+border-radius: 50%;
+background: #ffe4ec;
+color: #c46a84;
+font-size: 1.3rem;
+cursor: pointer;
+transition: all 0.3s;
+display: flex;
+align-items: center;
+justify-content: center;
+">
+&times;
+</button>
+
+</div>
+
+<!-- TIMER WARNING -->
+<div id="timerWarning" style="
+display: none;
+background: #fff3cd;
+color: #856404;
+padding: 12px;
+border-radius: 14px;
+margin-bottom: 20px;
+font-size: 0.75rem;
+text-align: center;
+border-left: 4px solid #ffc107;
+">
+<i class="fas fa-clock"></i> 
+<span id="timerMessage">Order must be placed 6 hours before delivery time!</span>
+</div>
+
+<!-- PROGRESS STEPS -->
+<div style="
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 15px;
+margin-bottom: 25px;
+">
+
+<div id="step1" style="
+width: 44px;
+height: 44px;
+border-radius: 50%;
+background: linear-gradient(135deg, #c46a84, #e89ab0);
+color: #fff;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 1.1rem;
+box-shadow: 0 4px 12px rgba(196,106,132,0.4);
+transition: all 0.3s;
+">
+1
+</div>
+
+<div style="width: 40px; height: 2px; background: #f1c8d3;"></div>
+
+<div id="step2" style="
+width: 44px;
+height: 44px;
+border-radius: 50%;
+background: #f4d7df;
+color: #8b4b5a;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 1.1rem;
+transition: all 0.3s;
+">
+2
+</div>
+
+<div style="width: 40px; height: 2px; background: #f1c8d3;"></div>
+
+<div id="step3" style="
+width: 44px;
+height: 44px;
+border-radius: 50%;
+background: #f4d7df;
+color: #8b4b5a;
+display: flex;
+align-items: center;
+justify-content: center;
+font-weight: 700;
+font-size: 1.1rem;
+transition: all 0.3s;
+">
+3
+</div>
+
+</div>
+
+<!-- ========== STEP 1 ========== -->
+<div id="customStep1">
+
+<div style="
+background: linear-gradient(135deg, #fef8fa, #fff);
+border-radius: 20px;
+padding: 5px 0;
+">
+
+<!-- CAKE FIELDS -->
+<div id="cakeFields">
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+🍰 Cake Flavor *
+</label>
+<select id="cakeFlavor" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem; background: #fff;">
+<option>Chocolate</option>
+<option>Vanilla</option>
+<option>Red Velvet</option>
+<option>Lotus Biscoff</option>
+<option>Pineapple</option>
+<option>Strawberry</option>
+</select>
+</div>
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+⚖️ Cake Weight *
+</label>
+<select id="cakeWeight" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem; background: #fff;">
+<option value="1">1 Pound — Starting From Rs 2500</option>
+<option value="2">2 Pound — Starting From Rs 2200</option>
+<option value="3">3 Pound — Starting From Rs 5000</option>
+<option value="4">4 Pound — Starting From Rs 5500</option>
+<option value="5">5 Pound — Starting From Rs 6300000</option>
+<option value="6">6 Pound — Starting From Rs 78000</option>
+<option value="7">7 Pound — Starting From Rs 9000</option>
+<option value="custom">Customized Size (Estimate Rs 9000+)</option>
+</select>
+<div id="customSizeMessage" style="display: none; margin-top: 8px; font-size: 0.7rem; color: #c46a84; background: #fff0f3; padding: 6px 10px; border-radius: 12px;">
+ℹ️ Please mention your desired size in <strong>Special Instructions</strong> (Step 2)
+</div>
+</div>
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+🔶 Cake Shape
+</label>
+<select id="cakeShape" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem; background: #fff;">
+<option>Round</option>
+<option>Heart</option>
+<option>Square</option>
+<option>Custom</option>
+</select>
+</div>
+
+</div>
+
+<!-- COOKIE FIELDS -->
+<div id="cookieFields" style="display: none;">
+
+<div style="margin-bottom:16px;">
+<label style="font-weight:600; display:block; margin-bottom:6px; font-size:0.85rem; color:#c46a84;">
+🍪 Cookie Flavor
+</label>
+<select id="cookieFlavor" style="width:100%; padding:12px; border:2px solid #f3dbe2; border-radius:14px; outline:none; font-size:0.85rem;">
+<option>Chocolate Chip</option>
+<option>Nutella</option>
+<option>Red Velvet</option>
+<option>Lotus Biscoff</option>
+<option>Peanut Butter</option>
+</select>
+</div>
+
+<div style="margin-bottom:16px;">
+<label style="font-weight:600; display:block; margin-bottom:6px; font-size:0.85rem; color:#c46a84;">
+📦 Box Size
+</label>
+<select id="cookieBoxSize" style="width:100%; padding:12px; border:2px solid #f3dbe2; border-radius:14px; outline:none; font-size:0.85rem;">
+<option>Box of 6</option>
+<option>Box of 12</option>
+<option>Box of 24</option>
+</select>
+</div>
+
+<div style="margin-bottom:16px;">
+<label style="font-weight:600; display:block; margin-bottom:6px; font-size:0.85rem; color:#c46a84;">
+🎀 Gift Wrapping
+</label>
+<select id="cookieGiftWrap" style="width:100%; padding:12px; border:2px solid #f3dbe2; border-radius:14px; outline:none; font-size:0.85rem;">
+<option>No</option>
+<option>Yes</option>
+</select>
+</div>
+
+</div>
+
+<!-- BROWNIE FIELDS -->
+<div id="brownieFields" style="display: none;">
+
+<div style="margin-bottom:16px;">
+<label style="font-weight:600; display:block; margin-bottom:6px; font-size:0.85rem; color:#c46a84;">
+🍫 Brownie Flavor
+</label>
+<select id="brownieFlavor" style="width:100%; padding:12px; border:2px solid #f3dbe2; border-radius:14px; outline:none; font-size:0.85rem;">
+<option>Classic Chocolate</option>
+<option>Walnut Brownie</option>
+<option>Nutella Brownie</option>
+<option>Lotus Brownie</option>
+</select>
+</div>
+
+<div style="margin-bottom:16px;">
+<label style="font-weight:600; display:block; margin-bottom:6px; font-size:0.85rem; color:#c46a84;">
+📏 Tray Size
+</label>
+<select id="brownieTraySize" style="width:100%; padding:12px; border:2px solid #f3dbe2; border-radius:14px; outline:none; font-size:0.85rem;">
+<option>Small Tray</option>
+<option>Medium Tray</option>
+<option>Large Tray</option>
+</select>
+</div>
+
+<div style="margin-bottom:16px;">
+<label style="font-weight:600; display:block; margin-bottom:6px; font-size:0.85rem; color:#c46a84;">
+✨ Extra Toppings
+</label>
+<select id="brownieToppings" style="width:100%; padding:12px; border:2px solid #f3dbe2; border-radius:14px; outline:none; font-size:0.85rem;">
+<option>None</option>
+<option>Extra Chocolate</option>
+<option>Oreo Crumbs</option>
+<option>Nuts</option>
+</select>
+</div>
+
+</div>
+
+<!-- BENTO FIELDS -->
+<div id="bentoFields" style="display: none;">
+
+<div style="margin-bottom:16px;">
+<label style="font-weight:600; display:block; margin-bottom:6px; font-size:0.85rem; color:#c46a84;">
+🧁 Bento Flavor
+</label>
+<select id="bentoFlavor" style="width:100%; padding:12px; border:2px solid #f3dbe2; border-radius:14px; outline:none; font-size:0.85rem;">
+<option>Chocolate</option>
+<option>Red Velvet</option>
+<option>Lotus Biscoff</option>
+<option>Vanilla</option>
+</select>
+</div>
+
+<div style="margin-bottom:16px;">
+<label style="font-weight:600; display:block; margin-bottom:6px; font-size:0.85rem; color:#c46a84;">
+🎨 Bento Theme
+</label>
+<select id="bentoTheme" style="width:100%; padding:12px; border:2px solid #f3dbe2; border-radius:14px; outline:none; font-size:0.85rem;">
+<option>Minimal</option>
+<option>Birthday</option>
+<option>Korean Style</option>
+<option>Aesthetic</option>
+<option>Couple Theme</option>
+</select>
+</div>
+
+<div style="margin-bottom:16px;">
+<label style="font-weight:600; display:block; margin-bottom:6px; font-size:0.85rem; color:#c46a84;">
+💬 Bento Text
+</label>
+<input type="text" id="bentoText" placeholder="Short text on cake" style="width:100%; padding:12px; border:2px solid #f3dbe2; border-radius:14px; outline:none; font-size:0.85rem;">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========== STEP 2 ========== -->
+<div id="customStep2" style="display: none;">
+
+<div style="background: linear-gradient(135deg, #fef8fa, #fff);
+border-radius: 20px;
+padding: 5px 0;">
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+🎨 Theme / Occasion
+</label>
+<input type="text" id="cakeTheme" placeholder="Birthday, Wedding, Anniversary, etc" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem;">
+</div>
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+💬 Message on Product
+</label>
+<input type="text" id="cakeMessage" placeholder="Happy Birthday Ayesha!" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem;">
+</div>
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+📝 Special Instructions
+</label>
+<textarea id="specialInstructions" rows="3" placeholder="Extra cream, less sugar, specific color theme, or custom cake size details..." style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem; resize: vertical;"></textarea>
+</div>
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+🥚 Eggless?
+</label>
+<select id="eggless" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem; background: #fff;">
+<option value="No">No (Regular with Egg)</option>
+<option value="Yes">Yes (Eggless)</option>
+</select>
+</div>
+
+<!-- EXTRA CUSTOMIZATION ADD-ONS -->
+<div style="
+margin-bottom:16px;
+padding:16px;
+border:2px solid #f3dbe2;
+border-radius:16px;
+background:#fff8fa;
+">
+
+<label style="
+font-weight:600;
+display:block;
+margin-bottom:12px;
+font-size:0.9rem;
+color:#c46a84;
+">
+✨ Extra Customization
+</label>
+
+<label style="display:block;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" class="addon-option" data-name="Fondant Work" data-price="500">
+ Fondant Work (+Rs 500)
+</label>
+
+<label style="display:block;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" class="addon-option" data-name="Fresh Flowers" data-price="300">
+ Fresh Flowers (+Rs 300)
+</label>
+
+<label style="display:block;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" class="addon-option" data-name="Candles" data-price="100">
+ Candles (+Rs 100)
+</label>
+
+<label style="display:block;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" class="addon-option" data-name="Cake Topper" data-price="250">
+ Cake Topper (+Rs 250)
+</label>
+
+<label style="display:block;margin-bottom:10px;cursor:pointer;">
+<input type="checkbox" class="addon-option" data-name="Premium Box" data-price="400">
+ Premium Box (+Rs 1400)
+</label>
+
+<p style="
+margin-top:12px;
+font-size:0.75rem;
+color:#888;
+line-height:1.5;
+">
+Additional charges may apply depending on customization complexity.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ========== PRICE SUMMARY ========== -->
+<div id="priceSummary" style="
+margin-top:20px;
+padding:18px;
+border-radius:18px;
+background:#fff5f8;
+border:2px solid #f3dbe2;
+">
+
+<h4 style="margin-bottom:15px; color:#c46a84; font-size:1rem;">
+💰 Price Summary
+</h4>
+
+<p style="margin-bottom:8px;">
+Base Price:
+<strong id="basePriceDisplay">Rs 2500</strong>
+</p>
+
+<p style="margin-bottom:8px;">
+Customization Charges:
+<strong id="addonPriceDisplay">Rs 0</strong>
+</p>
+
+<hr style="margin:12px 0; border-color:#ffdbe6;">
+
+<p style="margin-bottom:8px; font-size:1rem;">
+Final Total:
+<strong id="finalTotalDisplay" style="color:#c46a84;">Rs 2500</strong>
+</p>
+
+<p style="margin-bottom:8px;">
+50% Advance:
+<strong id="advanceAmountDisplay">Rs 1250</strong>
+</p>
+
+<p>
+Remaining Amount:
+<strong id="remainingAmountDisplay">Rs 1250</strong>
+</p>
+
+</div>
+
+<!-- ========== STEP 3 ========== -->
+<div id="customStep3" style="display: none;">
+
+<div style="background: linear-gradient(135deg, #fef8fa, #fff); border-radius: 20px; padding: 5px 0;">
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+📅 Delivery Date & Time *
+</label>
+<input type="datetime-local" id="deliveryDateTime" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem;">
+<small style="display: block; margin-top: 6px; color: #b28b9a; font-size: 0.65rem;">
+⏰ Orders must be placed at least 6 hours before delivery
+</small>
+</div>
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+👤 Full Name *
+</label>
+<input type="text" id="orderName" placeholder="Enter your full name" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem;">
+</div>
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+📞 WhatsApp Number *
+</label>
+<input type="tel" id="orderPhone" placeholder="03XXXXXXXXX" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem;">
+<small style="display: block; margin-top: 6px; color: #b28b9a; font-size: 0.65rem;">
+Valid Pakistani number starting with 03
+</small>
+</div>
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+📍 Delivery Address *
+</label>
+<textarea id="orderAddress" rows="2" placeholder="Complete address with landmark" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem; resize: vertical;"></textarea>
+</div>
+
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+💳 Payment Method *
+</label>
+<select id="orderPaymentSelect" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem; background: #fff;">
+<option value="">Select Payment Method</option>
+<option value="jazzcash">💜 JazzCash (50% Advance)</option>
+<option value="easypaisa">💚 EasyPaisa (50% Advance)</option>
+<option value="cod">💰 Cash on Delivery (Full Payment)</option>
+</select>
+</div>
+
+<!-- PAYMENT INFO BOX (shows business number) -->
+<div id="paymentInfoBox" style="
+    display: none;
+    margin-bottom: 20px;
+    padding: 14px;
+    background: #fff5f8;
+    border: 2px solid #f3dbe2;
+    border-radius: 16px;
+    color: #c46a84;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-align: center;
+"></div>
+
+<div id="paymentFieldsContainer" style="display: none; flex-direction: column; gap: 16px;">
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+🔑 Transaction ID *
+</label>
+<input type="text" id="transactionIdInput" placeholder="JC12345678 or EP12345678" style="width: 100%; padding: 12px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem;">
+<small style="display: block; margin-top: 6px; color: #b28b9a; font-size: 0.65rem;">
+Format: JC12345678 (JazzCash) or EP12345678 (EasyPaisa)
+</small>
+</div>
+<div style="margin-bottom: 16px;">
+<label style="font-weight: 600; display: block; margin-bottom: 6px; font-size: 0.85rem; color: #c46a84;">
+📸 Payment Screenshot *
+</label>
+<input type="file" id="paymentScreenshotInput" accept="image/jpeg,image/png,image/jpg,image/webp" style="width: 100%; padding: 10px; border: 2px solid #f3dbe2; border-radius: 14px; outline: none; font-size: 0.85rem; background: #fff;">
+<small style="display: block; margin-top: 6px; color: #b28b9a; font-size: 0.65rem;">
+Max 5MB, JPG/PNG/WEBP only
+</small>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- BUTTONS -->
+<div style="display: flex; justify-content: space-between; gap: 12px; margin-top: 25px;">
+<button id="prevBtn" onclick="prevCustomizationStep()" style="display: none; padding: 12px 24px; border: none; border-radius: 40px; background: #f0e6ea; color: #8b6b78; cursor: pointer; font-weight: 600; font-size: 0.85rem;">← Back</button>
+<button id="nextBtn" onclick="nextCustomizationStep()" style="padding: 12px 28px; border: none; border-radius: 40px; background: linear-gradient(135deg, #c46a84, #e89ab0); color: #fff; cursor: pointer; font-weight: 600; font-size: 0.85rem; margin-left: auto;">Next →</button>
+<button type="button" id="submitCustomBtn" onclick="submitCustomization(event)" style="display: none; padding: 12px 28px; border: none; border-radius: 40px; background: linear-gradient(135deg, #28a745, #20c997); color: #fff; cursor: pointer; font-weight: 600; font-size: 0.85rem;">🎂 Proceed To Invoice</button>
+</div>
+
+</div>
+
+</div>
+
+<!-- ========== INVOICE MODAL ========== -->
+<div id="invoiceModal" style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000000; padding: 20px;">
+<div style="width: 100%; max-width: 500px; background: #fff; border-radius: 32px; padding: 24px; position: relative; animation: popup 0.3s ease; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);">
+<div style="display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; margin-bottom: 20px; border-bottom: 2px solid #f3dbe2;">
+<h3 style="display: flex; align-items: center; gap: 8px; font-size: 1.2rem; color: #4a2c2c; margin: 0;">📄 Order Invoice</h3>
+<button onclick="closeInvoiceModal()" style="width: 34px; height: 34px; border: none; border-radius: 50%; background: #ffe4ec; color: #c46a84; font-size: 1.2rem; cursor: pointer;">&times;</button>
+</div>
+<div id="invoiceModalContent" style="text-align: center; padding: 5px 0;">
+<div style="margin-bottom: 20px;">
+<div style="width: 65px; height: 65px; background: linear-gradient(135deg, #28a745, #20c997); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;"><i class="fas fa-check-circle" style="font-size: 34px; color: #fff;"></i></div>
+<h4 style="color: #28a745; margin-bottom: 8px;">✅ Order Placed Successfully!</h4>
+<p style="color: #666; font-size: 0.8rem;">Thank you for your order. Our team will contact you shortly on WhatsApp.</p>
+</div>
+<div style="background: #f9f1ef; border-radius: 18px; padding: 15px; margin-bottom: 20px; text-align: left;">
+<p style="margin-bottom: 10px;"><strong>📦 Order Details:</strong></p>
+<div id="invoiceProductList" style="margin-top: 10px; background: #fff; padding: 10px; border-radius: 12px; border: 1px solid #f1d6de; max-height: 200px; overflow-y: auto; font-size: 0.8rem;"></div>
+<hr style="margin: 12px 0; border-color: #ffe0e7;">
+<p><strong>👤 Customer:</strong> <span id="invoiceCustomerName">-</span></p>
+<p><strong>📞 Phone:</strong> <span id="invoiceCustomerPhone">-</span></p>
+<p><strong>📅 Delivery Date:</strong> <span id="invoiceDeliveryDate">-</span></p>
+<p><strong>📍 Address:</strong> <span id="invoiceAddress">-</span></p>
+<p><strong>💳 Payment:</strong> <span id="invoicePayment">-</span></p>
+<p><strong>💰 Total Amount:</strong> <span id="invoiceTotalAmount">Rs 0</span></p>
+</div>
+<button onclick="closeInvoiceModal()" style="width: 100%; padding: 12px; border: none; border-radius: 40px; background: linear-gradient(135deg, #c46a84, #e89ab0); color: #fff; cursor: pointer;">Close</button>
+</div>
+</div>
+</div>
+
+<!-- ========== STYLES ========== -->
+<style>
+@keyframes popup { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+#customizationModal > div::-webkit-scrollbar { width: 6px; }
+#customizationModal > div::-webkit-scrollbar-track { background: #f3dbe2; border-radius: 10px; }
+#customizationModal > div::-webkit-scrollbar-thumb { background: #c46a84; border-radius: 10px; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+#timerWarning { animation: pulse 2s infinite; }
+input:focus, select:focus, textarea:focus { border-color: #c46a84 !important; box-shadow: 0 0 0 3px rgba(196,106,132,0.1); }
+button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+@media (max-width: 640px) {
+    #customizationModal > div { max-width: 95% !important; padding: 18px !important; }
+    #invoiceModal > div { max-width: 95% !important; padding: 18px !important; }
+    .step-circle { width: 35px !important; height: 35px !important; font-size: 0.9rem !important; }
+    button { padding: 10px 20px !important; font-size: 0.8rem !important; }
+    h3 { font-size: 1rem !important; }
+}
+</style>
+
+<!-- ========== JAVASCRIPT FOR CUSTOMIZATION MODAL ========== -->
+<script>
+let currentStep = 1;
+
+// WEIGHT PRICE MAPPING (for cakes)
+const weightPriceMap = {
+    '1': 2500,
+    '2': 3500,
+    '3': 4500,
+    '4': 5500,
+    '5': 6000,
+    '6': 7500,
+    '7': 9000
+};
+
+function getBasePrice() {
+    let weightSelect = document.getElementById('cakeWeight');
+    let weightValue = weightSelect ? weightSelect.value : '1';
+    if (weightValue === 'custom') {
+        return 9000;  // minimum estimate
+    }
+    return weightPriceMap[weightValue] || 0;
+}
+
+function getAddonTotal() {
+    let total = 0;
+    document.querySelectorAll('.addon-option:checked').forEach(cb => {
+        total += parseFloat(cb.dataset.price) || 0;
+    });
+    return total;
+}
+
+function calculateFinalTotal() {
+    return getBasePrice() + getAddonTotal();
+}
+
+function updatePriceSummary() {
+    let base = getBasePrice();
+    let addons = getAddonTotal();
+    let final = base + addons;
+    let advance = final * 0.5;
+    let remaining = final - advance;
+
+    let weightSelect = document.getElementById('cakeWeight');
+    let isCustom = weightSelect?.value === 'custom';
+
+    // Base price display
+    let baseDisplay = isCustom ? 'Rs 9000+ (estimate)' : `Rs ${base}`;
+    document.getElementById('basePriceDisplay').innerHTML = baseDisplay;
+
+    // Addon charges
+    document.getElementById('addonPriceDisplay').innerText = `Rs ${addons}`;
+
+    // Final total - professional estimate text
+    let finalDisplay = isCustom ? `Starting From Rs ${final}+` : `Rs ${final}`;
+    document.getElementById('finalTotalDisplay').innerHTML = finalDisplay;
+
+    // Advance - approximate for custom
+    let advanceDisplay = isCustom ? `Approx Rs ${advance.toFixed(2)}` : `Rs ${advance.toFixed(2)}`;
+    document.getElementById('advanceAmountDisplay').innerHTML = advanceDisplay;
+
+    // Remaining (same as advance for 50%)
+    document.getElementById('remainingAmountDisplay').innerHTML = `Rs ${remaining.toFixed(2)}`;
+}
+
+function toggleCustomSizeMessage() {
+    let weightSelect = document.getElementById('cakeWeight');
+    let messageDiv = document.getElementById('customSizeMessage');
+    if (weightSelect && messageDiv) {
+        messageDiv.style.display = weightSelect.value === 'custom' ? 'block' : 'none';
+    }
+}
+
+// Event listeners (only for cake weight & addons)
+document.getElementById('cakeWeight')?.addEventListener('change', () => {
+    updatePriceSummary();
+    toggleCustomSizeMessage();
+});
+document.querySelectorAll('.addon-option').forEach(cb => {
+    cb.addEventListener('change', updatePriceSummary);
+});
+
+// Initial load
+updatePriceSummary();
+toggleCustomSizeMessage();
+// ========== PRODUCT FIELD TOGGLE (UPDATED FIX) ==========
+function showProductFields(productType = 'cake') {
+
+    const cakeFields = document.getElementById('cakeFields');
+    const cookieFields = document.getElementById('cookieFields');
+    const brownieFields = document.getElementById('brownieFields');
+    const bentoFields = document.getElementById('bentoFields');
+
+    if (!cakeFields || !cookieFields || !brownieFields || !bentoFields) return;
+
+    // Hide all fields first
+    cakeFields.style.display = 'none';
+    cookieFields.style.display = 'none';
+    brownieFields.style.display = 'none';
+    bentoFields.style.display = 'none';
+
+    // Normalize value
+    productType = String(productType || '')
+        .toLowerCase()
+        .trim();
+
+    console.log("FINAL PRODUCT TYPE =", productType);
+
+    // Cookies
+    if (
+        productType === 'cookie' ||
+        productType === 'cookies'
+    ) {
+        cookieFields.style.display = 'block';
+    }
+
+    // Brownies
+    else if (
+        productType === 'brownie' ||
+        productType === 'brownies'
+    ) {
+        brownieFields.style.display = 'block';
+    }
+
+    // Bento
+    else if (
+        productType === 'bento' ||
+        productType === 'bentos' ||
+        productType === 'bento cake' ||
+        productType === 'bento cakes'
+    ) {
+        bentoFields.style.display = 'block';
+    }
+
+    // Default = Cake
+    else {
+        cakeFields.style.display = 'block';
+    }
+}
+// ========== 3-STEP NAVIGATION (FIXED VALIDATION) ==========
+function nextCustomizationStep() {
+    if (currentStep === 1) {
+        // Only validate cake fields if cake section is visible
+        const cakeVisible = document.getElementById('cakeFields')?.style.display !== 'none';
+        if (cakeVisible) {
+            let flavor = document.getElementById('cakeFlavor')?.value;
+            let weight = document.getElementById('cakeWeight')?.value;
+            if (!flavor || !weight) {
+                alert('Please select cake flavor and weight');
+                return;
+            }
+        }
+        // For other product types, no mandatory validation (can add later)
+        
+        document.getElementById('customStep1').style.display = 'none';
+        document.getElementById('customStep2').style.display = 'block';
+        document.getElementById('step1').style.background = '#f4d7df';
+        document.getElementById('step1').style.color = '#8b4b5a';
+        document.getElementById('step2').style.background = 'linear-gradient(135deg,#c46a84,#e89ab0)';
+        document.getElementById('step2').style.color = '#fff';
+        document.getElementById('prevBtn').style.display = 'flex';
+        currentStep = 2;
+        return;
+    }
+    if (currentStep === 2) {
+        document.getElementById('customStep2').style.display = 'none';
+        document.getElementById('priceSummary').style.display = 'none';
+        document.getElementById('customStep3').style.display = 'block';
+        document.getElementById('step2').style.background = '#f4d7df';
+        document.getElementById('step2').style.color = '#8b4b5a';
+        document.getElementById('step3').style.background = 'linear-gradient(135deg,#c46a84,#e89ab0)';
+        document.getElementById('step3').style.color = '#fff';
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('submitCustomBtn').style.display = 'flex';
+        currentStep = 3;
+        return;
+    }
+}
+
+function prevCustomizationStep() {
+    if (currentStep === 3) {
+        document.getElementById('customStep3').style.display = 'none';
+        document.getElementById('priceSummary').style.display = 'block';
+        document.getElementById('customStep2').style.display = 'block';
+        document.getElementById('step3').style.background = '#f4d7df';
+        document.getElementById('step3').style.color = '#8b4b5a';
+        document.getElementById('step2').style.background = 'linear-gradient(135deg,#c46a84,#e89ab0)';
+        document.getElementById('step2').style.color = '#fff';
+        document.getElementById('nextBtn').style.display = 'flex';
+        document.getElementById('submitCustomBtn').style.display = 'none';
+        currentStep = 2;
+        return;
+    }
+    if (currentStep === 2) {
+        document.getElementById('customStep2').style.display = 'none';
+        document.getElementById('customStep1').style.display = 'block';
+        document.getElementById('step2').style.background = '#f4d7df';
+        document.getElementById('step2').style.color = '#8b4b5a';
+        document.getElementById('step1').style.background = 'linear-gradient(135deg,#c46a84,#e89ab0)';
+        document.getElementById('step1').style.color = '#fff';
+        document.getElementById('prevBtn').style.display = 'none';
+        currentStep = 1;
+        return;
+    }
+}
+
+// SUBMIT ORDER (handles all product types)
+async function submitCustomization(event) {
+    event.preventDefault();
+
+    let deliveryDateTime = document.getElementById('deliveryDateTime')?.value;
+    let name = document.getElementById('orderName')?.value.trim();
+    let phone = document.getElementById('orderPhone')?.value.trim();
+    let address = document.getElementById('orderAddress')?.value.trim();
+    let paymentMethod = document.getElementById('orderPaymentSelect')?.value;
+    let transactionId = document.getElementById('transactionIdInput')?.value.trim();
+    let screenshotFile = document.getElementById('paymentScreenshotInput')?.files[0];
+
+    if (!deliveryDateTime || !name || !phone || !address || !paymentMethod) {
+        alert('Please fill all required fields in Step 3');
+        return;
+    }
+    if (paymentMethod !== 'cod' && (!transactionId || !screenshotFile)) {
+        alert('Transaction ID and payment screenshot are required for JazzCash/EasyPaisa');
+        return;
+    }
+
+    // Determine product type based on visible fields
+    let cakeVisible = document.getElementById('cakeFields').style.display !== 'none';
+    let cookieVisible = document.getElementById('cookieFields').style.display !== 'none';
+    let brownieVisible = document.getElementById('brownieFields').style.display !== 'none';
+    let bentoVisible = document.getElementById('bentoFields').style.display !== 'none';
+    
+    let productType = 'cake';
+    if (cookieVisible) productType = 'cookie';
+    else if (brownieVisible) productType = 'brownie';
+    else if (bentoVisible) productType = 'bento';
+    
+    let productName = '';
+    let productDetails = {};
+    let basePrice = getBasePrice(); // for cakes only, others will override
+    let addons = [];
+    
+    if (productType === 'cake') {
+        let weightSelect = document.getElementById('cakeWeight');
+        let isCustomSize = weightSelect.value === 'custom';
+        let cakeWeightText = isCustomSize ? 'Custom Size (estimate Rs 9000+)' : weightSelect.options[weightSelect.selectedIndex]?.text;
+        productName = 'Custom Cake';
+        productDetails = {
+            cake_flavor: document.getElementById('cakeFlavor')?.value,
+            cake_weight: cakeWeightText,
+            cake_shape: document.getElementById('cakeShape')?.value,
+            theme: document.getElementById('cakeTheme')?.value,
+            message: document.getElementById('cakeMessage')?.value,
+            instructions: document.getElementById('specialInstructions')?.value,
+            eggless: document.getElementById('eggless')?.value,
+            addons: []
+        };
+        if (isCustomSize && productDetails.instructions) {
+            productDetails.instructions = `[Custom size cake] ${productDetails.instructions}`;
+        } else if (isCustomSize) {
+            productDetails.instructions = 'Custom size cake - please contact customer for exact dimensions';
+        }
+    } else if (productType === 'cookie') {
+        productName = 'Cookie Box';
+        basePrice = 0;
+        productDetails = {
+            cookie_flavor: document.getElementById('cookieFlavor')?.value,
+            box_size: document.getElementById('cookieBoxSize')?.value,
+            gift_wrap: document.getElementById('cookieGiftWrap')?.value,
+            theme: document.getElementById('cakeTheme')?.value,
+            message: document.getElementById('cakeMessage')?.value,
+            instructions: document.getElementById('specialInstructions')?.value,
+            eggless: document.getElementById('eggless')?.value,
+            addons: []
+        };
+    } else if (productType === 'brownie') {
+        productName = 'Brownie Tray';
+        basePrice = 0;
+        productDetails = {
+            brownie_flavor: document.getElementById('brownieFlavor')?.value,
+            tray_size: document.getElementById('brownieTraySize')?.value,
+            toppings: document.getElementById('brownieToppings')?.value,
+            theme: document.getElementById('cakeTheme')?.value,
+            message: document.getElementById('cakeMessage')?.value,
+            instructions: document.getElementById('specialInstructions')?.value,
+            eggless: document.getElementById('eggless')?.value,
+            addons: []
+        };
+    } else if (productType === 'bento') {
+        productName = 'Bento Cake';
+        basePrice = 0;
+        productDetails = {
+            bento_flavor: document.getElementById('bentoFlavor')?.value,
+            bento_theme: document.getElementById('bentoTheme')?.value,
+            bento_text: document.getElementById('bentoText')?.value,
+            theme: document.getElementById('cakeTheme')?.value,
+            message: document.getElementById('cakeMessage')?.value,
+            instructions: document.getElementById('specialInstructions')?.value,
+            eggless: document.getElementById('eggless')?.value,
+            addons: []
+        };
+    }
+    
+    // Collect addons
+    document.querySelectorAll('.addon-option:checked').forEach(cb => {
+        addons.push({
+            name: cb.dataset.name,
+            price: parseFloat(cb.dataset.price)
+        });
+    });
+    productDetails.addons = addons;
+    
+    let addonTotal = addons.reduce((sum, a) => sum + a.price, 0);
+    let finalTotal = basePrice + addonTotal;
+    
+    // Prepare FormData
+    let formData = new FormData();
+    formData.append('name', name);
+    formData.append('phone', phone);
+    formData.append('address', address);
+    formData.append('payment_method', paymentMethod);
+    formData.append('delivery_datetime', deliveryDateTime);
+    formData.append('product_info', productName);
+    formData.append('theme', productDetails.theme || '');
+    formData.append('cake_message', productDetails.message || '');
+    formData.append('instructions', productDetails.instructions || '');
+    formData.append('eggless', productDetails.eggless || 'No');
+    formData.append('cart_items', JSON.stringify([{
+        name: productName,
+        price: finalTotal,
+        quantity: 1,
+        customizations: productDetails,
+        addons: addons
+    }]));
+    formData.append('selected_addons', JSON.stringify(addons));
+    formData.append('addon_total', addonTotal.toString());
+    formData.append('final_total', finalTotal.toString());
+    
+    if (paymentMethod !== 'cod') {
+        formData.append('transaction_id', transactionId);
+        if (screenshotFile) formData.append('payment_screenshot', screenshotFile);
+    }
+    
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+    if (!csrftoken) {
+        alert('CSRF token missing. Please refresh the page.');
+        return;
+    }
+    
+    try {
+        let response = await fetch('/place-order/', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            body: formData
+        });
+        let data = await response.json();
+        if (data.status === 'success') {
+            document.getElementById('invoiceCustomerName').innerText = name;
+            document.getElementById('invoiceCustomerPhone').innerText = phone;
+            document.getElementById('invoiceAddress').innerText = address;
+            document.getElementById('invoiceDeliveryDate').innerText = new Date(deliveryDateTime).toLocaleString();
+            document.getElementById('invoicePayment').innerText = paymentMethod.toUpperCase();
+            document.getElementById('invoiceTotalAmount').innerHTML = `Rs ${finalTotal.toFixed(2)}`;
+            let invoiceProductList = document.getElementById('invoiceProductList');
+            let detailsHtml = `<div><strong>${productName}</strong><br>`;
+            for (let [key, val] of Object.entries(productDetails)) {
+                if (val && key !== 'addons' && key !== 'instructions' && key !== 'theme' && key !== 'message' && key !== 'eggless') {
+                    let label = key.replace(/_/g, ' ');
+                    detailsHtml += `${label}: ${val}<br>`;
+                }
+            }
+            if (addons.length) {
+                detailsHtml += `Addons: ${addons.map(a=>a.name).join(', ')}<br>`;
+            }
+            detailsHtml += `Total: Rs ${finalTotal.toFixed(2)}</div>`;
+            invoiceProductList.innerHTML = detailsHtml;
+            document.getElementById('invoiceModal').style.display = 'flex';
+            closeCustomizationModal();
+            if (data.wa_link) window.open(data.wa_link, '_blank');
+        } else {
+            alert('Order failed: ' + (data.error || 'Unknown error'));
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Network error. Please try again.');
+    }
+}
+
+function closeCustomizationModal() {
+    document.getElementById('customizationModal').style.display = 'none';
+}
+
+function closeInvoiceModal() {
+    document.getElementById('invoiceModal').style.display = 'none';
+}
+
+// ========== PAYMENT METHOD LISTENER (UPDATED WITH BUSINESS NUMBER) ==========
+document.getElementById('orderPaymentSelect')?.addEventListener('change', function() {
+    let container = document.getElementById('paymentFieldsContainer');
+    let infoBox = document.getElementById('paymentInfoBox');
+    
+    // Use the business number from Django settings (passed via context)
+    const businessNumber = '{{ BUSINESS_NUMBER|default:"923214243501" }}';
+    
+    if (this.value === 'jazzcash') {
+        infoBox.style.display = 'block';
+        infoBox.innerHTML = `💜 Send 50% Advance Payment on JazzCash Number: ${businessNumber}`;
+        container.style.display = 'flex';
+    }
+    else if (this.value === 'easypaisa') {
+        infoBox.style.display = 'block';
+        infoBox.innerHTML = `💚 Send 50% Advance Payment on EasyPaisa Number: ${businessNumber}`;
+        container.style.display = 'flex';
+    }
+    else {
+        infoBox.style.display = 'none';
+        container.style.display = 'none';
+    }
+});
+</script>

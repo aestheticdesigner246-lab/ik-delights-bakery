@@ -1,0 +1,235 @@
+<div class="announcement-isolated-page">
+
+    <!-- =====================================================
+         PAGE TITLE
+    ====================================================== -->
+
+    <h2 class="page-title">
+
+        <i class="fa-solid fa-bullhorn"></i>
+
+        Announcement Management
+
+    </h2>
+
+    <!-- =====================================================
+         WRAPPER
+    ====================================================== -->
+
+    <div class="announcement-wrapper-box">
+
+        <!-- =====================================================
+             TOP ACTIONS
+        ====================================================== -->
+
+        <div class="announcement-top-actions">
+
+            <button class="btn-add-announcement"
+                    type="button"
+                    onclick="showAnnouncementModal()">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add Announcement
+
+            </button>
+
+        </div>
+
+        <!-- =====================================================
+             ANNOUNCEMENT LIST
+        ====================================================== -->
+
+        <div class="announcement-list">
+
+            {% for announcement in announcements %}
+
+            <div class="announcement-card">
+
+                <!-- LEFT -->
+
+                <div class="announcement-left">
+
+                    <div class="announcement-icon">
+
+                        <i class="fa-solid fa-bullhorn"></i>
+
+                    </div>
+
+                    <div class="announcement-content">
+
+                        <h3 class="announcement-text">
+
+                            {{ announcement.text }}
+
+                        </h3>
+
+                        {% if announcement.link %}
+
+                        <a href="{{ announcement.link }}"
+                           target="_blank"
+                           class="announcement-link">
+
+                            {{ announcement.link }}
+
+                        </a>
+
+                        {% endif %}
+
+                        <div class="announcement-status">
+
+                            {% if announcement.is_active %}
+
+                            <span class="status-active">
+
+                                Active
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="status-inactive">
+
+                                Inactive
+
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- RIGHT -->
+
+                <div class="announcement-actions">
+
+                    <button class="btn-edit-announcement">
+
+                        <i class="fa-solid fa-pen"></i>
+
+                    </button>
+
+                    <button class="btn-delete-announcement">
+
+                        <i class="fa-solid fa-trash"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-announcement">
+
+                <i class="fa-solid fa-bullhorn"></i>
+
+                <h3>
+
+                    No Announcements Found
+
+                </h3>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         MODAL
+    ====================================================== -->
+
+    <div id="announcementModal"
+         class="announcement-modal">
+
+        <div class="announcement-modal-content">
+
+            <!-- CLOSE -->
+
+            <span class="announcement-close"
+                  onclick="closeAnnouncementModal()">
+
+                &times;
+
+            </span>
+
+            <!-- TITLE -->
+
+            <h2>
+
+                Add Announcement
+
+            </h2>
+
+            <!-- FORM -->
+
+            <form id="announcementForm">
+
+                {% csrf_token %}
+
+                <!-- TEXT -->
+
+                <textarea id="announcementText"
+                          placeholder="Enter Announcement"
+                          required></textarea>
+
+                <!-- LINK -->
+
+                <input type="text"
+                       id="announcementLink"
+                       placeholder="Optional Link">
+
+                <!-- STATUS -->
+
+                <select id="announcementStatus">
+
+                    <option value="true">
+
+                        Active
+
+                    </option>
+
+                    <option value="false">
+
+                        Inactive
+
+                    </option>
+
+                </select>
+
+                <!-- BUTTONS -->
+
+                <div class="announcement-modal-buttons">
+
+                    <button type="button"
+                            class="btn-save-announcement"
+                            onclick="saveAnnouncement()">
+
+                        Save Announcement
+
+                    </button>
+
+                    <button type="button"
+                            class="btn-cancel-announcement"
+                            onclick="closeAnnouncementModal()">
+
+                        Cancel
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

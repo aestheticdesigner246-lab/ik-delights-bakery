@@ -1,0 +1,784 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IK Delights Admin Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS Files -->
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+    <link rel="stylesheet" href="{% static 'css/categories.css' %}">
+    <link rel="stylesheet" href="{% static 'css/products.css' %}?v=10">
+    <link rel="stylesheet" href="{% static 'css/deals.css' %}">
+    <link rel="stylesheet" href="{% static 'css/events.css' %}">
+    <link rel="stylesheet" href="{% static 'css/messages.css' %}">
+    <link rel="stylesheet" href="{% static 'css/gallery.css' %}">
+    <link rel="stylesheet" href="{% static 'css/announcements.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reports.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+    <link rel="stylesheet" href="{% static 'css/customers.css' %}">
+    <link rel="stylesheet" href="/static/css/whatsapp-orders.css">
+    <link rel="stylesheet" href="{% static 'css/settings.css' %}">
+</head>
+
+<body class="dashboard-page">
+
+<!-- ========================================================= -->
+<!-- SIDEBAR - WITH ANNOUNCEMENT LINK
+<!-- ========================================================= -->
+<div class="sidebar">
+    <div class="logo"> IK Delights Admin</div>
+
+    <div class="sidebar-links">
+        <a href="#" onclick="loadPage('dashboard-home', event)" class="active-link">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="#" onclick="loadPage('orders', event)">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span>Orders</span>
+        </a>
+        <a href="#" onclick="loadPage('products', event)">
+            <i class="fa-solid fa-cake-candles"></i>
+            <span>Products</span>
+        </a>
+        <a href="#" onclick="loadPage('categories', event)">
+            <i class="fa-solid fa-list"></i>
+            <span>Categories</span>
+        </a>
+        <a href="#" onclick="loadPage('deals', event)">
+            <i class="fa-solid fa-tags"></i>
+            <span>Deals</span>
+        </a>
+        <a href="#" onclick="loadPage('customers', event)">
+            <i class="fa-solid fa-users"></i>
+            <span>Customers</span>
+        </a>
+        <a href="#" onclick="loadPage('events', event)">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Events</span>
+        </a>
+        <a href="#" onclick="loadPage('gallery', event)">
+            <i class="fa-solid fa-images"></i>
+            <span>Gallery</span>
+        </a>
+        <!-- ✅ ANNOUNCEMENT LINK ADDED (Jaisy Gallery ka hai waise hi) -->
+        <a href="#" onclick="loadPage('announcements', event)">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Announcements</span>
+        </a>
+    </div>
+
+    <div class="sidebar-links extra-links">
+        <a href="#" onclick="loadPage('reviews', event)">
+            <i class="fa-solid fa-star"></i>
+            <span>Reviews</span>
+        </a>
+        <a href="#" onclick="loadPage('whatsapp-orders', event)">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span>WhatsApp Orders</span>
+        </a>
+    </div>
+
+    <div class="sidebar-links bottom-links">
+        <a href="#" onclick="loadPage('reports', event)">
+            <i class="fa-solid fa-chart-simple"></i>
+            <span>Reports</span>
+        </a>
+        <a href="#" onclick="loadPage('settings', event)">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+        </a>
+    </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- MAIN CONTENT
+<!-- ========================================================= -->
+<div class="main-content" id="main-content">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <h2>Dashboard</h2>
+            <p class="welcome-text">Welcome back, {{ admin_name|default:"Rimsha" }}! 🎉</p>
+        </div>
+
+        <div class="search-box">
+            <i class="fa fa-search"></i>
+            <input type="text" id="dashboardSearch" placeholder="Search orders, products, customers...">
+            <div class="search-results" id="searchResults">
+                <div class="search-item">📦 Order #28 <span>ANISA — Rs 10,000</span></div>
+                <div class="search-item">💬 Rimsha <span>Delivery message</span></div>
+                <div class="search-item">🎂 Chocolate Cake <span>Product Category</span></div>
+            </div>
+        </div>
+
+        <div class="topbar-right">
+            <div class="icon-box notification-wrapper" id="notificationBell">
+                <i class="fa fa-bell"></i>
+                <span class="badge" id="notifCount">{{ notifications|length|default:"7" }}</span>
+                <div class="notification-dropdown" id="notificationDropdown"></div>
+            </div>
+
+            <div class="icon-box message-wrapper" id="messageBell">
+                <i class="fa fa-envelope"></i>
+                <span class="badge" id="msgCount">{{ unread_messages|default:"5" }}</span>
+                <div class="message-dropdown" id="messageDropdown"></div>
+            </div>
+
+            <div class="profile-box profile-wrapper">
+                <div class="profile-avatar">{{ admin_name|slice:":1"|default:"A" }}</div>
+                <div class="profile-info">
+                    <span>{{ admin_name|default:"Admin" }}</span>
+                    <small>{{ admin_role|default:"Super Admin" }}</small>
+                </div>
+                <i class="fa fa-chevron-down profile-arrow"></i>
+                
+                <div class="profile-dropdown">
+                    <div class="profile-dropdown-header">
+                        <div class="dropdown-avatar">{{ admin_name|slice:":1"|default:"A" }}</div>
+                        <div class="dropdown-user-info">
+                            <h4>{{ admin_name|default:"Admin" }}</h4>
+                            <p>{{ admin_email|default:"admin@ikdelights.com" }}</p>
+                            <span>{{ admin_role|default:"Super Admin" }}</span>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" data-bs-toggle="modal" data-bs-target="#profileModal">
+                        <i class="fa-solid fa-user"></i><span>My Profile</span>
+                    </div>
+                    <div class="dropdown-item" onclick="loadPage('settings', event)">
+                        <i class="fa-solid fa-gear"></i><span>Account Settings</span>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a href="/logout/" class="dropdown-item logout-item">
+                        <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS GRID -->
+    <div class="stats-grid">
+        <div class="premium-card stats-card">
+            <div class="stats-left">
+                <div class="stats-icon pink"><i class="fa-solid fa-bag-shopping"></i></div>
+                <div class="stats-info">
+                    <h4>Total Orders</h4>
+                    <h2>{{ total_orders|default:"0" }}</h2>
+                </div>
+            </div>
+            <a href="#" class="stat-link" onclick="loadPage('orders', event)">All Orders →</a>
+        </div>
+    </div>
+
+    <!-- PAYMENT OVERVIEW -->
+    <div class="section-header">
+        <h3>💰 Payment Overview</h3>
+    </div>
+
+    <div class="payment-overview-grid">
+        <div class="payment-card">
+            <div class="payment-card-header orange">
+                <i class="fa-solid fa-clock"></i><span>Pending Verification</span>
+            </div>
+            <div class="payment-card-stats">
+                <div class="stat-row"><span>Under Review:</span><strong>{{ under_review_count|default:"0" }}</strong></div>
+                <div class="stat-row"><span>Partially Paid:</span><strong>{{ partial_paid_count|default:"0" }}</strong></div>
+                <div class="stat-row"><span>Completed:</span><strong>{{ completed_payments|default:"0" }}</strong></div>
+            </div>
+        </div>
+        <div class="payment-card">
+            <div class="payment-card-header blue">
+                <i class="fa-solid fa-money-bill"></i><span>Partial Paid Orders</span>
+            </div>
+            <div class="payment-card-stats">
+                <div class="stat-row"><span>In Progress:</span><strong>{{ partial_in_progress|default:"0" }}</strong></div>
+                <div class="stat-row"><span>Converted Leads:</span><strong>{{ partial_converted|default:"0" }}</strong></div>
+                <div class="stat-row"><span>Rejected Leads:</span><strong>{{ partial_rejected|default:"0" }}</strong></div>
+            </div>
+        </div>
+        <div class="payment-card">
+            <div class="payment-card-header green">
+                <i class="fa-solid fa-circle-check"></i><span>Fully Paid Orders</span>
+            </div>
+            <div class="payment-card-stats">
+                <div class="stat-row"><span>In Progress:</span><strong>{{ fully_in_progress|default:"0" }}</strong></div>
+                <div class="stat-row"><span>Converted Leads:</span><strong>{{ fully_converted|default:"0" }}</strong></div>
+                <div class="stat-row"><span>Rejected Leads:</span><strong>{{ fully_rejected|default:"0" }}</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REVENUE OVERVIEW -->
+    <div class="section-header">
+        <h3>💰 Revenue Overview</h3>
+    </div>
+
+    <div class="revenue-grid">
+        <div class="revenue-card">
+            <div class="revenue-icon purple">💰</div>
+            <div class="revenue-info">
+                <h4>Total Revenue</h4>
+                <h2>Rs {{ total_revenue|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="revenue-card">
+            <div class="revenue-icon green">📥</div>
+            <div class="revenue-info">
+                <h4>Received Amount</h4>
+                <h2>Rs {{ received_amount|default:"0" }}</h2>
+            </div>
+        </div>
+        <div class="revenue-card">
+            <div class="revenue-icon orange">⏳</div>
+            <div class="revenue-info">
+                <h4>Remaining Amount</h4>
+                <h2>Rs {{ remaining_amount|default:"0" }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- WHATSAPP LEADS OVERVIEW -->
+    <div class="section-header">
+        <h3>📱 WhatsApp Leads Overview</h3>
+    </div>
+
+    <div class="leads-grid">
+        <div class="lead-card"><div class="lead-icon whatsapp">💬</div><div class="lead-info"><h4>Total Leads</h4><h2>{{ total_leads|default:"0" }}</h2><small>All Leads</small></div></div>
+        <div class="lead-card"><div class="lead-icon orange">📞</div><div class="lead-info"><h4>Followups</h4><h2>{{ followup_leads|default:"0" }}</h2><small>Need Followup</small></div></div>
+        <div class="lead-card"><div class="lead-icon blue">⚙️</div><div class="lead-info"><h4>Working Leads</h4><h2>{{ working_leads|default:"0" }}</h2><small>In Progress</small></div></div>
+        <div class="lead-card"><div class="lead-icon green">✓</div><div class="lead-info"><h4>Converted Leads</h4><h2>{{ converted_leads|default:"0" }}</h2><small>In Progress</small></div></div>
+        <div class="lead-card"><div class="lead-icon red">✗</div><div class="lead-info"><h4>Rejected Leads</h4><h2>{{ rejected_leads|default:"0" }}</h2><small>Rejected</small></div></div>
+    </div>
+
+    <!-- ORDERS BY TYPE -->
+    <div class="section-header">
+        <h3>📋 Orders By Type</h3>
+    </div>
+
+    <div class="orders-type-grid">
+        <div class="order-type-card"><i class="fab fa-whatsapp"></i><div class="order-type-info"><h4>WhatsApp Orders</h4><h3>{{ whatsapp_orders_count|default:"0" }}</h3></div></div>
+        <div class="order-type-card"><i class="fas fa-globe"></i><div class="order-type-info"><h4>Website Orders</h4><h3>{{ website_orders_count|default:"0" }}</h3></div></div>
+        <div class="order-type-card"><i class="fas fa-calendar"></i><div class="order-type-info"><h4>Event Orders</h4><h3>{{ event_orders_count|default:"0" }}</h3></div></div>
+        <div class="order-type-card"><i class="fas fa-tag"></i><div class="order-type-info"><h4>Deal Orders</h4><h3>{{ deal_orders_count|default:"0" }}</h3></div></div>
+    </div>
+
+    <!-- CHARTS SECTION -->
+    <div class="section-header">
+        <h3>📊 Revenue & Analytics</h3>
+    </div>
+
+    <div class="charts-grid">
+        <div class="chart-card premium-card">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-line"></i> Monthly Revenue</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card premium-card">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-pie"></i> Order Status</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card premium-card">
+            <div class="card-header">
+                <h3><i class="fas fa-calendar-alt"></i> Events by Month</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="eventsChart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card premium-card">
+            <div class="card-header">
+                <h3><i class="fas fa-chart-pie"></i> Event Types</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="eventTypesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECENT ORDERS TABLE -->
+    <div class="section-header">
+        <h3>📋 Recent Orders</h3>
+    </div>
+
+    <div class="premium-card orders-card">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    {% for order in recent_orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.name }}</td>
+                        <td>Rs {{ order.total }}</td>
+                        <td><span class="status-badge {{ order.status|lower }}">{{ order.status|title }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center">No recent orders found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- THREE COLUMNS: SALES + NOTIFICATIONS + ANNOUNCEMENTS -->
+    <div class="three-columns">
+        <!-- Sales Overview Card -->
+        <div class="sales-overview-card">
+            <div class="card-header"><h3>📊 Sales Overview</h3></div>
+            <div class="sales-stats">
+                <div class="sales-item"><span class="sales-label">💰 Revenue</span><span class="sales-value">Rs {{ total_revenue|default:"0" }}</span></div>
+                <div class="sales-item"><span class="sales-label">📦 Orders</span><span class="sales-value">{{ total_orders|default:"0" }}</span></div>
+                <div class="sales-item"><span class="sales-label">⚙️ Processing</span><span class="sales-value">{{ processing_orders|default:"0" }}</span></div>
+            </div>
+        </div>
+
+        <!-- Notifications Card -->
+        <div class="notifications-card">
+            <div class="card-header"><h3>🔔 Recent Notifications</h3></div>
+            <div class="notification-items">
+                {% for notif in notifications %}
+                <div class="notification-item">
+                    <div class="notif-icon {{ notif.type }}">✓</div>
+                    <div class="notif-content"><p>{{ notif.message }}</p><small>{{ notif.time_ago }}</small></div>
+                </div>
+                {% empty %}
+                <div class="notification-item"><div class="notif-icon">📦</div><div class="notif-content"><p>Payment verified for Order #33</p><small>2 minutes ago</small></div></div>
+                <div class="notification-item"><div class="notif-icon">🆕</div><div class="notif-content"><p>New order #34 received</p><small>15 minutes ago</small></div></div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Announcement Card -->
+        <div class="announcement-card">
+            <div class="card-header">
+                <h3><i class="fa-solid fa-bullhorn"></i> Announcements</h3>
+                <button class="btn-add-announcement" onclick="loadPage('announcements', event)">
+                    <i class="fa-solid fa-plus"></i> Manage
+                </button>
+            </div>
+            <div class="announcement-items">
+                {% if announcements %}
+                    {% for ann in announcements|slice:":3" %}
+                    <div class="announcement-item">
+                        <div class="announcement-icon">
+                            <i class="fa-solid fa-megaphone"></i>
+                        </div>
+                        <div class="announcement-content">
+                            <p>{{ ann.text|truncatechars:50 }}</p>
+                            <small>
+                                {% if ann.link %}
+                                <a href="{{ ann.link }}" target="_blank">View Offer →</a>
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="announcement-status {% if ann.is_active %}active{% else %}inactive{% endif %}">
+                            {{ ann.is_active|yesno:"Active,Inactive" }}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-announcement">
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <p>No active announcements</p>
+                        <button class="btn-outline-small" onclick="loadPage('announcements', event)">Add New</button>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-announcement">
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <p>No announcements yet</p>
+                        <button class="btn-outline-small" onclick="loadPage('announcements', event)">Create</button>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="announcement-footer">
+                <a href="#" onclick="loadPage('announcements', event)" class="view-all-link">
+                    View All Announcements <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="dashboard-footer">
+        <p>© 2025 IK Delights. All rights reserved.</p>
+    </footer>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- PROFILE MODAL -->
+<!-- ========================================================= -->
+<div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content profile-modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Admin Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="profile-modal-avatar">{{ admin_name|slice:":1"|default:"A" }}</div>
+                <h3>{{ admin_name|default:"Admin" }}</h3>
+                <p class="text-muted">{{ admin_email|default:"admin@ikdelights.com" }}</p>
+                <span class="admin-role-badge">{{ admin_role|default:"Super Admin" }}</span>
+                <div class="profile-stats">
+                    <div class="profile-stat-item"><h4>Total Orders</h4><span>{{ total_orders|default:"0" }}</span></div>
+                    <div class="profile-stat-item"><h4>Revenue</h4><span>Rs {{ total_revenue|default:"0" }}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- CATEGORY MODAL -->
+<!-- ========================================================= -->
+<div id="categoryModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 999999;">
+    <div style="background: white; border-radius: 24px; padding: 30px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+        <h3 id="categoryModalTitle" style="margin:0 0 20px 0; color:#c46a84;">Add Category</h3>
+        <input type="text" id="categoryName" placeholder="Category Name" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;">
+        <input type="text" id="categoryIcon" placeholder="Icon Class" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;">
+        <input type="file" id="categoryImage" accept="image/*" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;">
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="window.saveCategory()" style="flex:1; background:linear-gradient(135deg,#c46a84,#e89ab0); color:white; border:none; padding:12px; border-radius:40px; cursor:pointer; font-weight:600;">Save Category</button>
+            <button onclick="window.closeCategoryModal()" style="flex:1; background:#f8f9fa; color:#6c757d; border:1px solid #dee2e6; padding:12px; border-radius:40px; cursor:pointer; font-weight:600;">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- PRODUCT MODAL -->
+<!-- ========================================================= -->
+<div id="productModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 999999;">
+    <div style="background: white; border-radius: 24px; padding: 30px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+        <h3 id="productModalTitle" style="margin:0 0 20px 0; color:#c46a84;">Add Product</h3>
+        <input type="text" id="productName" placeholder="Product Name" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;">
+        <input type="number" id="productPrice" placeholder="Price" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;">
+        <input type="file" id="productImage" accept="image/*" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;">
+        <select id="productCategory" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;"><option value="">Select Category</option></select>
+        <select id="productStatus" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;"><option value="true">Active</option><option value="false">Inactive</option></select>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="window.saveProduct()" style="flex:1; background:linear-gradient(135deg,#c46a84,#e89ab0); color:white; border:none; padding:12px; border-radius:40px; cursor:pointer; font-weight:600;">Save Product</button>
+            <button onclick="window.closeProductModal()" style="flex:1; background:#f8f9fa; color:#6c757d; border:1px solid #dee2e6; padding:12px; border-radius:40px; cursor:pointer; font-weight:600;">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- DEAL MODAL -->
+<!-- ========================================================= -->
+<div id="dealModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 999999;">
+    <div style="background: white; border-radius: 24px; padding: 30px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+        <h3 id="dealModalTitle" style="margin:0 0 20px 0; color:#c46a84;">Add Deal</h3>
+        <input type="text" id="dealName" placeholder="Deal Title" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;">
+        <input type="datetime-local" id="dealTimer" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;">
+        <input type="file" id="dealImage" accept="image/*" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;">
+        <select id="dealStatus" style="width:100%; padding:12px; margin-bottom:15px; border:2px solid #f3dbe2; border-radius:12px; box-sizing:border-box;"><option value="true">Active</option><option value="false">Inactive</option></select>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="window.saveDeal()" style="flex:1; background:linear-gradient(135deg,#c46a84,#e89ab0); color:white; border:none; padding:12px; border-radius:40px; cursor:pointer; font-weight:600;">Save Deal</button>
+            <button onclick="window.closeDealModal()" style="flex:1; background:#f8f9fa; color:#6c757d; border:1px solid #dee2e6; padding:12px; border-radius:40px; cursor:pointer; font-weight:600;">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- CSS FOR CHARTS GRID & THREE COLUMNS & ANNOUNCEMENTS -->
+<!-- ========================================================= -->
+<style>
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(196,106,132,0.1);
+}
+
+.chart-card .card-header {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0e6ea;
+}
+
+.chart-card .card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #c46a84;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chart-container {
+    position: relative;
+    height: 280px;
+    width: 100%;
+}
+
+.chart-container canvas {
+    max-height: 280px;
+    width: 100% !important;
+}
+
+/* Three Columns Grid */
+.three-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+/* Announcement Card */
+.announcement-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.announcement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(196,106,132,0.1);
+}
+
+.announcement-card .card-header {
+    padding: 18px 20px;
+    background: linear-gradient(135deg, #fef5f7, #fff);
+    border-bottom: 1px solid #f0e6ea;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.announcement-card .card-header h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #c46a84;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-add-announcement {
+    background: linear-gradient(135deg, #c46a84, #e89ab0);
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-add-announcement:hover {
+    transform: scale(1.05);
+}
+
+.announcement-items {
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.announcement-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid #f0e6ea;
+    transition: background 0.2s ease;
+}
+
+.announcement-item:hover {
+    background: #fef5f7;
+}
+
+.announcement-icon {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, #fef5f7, #fff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c46a84;
+    font-size: 1rem;
+}
+
+.announcement-content {
+    flex: 1;
+}
+
+.announcement-content p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #4a2c2c;
+    line-height: 1.4;
+}
+
+.announcement-content small a {
+    color: #c46a84;
+    text-decoration: none;
+    font-size: 0.7rem;
+}
+
+.announcement-status {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 20px;
+}
+
+.announcement-status.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.announcement-status.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.empty-announcement {
+    text-align: center;
+    padding: 30px 20px;
+    color: #b28b9a;
+}
+
+.empty-announcement i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.empty-announcement p {
+    margin-bottom: 15px;
+    font-size: 0.85rem;
+}
+
+.btn-outline-small {
+    background: transparent;
+    border: 1px solid #c46a84;
+    color: #c46a84;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.7rem;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-small:hover {
+    background: #c46a84;
+    color: white;
+}
+
+.announcement-footer {
+    padding: 12px 20px;
+    border-top: 1px solid #f0e6ea;
+    text-align: center;
+}
+
+.view-all-link {
+    color: #c46a84;
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.view-all-link:hover {
+    color: #b55a78;
+}
+
+@media (max-width: 992px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .chart-container {
+        height: 250px;
+    }
+    .three-columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 220px;
+    }
+    .three-columns {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<!-- ========================================================= -->
+<!-- SCRIPTS -->
+<!-- ========================================================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/chart.min.js' %}"></script>
+
+<script>
+    window.sales_labels = {{ sales_labels|safe }};
+    window.sales_data = {{ sales_data|safe }};
+    window.status_labels = {{ status_labels|safe }};
+    window.status_data = {{ status_data|safe }};
+    window.event_labels = {{ event_labels|safe }};
+    window.event_counts = {{ event_counts|safe }};
+    window.event_type_labels = {{ event_type_labels|safe }};
+    window.event_type_counts = {{ event_type_counts|safe }};
+    console.log("📊 Chart Data Loaded");
+</script>
+
+<script src="{% static 'js/dashboard.js' %}?v=999"></script>
+<!--<script src="{% static 'js/order.js' %}"></script>-->
+<script src="{% static 'js/products.js' %}"></script>
+<script src="/static/js/deals.js?v=555"></script>
+<script src="{% static 'js/events.js' %}"></script>
+<script src="/static/js/messages.js"></script>
+<script src="{% static 'js/announcement.js' %}"></script>
+<script src="{% static 'js/gallery.js' %}"></script>
+<script src="{% static 'js/reports.js' %}"></script>
+<script src="{% static 'js/reviews.js' %}"></script>
+<script src="{% static 'js/customers.js' %}"></script>
+<script src="{% static 'js/categories.js' %}?v=2"></script>
+<script src="{% static 'js/whatsapp-orders.js' %}"></script>
+<script src="{% static 'js/settings.js' %}"></script>
+
+</body>
+</html>

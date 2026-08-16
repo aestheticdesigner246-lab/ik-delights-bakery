@@ -1,0 +1,1157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>I K Delights — Premium Home Bakery · Lahore</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/ik.css' %}">
+  <link rel="stylesheet" href="{% static 'css/profile_modal.css' %}">
+
+  <style>
+    html { scroll-behavior: smooth; }
+    
+    /* User Dropdown Styles */
+    .user-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .user-dropdown .dropbtn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: #f5e6ea;
+      border-radius: 40px;
+      color: #c46a84;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .user-dropdown .dropbtn:hover {
+      background: #e8d0d8;
+    }
+    .user-dropdown .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      min-width: 180px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      border-radius: 12px;
+      z-index: 10000;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .user-dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .dropdown-content a, .dropdown-content button {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 12px 16px;
+      text-align: left;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+      text-decoration: none;
+      transition: background 0.2s ease;
+      font-family: inherit;
+    }
+    .dropdown-content a i, .dropdown-content button i {
+      width: 20px;
+      color: #c46a84;
+    }
+    .dropdown-content a:hover, .dropdown-content button:hover {
+      background: #fef5f7;
+    }
+    .dropdown-content hr {
+      margin: 5px 0;
+      border-color: #ffe5ed;
+    }
+    
+    /* Cart Drawer */
+    .cart-drawer {
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 380px;
+        max-width: 90vw;
+        height: 100%;
+        background: #fff;
+        z-index: 10050;
+        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        box-shadow: -3px 0 28px rgba(0,0,0,0.15);
+    }
+    .cart-drawer.open { right: 0; }
+    .drawer-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        z-index: 10040;
+        display: none;
+    }
+    .drawer-overlay.open { display: block; }
+    .cart-drawer-header {
+        padding: 18px 20px;
+        border-bottom: 1px solid #ffe5ed;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #c46a84;
+    }
+    .cart-drawer-header button {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #c46a84;
+    }
+    .cart-drawer-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+    }
+    .empty-cart-drawer {
+        text-align: center;
+        padding: 40px 20px;
+        color: #b28b9a;
+    }
+    .cart-drawer-footer {
+        padding: 15px 20px;
+        border-top: 1px solid #ffe5ed;
+        background: #fff;
+    }
+    .cart-total {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    .cart-drawer-footer .btn-grad {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* Splash Screen – only logo, larger, centered */
+    @keyframes splashPulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.02); opacity: 0.9; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    .splash-logo {
+        max-width: 580px;
+        width: 280%;
+        height: auto;
+        object-fit: contain;
+        margin: 0 auto;
+        animation: splashPulse 1.5s ease-in-out infinite;
+    }
+
+    /* ========== SUBMENU PRODUCT CARDS – ONLY IMAGES, SMALL SIZE ========== */
+    .submenu-product-card {
+        display: block;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .submenu-product-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+    }
+    .submenu-product-img {
+        width: 100%;
+        height: 100px;
+        overflow: hidden;
+    }
+    .submenu-product-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+    }
+    .submenu-product-card:hover .submenu-product-img img {
+        transform: scale(1.05);
+    }
+    /* Hide the info div (name + price) completely */
+    .submenu-product-info {
+        display: none;
+    }
+    .submenu-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    @media (max-width: 768px) {
+        .submenu-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .submenu-product-img {
+            height: 80px;
+        }
+    }
+    /* Category link style – without icon */
+    .category-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        text-decoration: none;
+        color: inherit;
+        font-weight: 500;
+        font-size: 0.85rem;
+        color: #3e2a33;
+        padding: 0;
+    }
+    .category-link:hover {
+        color: #c46a84;
+    }
+    .category-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        cursor: pointer;
+        gap: 8px;
+    }
+    .category-item .fa-chevron-right {
+        margin-left: auto;
+        font-size: 0.7rem;
+        color: #b28b9a;
+        flex-shrink: 0;
+    }
+  </style>
+</head>
+<body data-user-authenticated="{% if user.is_authenticated %}true{% else %}false{% endif %}">
+
+<!-- ==================== SPLASH SCREEN (2 SECONDS, ONLY LOGO, CENTERED, LARGE) ==================== -->
+<div id="splashScreen" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #fff5f7, #ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999;
+    transition: opacity 0.5s ease;
+    font-family: 'Poppins', sans-serif;
+">
+    <div style="text-align: center;">
+        {% if settings.logo %}
+            <img src="{{ settings.logo.url }}" alt="{{ settings.bakery_name }}" class="splash-logo">
+        {% else %}
+            <div style="font-size: 80px; font-weight: 700; color: #c46a84; animation: splashPulse 1.5s ease-in-out infinite;">🍰</div>
+        {% endif %}
+        <!-- NO TEXT AT ALL – only logo -->
+    </div>
+</div>
+
+<script>
+    // Auto-hide splash screen after 2 seconds
+    setTimeout(function() {
+        const splash = document.getElementById('splashScreen');
+        if (splash) {
+            splash.style.opacity = '0';
+            setTimeout(function() {
+                splash.style.display = 'none';
+            }, 500);
+        }
+    }, 2000);
+</script>
+<!-- ==================== END SPLASH SCREEN ==================== -->
+
+<!-- ANNOUNCEMENT STRIP -->
+{% if announcements %}
+<div class="ann-strip"><div class="ann-track">{% for ann in announcements %}{% if ann.link %}<a href="{{ ann.link }}" target="_blank">{{ ann.text }}</a>{% else %}<span>{{ ann.text }}</span>{% endif %}{% endfor %}{% for ann in announcements %}{% if ann.link %}<a href="{{ ann.link }}" target="_blank">{{ ann.text }}</a>{% else %}<span>{{ ann.text }}</span>{% endif %}{% endfor %}</div></div>
+{% endif %}
+
+
+<!-- =========================================
+MAIN WEBSITE NAVBAR
+========================================= -->
+<nav class="navbar" id="navbar">
+  <div class="navbar__inner">
+    <a href="/" class="nav-logo" id="mainLogoBtn">
+      {% if settings.logo %}
+      <img src="{{ settings.logo.url }}" class="nav-logo-img" alt="IK Delights">
+      {% endif %}
+      <div class="logo-text-wrap">
+        <span class="nav-logo-text">{{ settings.bakery_name }}</span>
+        <span class="nav-logo-sub">Premium Home Bakery</span>
+      </div>
+    </a>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/">Home</a></li>
+      <li class="nav-dd">
+        <a href="#">Products <i class="fas fa-chevron-down chev"></i></a>
+        
+        <!-- ✅ DROPDOWN - NO ICONS, ONLY CATEGORY NAMES + SUBMENU IMAGES -->
+        <div class="nav-dd-menu" id="mainDropdown">
+          
+          {% for cat in categories %}
+            <div class="category-item">
+              <a href="/category/{{ cat.slug }}/" class="category-link">
+                {{ cat.name }}
+              </a>
+              <i class="fas fa-chevron-right"></i>
+              
+              <!-- SUBMENU - SHOW UP TO 9 PRODUCT IMAGES (NO TEXT) -->
+              <div class="category-submenu">
+                <div class="submenu-grid">
+                  {% for product in cat.products.all|slice:":9" %}
+                    <a href="/product/{{ product.slug }}/" class="submenu-product-card">
+                      <div class="submenu-product-img">
+                        {% if product.image %}
+                          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                          <img src="https://placehold.co/150x100/FFB7C5/white?text={{ product.name }}" alt="{{ product.name }}">
+                        {% endif %}
+                      </div>
+                    </a>
+                  {% empty %}
+                    <div class="submenu-product-card" style="justify-content: center; display: flex; align-items: center;">
+                      <div style="padding: 20px;">No products</div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+          
+        </div>
+      </li>
+      <li><a href="/#about">About</a></li>
+      <li><a href="/#gallery">Gallery</a></li>
+      <li><a href="/#reviews">Reviews</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+
+    <div class="navbar__actions">
+      <div class="user-dropdown">
+        <a href="#" class="dropbtn">
+          <i class="fas fa-user-circle"></i>
+          <i class="fas fa-chevron-down chev"></i>
+        </a>
+        <div class="dropdown-content">
+          {% if user.is_authenticated %}
+            <a href="#" id="profileModalTrigger"><i class="fas fa-id-card"></i> My Profile</a>
+            <hr>
+            <form action="{% url 'logout' %}" method="post" style="margin:0;">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </form>
+          {% else %}
+            <a href="#" class="open-modal" data-modal="loginModal"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a href="#" class="open-modal" data-modal="signupModal"><i class="fas fa-user-plus"></i> Sign Up</a>
+          {% endif %}
+        </div>
+      </div>
+      <a href="#" class="icon-btn cart-toggle" onclick="openCartDrawer(); return false;">
+        <i class="fas fa-shopping-bag"></i>
+        <span id="cart-badge">0</span>
+      </a>
+      <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-tag"><i class="fas fa-crown"></i>  Turning Moments into Sweet Memories</div>
+    <div class="hero-sub">Freshly Baked With Love ❤️</div>
+    <h1 class="hero-h1">Delicious <em>Handcrafted</em><br>Bakery Delights</h1>
+    <p class="hero-p">Artisanal cakes, pastries & desserts made with love and premium ingredients.</p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-grad" id="exploreMenuBtn"><i class="fas fa-cake-candles"></i> Explore Menu</a>
+      <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" class="btn-outline-hero"><i class="fab fa-whatsapp"></i> Order on WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- EVENT PLANNER BUTTON -->
+<button class="event-planner-circle"
+
+onclick="
+document.getElementById('aiToast').style.display='block'
+"
+
+style="
+position:fixed;
+right:15px;
+bottom:130px;
+background:none;
+border:none;
+z-index:9999;
+cursor:pointer;
+padding:0;
+">
+
+<img src="{% static 'images/AI.png' %}" 
+alt="AI Event Planner"
+
+style="
+width:80px;
+animation:floatSticker 3s ease-in-out infinite;
+">
+
+</button>
+
+<!-- TOAST -->
+<div id="aiToast"
+
+onclick="
+this.style.display='none';
+document.getElementById('smartEventModal').classList.add('active');
+"
+
+style="
+display:none;
+position:fixed;
+right:20px;
+bottom:290px;
+background:linear-gradient(135deg,#ff4f8b,#ff8fb1);
+color:white;
+padding:16px 22px;
+border-radius:22px;
+z-index:10000;
+box-shadow:0 10px 35px rgba(255,105,180,.45);
+font-family:Poppins,sans-serif;
+font-size:14px;
+font-weight:600;
+cursor:pointer;
+max-width:280px;
+line-height:1.6;
+animation:popupShow .4s ease;
+">
+
+🤖 AI Event Planner Ready! <br>
+🎂 Click Here To Open Smart Planner ✨
+
+</div>
+
+<style>
+
+@keyframes floatSticker{
+0%{transform:translateY(0);}
+50%{transform:translateY(-8px);}
+100%{transform:translateY(0);}
+}
+
+@keyframes popupShow{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+</style>
+<!-- FEATURE STRIP - WITH CLICK FEEDBACK -->
+<div style="
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 10px;
+    background: linear-gradient(135deg, #fff8fb, #ffffff);
+    padding: 20px 12px;
+    border-top: 1px solid #ffe5ed;
+    border-bottom: 1px solid #ffe5ed;
+">
+
+    <!-- ITEM 1 -->
+    <div style="
+        text-align: center; 
+        transition: all 0.2s ease; 
+        cursor: pointer;
+        padding: 8px 5px;
+        border-radius: 12px;
+    " 
+    onmouseover="this.style.transform='translateY(-3px)'; this.style.background='rgba(196,106,132,0.08)'" 
+    onmouseout="this.style.transform='translateY(0)'; this.style.background='transparent'"
+    onmousedown="this.style.transform='scale(0.98)'"
+    onmouseup="this.style.transform='translateY(-3px)'"
+    onclick="showToast('🎁 Premium Cake Creations', 'success')">
+        <div style="
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #c46a84, #e89ab0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px auto;
+            transition: all 0.2s ease;
+        " 
+        onmouseover="this.style.transform='scale(1.1)'" 
+        onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-cake-candles" style="color: white; font-size: 15px;"></i>
+        </div>
+        <h3 style="font-size: 12px; font-weight: 700; color: #4a2c2c; margin: 0 0 2px 0;"> Premium Cake Creations</h3>
+        <p style="font-size: 10px; color: #8b6b6b; margin: 0;"> Premium Cake Creations</p>
+    </div>
+
+    <!-- ITEM 2 -->
+    <div style="
+        text-align: center; 
+        transition: all 0.2s ease; 
+        cursor: pointer;
+        padding: 8px 5px;
+        border-radius: 12px;
+    " 
+    onmouseover="this.style.transform='translateY(-3px)'; this.style.background='rgba(196,106,132,0.08)'" 
+    onmouseout="this.style.transform='translateY(0)'; this.style.background='transparent'"
+    onmousedown="this.style.transform='scale(0.98)'"
+    onmouseup="this.style.transform='translateY(-3px)'"
+    onclick="showToast('🍰 All products baked fresh daily with premium ingredients', 'success')">
+        <div style="
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #c46a84, #e89ab0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px auto;
+            transition: all 0.2s ease;
+        " 
+        onmouseover="this.style.transform='scale(1.1)'" 
+        onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-leaf" style="color: white; font-size: 15px;"></i>
+        </div>
+        <h3 style="font-size: 12px; font-weight: 700; color: #4a2c2c; margin: 0 0 2px 0;">Fresh Ingredients</h3>
+        <p style="font-size: 10px; color: #8b6b6b; margin: 0;">Baked fresh daily</p>
+    </div>
+
+    <!-- ITEM 3 -->
+    <div style="
+        text-align: center; 
+        transition: all 0.2s ease; 
+        cursor: pointer;
+        padding: 8px 5px;
+        border-radius: 12px;
+    " 
+    onmouseover="this.style.transform='translateY(-3px)'; this.style.background='rgba(196,106,132,0.08)'" 
+    onmouseout="this.style.transform='translateY(0)'; this.style.background='transparent'"
+    onmousedown="this.style.transform='scale(0.98)'"
+    onmouseup="this.style.transform='translateY(-3px)'"
+    onclick="showToast('🎨 Tell us your ideas, we create custom designs for you', 'success')">
+        <div style="
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #c46a84, #e89ab0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px auto;
+            transition: all 0.2s ease;
+        " 
+        onmouseover="this.style.transform='scale(1.1)'" 
+        onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-palette" style="color: white; font-size: 15px;"></i>
+        </div>
+        <h3 style="font-size: 12px; font-weight: 700; color: #4a2c2c; margin: 0 0 2px 0;">Custom Designs</h3>
+        <p style="font-size: 10px; color: #8b6b6b; margin: 0;">Your ideas</p>
+    </div>
+
+    <!-- ITEM 4 - WhatsApp Direct -->
+    <div style="
+        text-align: center; 
+        transition: all 0.2s ease; 
+        cursor: pointer;
+        padding: 8px 5px;
+        border-radius: 12px;
+    " 
+    onmouseover="this.style.transform='translateY(-3px)'; this.style.background='rgba(196,106,132,0.08)'" 
+    onmouseout="this.style.transform='translateY(0)'; this.style.background='transparent'"
+    onmousedown="this.style.transform='scale(0.98)'"
+    onmouseup="this.style.transform='translateY(-3px)'"
+    onclick="window.open('https://wa.me/923284397002?text=Hello%20IK%20Delights%2C%20I%20want%20to%20place%20an%20order', '_blank')">
+        <div style="
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #c46a84, #e89ab0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px auto;
+            transition: all 0.2s ease;
+        " 
+        onmouseover="this.style.transform='scale(1.1)'" 
+        onmouseout="this.style.transform='scale(1)'">
+            <i class="fab fa-whatsapp" style="color: white; font-size: 15px;"></i>
+        </div>
+        <h3 style="font-size: 12px; font-weight: 700; color: #4a2c2c; margin: 0 0 2px 0;">WhatsApp Orders</h3>
+        <p style="font-size: 10px; color: #8b6b6b; margin: 0;">Quick ordering</p>
+    </div>
+
+</div>
+
+<!-- CATEGORIES SECTION -->
+<section id="products" class="sweet-section" style="text-align:center;margin:2rem auto;padding:1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <span class="sec-lbl" style="text-align:center;display:block;width:100%;">What We Offer</span>
+    <h2 class="sec-title" style="text-align:center;width:100%;">Our Sweet <em>Creations</em></h2>
+    <div class="divider divider-center"></div>
+    <p class="sec-sub" style="text-align:center;max-width:700px;margin:auto;">Explore our wide range of delicious cakes and pastries — click to discover more!</p>
+</section>
+
+<div class="ikd-grid" id="ikd-grid">
+    {% for category in categories %}
+    <div class="ikd-card" onclick="window.location.href='/category/{{ category.slug }}/'">
+        <div class="ikd-card__img">
+            {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.name }}">
+            {% else %}
+                <img src="https://placehold.co/300x200/FFB7C5/white?text={{ category.name }}" alt="{{ category.name }}">
+            {% endif %}
+            <div class="ikd-overlay">
+                <div class="ikd-overlay-text">
+                    <h3>{{ category.name }}</h3>
+                    <p>Explore</p>
+                </div>
+            </div>
+        </div>
+        <div class="ikd-card__label">
+            <div class="ikd-card__name">{{ category.name }}</div>
+            <div class="ikd-card__sub">Delicious treats</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- ABOUT SECTION -->
+<section class="about-section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <div class="about-img">
+          <img src="{% static 'images/about.jpg' %}" alt="About Us" loading="lazy">
+        </div>
+        <div class="about-float">
+          <span class="big">5+</span>
+          <span class="small">Years of Sweetness</span>
+        </div>
+      </div>
+      <div>
+        <span class="sec-lbl">Who We Are</span>
+        <h2 class="sec-title">Our <em>Story</em></h2>
+        <div class="divider"></div>
+        <p class="about-p">I K Delights began as a small home bakery with a passion for crafting delightful, elegant cakes and desserts for every celebration.</p>
+        <p class="about-p">Every creation is baked with care using premium ingredients, artistic creativity, and lots of love — making every bite memorable.</p>
+        <div class="about-counters">
+          <div class="cbox"><div class="cnum"><span class="count" id="counter1" data-target="1500">0</span>+</div><div class="clbl">Total Customers</div></div>
+          <div class="cbox"><div class="cnum"><span class="count" id="counter2" data-target="1200">0</span>+</div><div class="clbl">Happy Clients</div></div>
+          <div class="cbox"><div class="cnum"><span class="count" id="counter3" data-target="800">0</span>+</div><div class="clbl">Custom Cakes</div></div>
+        </div>
+        <div class="about-feats">
+          <div class="af"><div class="af-ico"><i class="fas fa-heart"></i></div><div><div class="af-h">Made with Love</div><div class="af-p">Every cake baked with passion</div></div></div>
+          <div class="af"><div class="af-ico"><i class="fas fa-award"></i></div><div><div class="af-h">Premium Quality</div><div class="af-p">Only finest ingredients used</div></div></div>
+          <div class="af"><div class="af-ico"><i class="fas fa-magic"></i></div><div><div class="af-h">Custom Designs</div><div class="af-p">Unique designs for every occasion</div></div></div>
+          <div class="af"><div class="af-ico"><i class="fas fa-clock"></i></div><div><div class="af-h">On-Time Delivery</div><div class="af-p">Always fresh, always on time</div></div></div>
+        </div>
+        <div><a href="/#contact" class="btn-grad" style="padding:10px 20px;font-size:14px;margin-top:10px;display:inline-block;"><i class="fas fa-envelope"></i> Get in Touch</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY SECTION -->
+<section class="gallery-section" id="gallery">
+  <div class="container text-center">
+    <span class="sec-lbl">Our Portfolio</span>
+    <h2 class="sec-title">Sweet <em>Gallery</em></h2>
+    <div class="divider divider-center"></div>
+    <p class="sec-sub">Crafted with elegance & baked with perfection.</p>
+    <div class="gal-filters">
+      <button class="gal-filter active" data-filter="all">All Cakes</button>
+      <button class="gal-filter" data-filter="birthday">Birthday Cakes</button>
+      <button class="gal-filter" data-filter="bento">Bento Cakes</button>
+      <button class="gal-filter" data-filter="brownie">Brownies</button>
+      <button class="gal-filter" data-filter="dessert">Desserts</button>
+    </div>
+  </div>
+  <div class="gal-slider">
+    <div class="gal-track" id="gal-track">
+      {% for img in gallery_images %}
+      <div class="gal-card" data-category="{{ img.category }}" onclick="openZoomModalFromGallery(this.querySelector('img').src)">
+        <img src="{{ img.image.url }}" alt="{{ img.name }}" loading="lazy">
+        <div class="gal-card-overlay">
+          <div class="gal-card-name">{{ img.name }}</div>
+          <div class="gal-card-price">{{ img.price|default:'' }}</div>
+        </div>
+        <a href="https://wa.me/{{ settings.whatsapp_number }}?text=I'm interested in: {{ img.name }}" target="_blank" class="gal-wa" onclick="event.stopPropagation()"><i class="fab fa-whatsapp"></i></a>
+      </div>
+      {% empty %}
+      <div class="gal-card" style="min-width:300px;text-align:center;padding:40px;">No gallery images added yet.</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS SECTION -->
+<section class="reviews-section" id="reviews">
+  <div class="container text-center">
+    <span class="sec-lbl">Happy Customers</span>
+    <h2 class="sec-title">What They <em>Say</em></h2>
+    <div class="divider divider-center"></div>
+    <p class="sec-sub">Real reviews from our sweet family!</p>
+  </div>
+  <div class="reviews-slider-wrap">
+    <div class="reviews-track" id="reviews-track">
+      {% for review in reviews %}
+      <div class="review-card">
+        <div class="review-stars">
+          {% for i in "12345" %}
+            {% if forloop.counter <= review.rating %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star"></i>{% endif %}
+          {% endfor %}
+        </div>
+        <p class="review-text">"{{ review.comment }}"</p>
+        <div class="review-user">
+          <div class="review-avatar">{{ review.name|slice:":1" }}</div>
+          <div><h4>{{ review.name }}</h4><span>{{ review.city }}</span></div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="review-card"><p class="review-text">No reviews added yet.</p></div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="container">
+    <div class="add-review-box">
+      <h3>Share Your Experience 💌</h3>
+      <p>IK Delights se order kiya? Apna review share karein!</p>
+      <form id="reviewForm">
+        {% csrf_token %}
+        <div class="rev-row">
+          <div class="rev-fg"><label>Your Name</label><input type="text" id="reviewName" placeholder="e.g. Ayesha Khan" required></div>
+          <div class="rev-fg"><label>City</label><input type="text" id="reviewCity" placeholder="e.g. Lahore" required></div>
+        </div>
+        <div class="rev-fg">
+          <label>Your Rating</label>
+          <div class="star-input">
+            <input type="radio" name="rating" value="5" id="star5" required><label for="star5">★</label>
+            <input type="radio" name="rating" value="4" id="star4"><label for="star4">★</label>
+            <input type="radio" name="rating" value="3" id="star3"><label for="star3">★</label>
+            <input type="radio" name="rating" value="2" id="star2"><label for="star2">★</label>
+            <input type="radio" name="rating" value="1" id="star1"><label for="star1">★</label>
+          </div>
+        </div>
+        <div class="rev-fg"><label>Your Review</label><textarea id="reviewText" rows="4" placeholder="Tell us about your experience..." required></textarea></div>
+        <button type="submit" class="btn-grad" style="width:100%;"><i class="fas fa-paper-plane"></i> Submit Review</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="contact-section" id="contact">
+  <div class="container"><div class="contact-grid">
+    <div><span class="sec-lbl">Reach Out</span><h2 class="sec-title">Get in <em>Touch</em></h2><div class="divider"></div><p class="about-p">Reach out for custom orders, questions, or just to say hello!</p><div class="ci-list"><div class="ci-row"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-h">Location</div><div class="ci-v">{{ settings.address|default:"MORE KHUNDA NANAKANA SAHIB" }}</div></div></div><div class="ci-row"><div class="ci-ico"><i class="fas fa-phone"></i></div><div><div class="ci-h">Phone</div><div class="ci-v">{{ settings.phone|default:"+92 321 4243501" }}</div></div></div><div class="ci-row"><div class="ci-ico"><i class="fas fa-envelope"></i></div><div><div class="ci-h">Email</div><div class="ci-v">{{ settings.email|default:"ikdelights@gmail.com" }}</div></div></div><div class="ci-row"><div class="ci-ico"><i class="fas fa-clock"></i></div><div><div class="ci-h">Hours</div><div class="ci-v">Mon–Sat: 9AM – 7PM</div></div></div></div><div class="soc-row"><a href="{{ settings.facebook|default:'#' }}" class="soc-a"><i class="fab fa-facebook-f"></i></a><a href="{{ settings.instagram|default:'#' }}" class="soc-a"><i class="fab fa-instagram"></i></a><a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" class="soc-a"><i class="fab fa-whatsapp"></i></a><a href="{{ settings.tiktok|default:'#' }}" class="soc-a"><i class="fab fa-tiktok"></i></a></div></div>
+    <div class="cform"><h3>Send a Message 💌</h3><form method="post" action="{% url 'contact_submit' %}" id="contactForm">{% csrf_token %}<div class="frow"><div class="fg"><label>Name</label><input type="text" name="name" placeholder="Full name" required></div><div class="fg"><label>Email</label><input type="email" name="email" placeholder="your@email.com" required></div></div><div class="fg"><label>Phone</label><input type="tel" name="phone" placeholder="03XXXXXXXXX"></div><div class="fg"><label>Message</label><textarea name="message" rows="4" placeholder="How can we help?" required></textarea></div><button type="submit" class="btn-grad" style="width:100%;"><i class="fas fa-paper-plane"></i> Send Message</button></form></div>
+  </div></div>
+</section>
+
+<!-- FOOTER -->
+<footer class="ik-footer">
+    <div class="footer-wrapper">
+        <div class="footer-brand">
+            {% if settings.footer_logo %}
+            <img src="{{ settings.footer_logo.url }}" alt="IK Delights" class="footer-logo">
+            {% elif settings.logo %}
+            <img src="{{ settings.logo.url }}" alt="IK Delights" class="footer-logo">
+            {% else %}
+            <img src="{% static 'images/logo.png' %}" alt="IK Delights" class="footer-logo">
+            {% endif %}
+            <p>IK Delights brings sweetness, elegance, and premium bakery creations for every celebration.</p>
+            <div class="footer-socials">
+                <a href="{{ settings.facebook|default:'#' }}"><i class="fab fa-facebook-f"></i></a>
+                <a href="{{ settings.instagram|default:'#' }}"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="{{ settings.tiktok|default:'#' }}"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/#products">Products</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#gallery">Gallery</a></li>
+                <li><a href="/#reviews">Reviews</a></li>
+                <li><a href="/#contact">Contact</a></li>
+            </ul>
+        </div>
+        <div class="footer-contact">
+            <h3>Contact Us</h3>
+            <p><i class="fas fa-map-marker-alt"></i> {{ settings.address|default:"MORE KHUNDA NANKANA SAHIB" }}</p>
+            <p><i class="fas fa-phone"></i> {{ settings.phone|default:"+92 321 4243501" }}</p>
+            <p><i class="fas fa-envelope"></i> {{ settings.email|default:"info@ikdelights.com" }}</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 {{ settings.bakery_name }}. All Rights Reserved.</p>
+        <p>Designed with ❤️ by IK Delights</p>
+    </div>
+</footer>
+
+<a href="/api/add-whatsapp/?phone={{ settings.whatsapp_number }}" target="_blank" class="wa-float">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+<!-- DEAL POPUP -->
+<div id="dealPopup" class="deal-popup" style="display: none;">
+    <div class="deal-popup-content">
+        <button class="deal-popup-close" id="closeDealPopup">&times;</button>
+        <div class="deal-popup-img">
+            <img src="" alt="Deal of the Day">
+        </div>
+        <div class="deal-popup-body">
+            <h3 class="deal-popup-title"></h3>
+            <p class="deal-popup-desc"></p>
+            <div class="deal-prices">
+                <span class="old-price"></span>
+                <span class="new-price"></span>
+            </div>
+            <a href="#" class="deal-popup-btn" target="_blank">Grab Deal on WhatsApp</a>
+        </div>
+    </div>
+</div>
+
+<!-- CART DRAWER -->
+<div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-header">
+        <h3>🛒 Your Cart</h3>
+        <button onclick="closeCartDrawer()">&times;</button>
+    </div>
+    <div class="cart-drawer-body" id="cartDrawerItems">
+        <div class="empty-cart-drawer">Your cart is empty 🛒</div>
+    </div>
+    <div class="cart-drawer-footer">
+        <div class="cart-total">
+            Total: <span id="drawerCartTotal">Rs 0</span>
+        </div>
+        <button class="btn-grad" onclick="proceedToCheckout()">Proceed To Checkout</button>
+    </div>
+</div>
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeCartDrawer()"></div>
+
+<!-- MODALS -->
+{% include 'includes/modal_login.html' %}
+{% include 'includes/modal_signup.html' %}
+{% include 'includes/event-planner.html' %}
+
+<!-- CUSTOMIZATION MODAL (CONTAINS INVOICE MODAL INSIDE) -->
+{% include 'includes/customization_modal.html' %}
+
+<!-- PROFILE MODAL -->
+<div id="profileModal" class="modal-ov">
+    <div class="modal-box">
+        <div class="modal-hd">
+            <h3>My Profile</h3>
+            <button type="button" class="close-modal" data-modal="profileModal">&times;</button>
+        </div>
+        <div id="profileModalContent">
+            <div style="text-align:center; padding:2rem;">Loading...</div>
+        </div>
+    </div>
+</div>
+
+<!-- ZOOM MODAL -->
+<div id="zoomModal" class="zoom-modal">
+    <div class="zoom-modal-content">
+        <span class="zoom-close" onclick="closeZoomModal()">&times;</span>
+        <img id="zoomImg" src="" alt="Zoomed Image">
+        <button class="zoom-prev" onclick="prevZoomImage()">&#10094;</button>
+        <button class="zoom-next" onclick="nextZoomImage()">&#10095;</button>
+    </div>
+</div>
+
+<!-- TOAST & OVERLAY -->
+<div id="toast"></div>
+<div id="overlay" onclick="closeOverlay()"></div>
+
+<!-- SCRIPTS WITH CACHE BUSTER -->
+<script src="{% static 'js/ik.js' %}?v=15"></script>
+<script src="{% static 'js/smart-planner.js' %}"></script>
+<!--<script src="{% static 'js/deals.js' %}"></script>-->
+
+<!-- ✅ PATCH: Fix deal popup button for zero price + ensure close button works -->
+<script>
+(function() {
+    window.IK_BUSINESS_NUMBER = window.IK_BUSINESS_NUMBER || "923214243501";
+    
+    // Force close popup function (works everywhere)
+    function forceCloseDealPopup() {
+        const popup = document.getElementById('dealPopup');
+        if (popup) {
+            popup.style.display = 'none';
+            popup.classList.remove('show');
+            document.body.classList.remove('popup-open');
+            if (window.dealTimerInterval) clearInterval(window.dealTimerInterval);
+            console.log('Popup closed');
+        }
+    }
+    
+    // Bind close button reliably
+    function bindCloseButton() {
+        const closeBtn = document.getElementById('closeDealPopup');
+        if (closeBtn && !closeBtn.hasAttribute('data-bound')) {
+            // Replace with new element to remove all previous listeners
+            const newBtn = closeBtn.cloneNode(true);
+            closeBtn.parentNode.replaceChild(newBtn, closeBtn);
+            newBtn.setAttribute('data-bound', 'true');
+            newBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                forceCloseDealPopup();
+                return false;
+            };
+            console.log('Close button bound successfully');
+        }
+    }
+    
+    // Also close when clicking on popup background (overlay)
+    function bindOverlayClose() {
+        const popup = document.getElementById('dealPopup');
+        if (popup && !popup.hasAttribute('data-overlay-bound')) {
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) {
+                    forceCloseDealPopup();
+                }
+            });
+            popup.setAttribute('data-overlay-bound', 'true');
+        }
+    }
+    
+    // Fix WhatsApp button for zero price (override original)
+    function fixDealButton() {
+        const popup = document.getElementById('dealPopup');
+        if (!popup || popup.style.display !== 'flex') return;
+        const btn = popup.querySelector('.deal-popup-btn');
+        if (!btn) return;
+        if (btn.hasAttribute('data-zero-fixed')) return;
+        
+        let title = popup.querySelector('.deal-popup-title')?.innerText;
+        if (!title) return;
+        let price = popup.querySelector('.deal-popup-price')?.innerText.replace('Rs', '').trim();
+        let message = `Assalam o Alaikum, mujhe ${title} deal order karni hai.`;
+        if (price && price !== '0') message += ` Price: Rs ${price}`;
+        const whatsappUrl = `https://api.whatsapp.com/send?phone=${window.IK_BUSINESS_NUMBER}&text=${encodeURIComponent(message)}`;
+        btn.href = whatsappUrl;
+        btn.target = '_blank';
+        btn.onclick = function(e) {
+            e.preventDefault();
+            window.open(whatsappUrl, '_blank');
+            return false;
+        };
+        btn.setAttribute('data-zero-fixed', 'true');
+        console.log('Deal button fixed:', whatsappUrl);
+    }
+    
+    // Watch for popup appearance
+    const observer = new MutationObserver(() => {
+        const popup = document.getElementById('dealPopup');
+        if (popup && popup.style.display === 'flex') {
+            bindCloseButton();
+            bindOverlayClose();
+            setTimeout(fixDealButton, 100);
+        }
+    });
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+    
+    // Also run on DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+        bindCloseButton();
+        bindOverlayClose();
+    });
+    
+    // Expose close function globally (as backup)
+    window.closeDealPopup = forceCloseDealPopup;
+})();
+</script>
+
+<script>
+  // Helper function to get CSRF token
+  function getCSRFToken() {
+    const tokenElement = document.querySelector('[name=csrf-token]');
+    if (tokenElement) return tokenElement.content;
+    const cookieValue = document.cookie.match('(^|; )csrftoken=([^;]*)');
+    return cookieValue ? cookieValue[2] : '';
+  }
+
+  // Helper function to show toast
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.className = `toast ${type} show`;
+    setTimeout(() => {
+      toast.className = 'toast';
+    }, 3000);
+  }
+
+  // Close overlay function
+  function closeOverlay() {
+    const overlay = document.getElementById('overlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+
+  // Open Smart Event Planner function
+  function openSmartEventPlanner() {
+    const modal = document.getElementById('eventPlannerModal');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  // Ensure explore button works
+  document.addEventListener('DOMContentLoaded', function() {
+    const exploreBtn = document.getElementById('exploreMenuBtn');
+    if (exploreBtn) {
+      exploreBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const productsSection = document.getElementById('products');
+        if (productsSection) {
+          productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+  });
+
+  // Contact form handler
+  (function() {
+    const contactForm = document.getElementById('contactForm');
+    if (!contactForm) return;
+    contactForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Sending...';
+      submitBtn.disabled = true;
+      try {
+        const formData = new FormData(contactForm);
+        const response = await fetch(contactForm.action, {
+          method: 'POST',
+          body: formData,
+          headers: { 'X-CSRFToken': getCSRFToken() }
+        });
+        const result = await response.json();
+        if (result.status === 'ok') {
+          showToast(result.message || 'Message sent successfully!', 'success');
+          contactForm.reset();
+        } else {
+          showToast(result.error || 'Something went wrong. Please try again.', 'error');
+        }
+      } catch (error) {
+        console.error('Contact form error:', error);
+        showToast('Network error. Please try again later.', 'error');
+      } finally {
+        submitBtn.innerHTML = originalBtnText;
+        submitBtn.disabled = false;
+      }
+    });
+  })();
+</script>
+<script>
+    // Business WhatsApp number (bina +, bina spaces)
+    window.IK_BUSINESS_NUMBER = "{{ settings.whatsapp_number|default:'923214243501' }}";
+</script>
+
+<script>
+(function() {
+    // Ensure this runs after DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fix for smart planner first question not showing
+        const originalOpen = window.openSmartEventPlanner;
+        if (originalOpen) {
+            window.openSmartEventPlanner = function() {
+                // Call original function first
+                if (originalOpen) originalOpen();
+                // Then force render after a short delay
+                setTimeout(function() {
+                    const container = document.getElementById('eventStepContent');
+                    if (container && container.innerHTML.trim() === '') {
+                        console.log('Forcing first question render');
+                        // Manually render first question
+                        const questions = [
+                            "🎉 Which type of event are you planning?",
+                            "👥 How many guests are expected?",
+                            "💰 What is your estimated budget?",
+                            "🎂 Do you need a custom cake?",
+                            "🍰 Select cake flavor",
+                            "⚖️ Select cake size",
+                            "✍️ What text should be written on cake?",
+                            "🎨 Select your event theme",
+                            "👤 Enter your full name",
+                            "📞 Enter your phone number"
+                        ];
+                        const options = [
+                            ["Birthday", "Wedding", "Anniversary", "Baby Shower", "Engagement", "Corporate"],
+                            null, null, ["Yes", "No"],
+                            ["Chocolate", "Vanilla", "Red Velvet", "Black Forest", "Pineapple"],
+                            ["1 Pound", "2 Pound", "3 Pound", "5 Pound", "1 KG", "2 KG"],
+                            null, null, null, null
+                        ];
+                        let html = `<div class="planner-question-box"><h2 class="planner-question-title">${questions[0]}</h2><div class="event-cards">`;
+                        options[0].forEach(opt => {
+                            html += `<div class="event-card" onclick="selectOption('event_type', '${opt}')">${opt}</div>`;
+                        });
+                        html += `</div></div>`;
+                        container.innerHTML = html;
+                        // Also fix progress bar text
+                        const indicator = document.getElementById('stepIndicator');
+                        if (indicator) indicator.innerText = 'Question 1 / 10';
+                    }
+                }, 200);
+            };
+        }
+        
+        // Also if the modal is opened by some other trigger, watch for it
+        const observer = new MutationObserver(function(mutations) {
+            const modal = document.getElementById('smartEventModal');
+            if (modal && modal.classList.contains('active')) {
+                setTimeout(function() {
+                    const container = document.getElementById('eventStepContent');
+                    if (container && container.innerHTML.trim() === '') {
+                        // Trigger the same fix
+                        if (window.openSmartEventPlanner) {
+                            window.openSmartEventPlanner();
+                        }
+                    }
+                }, 100);
+            }
+        });
+        observer.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
+    });
+})();
+</script>
+</body>
+</html>

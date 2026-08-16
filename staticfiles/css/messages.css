@@ -1,0 +1,629 @@
+/* ======================================================
+   MESSAGES PAGE
+====================================================== */
+
+.messages-isolated-page{
+
+    padding:30px;
+
+    background:#fff8fb;
+
+    min-height:100vh;
+}
+
+/* ======================================================
+   PAGE TITLE
+====================================================== */
+
+.messages-isolated-page .page-title{
+
+    font-size:34px;
+
+    font-weight:800;
+
+    color:#0f172a;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    margin-bottom:28px;
+}
+
+/* ======================================================
+   STATS SECTION
+====================================================== */
+
+.messages-isolated-page .messages-stats{
+
+    display:flex;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:25px;
+}
+
+.messages-isolated-page .stat-card{
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:24px;
+
+    min-width:220px;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.05);
+
+    transition:0.3s ease;
+}
+
+.messages-isolated-page .stat-card:hover{
+
+    transform:translateY(-4px);
+}
+
+.messages-isolated-page .stat-card h3{
+
+    font-size:34px;
+
+    font-weight:800;
+
+    color:#ec4899;
+
+    margin-bottom:10px;
+}
+
+.messages-isolated-page .stat-card p{
+
+    font-size:15px;
+
+    color:#64748b;
+
+    font-weight:600;
+}
+
+.messages-isolated-page .stat-card.unread{
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff1f5,
+            #ffe4ec
+        );
+}
+
+/* ======================================================
+   TABLE WRAPPER
+====================================================== */
+
+.messages-isolated-page .table-wrapper{
+
+    background:white;
+
+    border-radius:28px;
+
+    padding:25px;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.05);
+}
+
+/* ======================================================
+   TABLE SCROLL
+====================================================== */
+
+.messages-isolated-page .table-scroll{
+
+    overflow-x:auto;
+}
+
+/* ======================================================
+   TABLE
+====================================================== */
+
+.messages-isolated-page .messages-table{
+
+    width:100%;
+
+    min-width:1350px;
+
+    border-collapse:collapse;
+}
+
+/* ======================================================
+   TABLE HEAD
+====================================================== */
+
+.messages-isolated-page .messages-table thead{
+
+    background:#0f172a;
+}
+
+.messages-isolated-page .messages-table thead th{
+
+    color:white;
+
+    padding:18px 16px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+/* ======================================================
+   TABLE BODY
+====================================================== */
+
+.messages-isolated-page .messages-table tbody tr{
+
+    border-bottom:
+        1px solid #f1f5f9;
+
+    transition:0.3s ease;
+}
+
+.messages-isolated-page .messages-table tbody tr:hover{
+
+    background:#fffafc;
+}
+
+.messages-isolated-page .messages-table tbody td{
+
+    padding:18px 16px;
+
+    vertical-align:middle;
+
+    font-size:14px;
+
+    color:#334155;
+}
+
+/* ======================================================
+   UNREAD ROW
+====================================================== */
+
+.messages-isolated-page .unread-row{
+
+    background:#fff7fa;
+}
+
+/* ======================================================
+   CUSTOMER BOX
+====================================================== */
+
+.messages-isolated-page .customer-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+/* ======================================================
+   CUSTOMER AVATAR
+====================================================== */
+
+.messages-isolated-page .customer-avatar{
+
+    width:44px;
+
+    height:44px;
+
+    border-radius:50%;
+
+    background:#ec4899;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-weight:800;
+
+    font-size:16px;
+
+    box-shadow:
+        0 6px 14px rgba(236,72,153,0.20);
+}
+
+/* ======================================================
+   SUBJECT BADGE
+====================================================== */
+
+.messages-isolated-page .subject-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-width:150px;
+
+    padding:12px 22px;
+
+    border-radius:50px;
+
+    background:#ffe4ec;
+
+    color:#be185d;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+
+    text-align:center;
+
+    line-height:1.2;
+
+    box-shadow:
+        0 4px 12px rgba(236,72,153,0.10);
+}
+
+/* ======================================================
+   MESSAGE TEXT
+====================================================== */
+
+.messages-isolated-page .message-text{
+
+    max-width:320px;
+
+    line-height:1.7;
+
+    color:#475569;
+}
+
+/* ======================================================
+   STATUS BADGES
+====================================================== */
+
+.messages-isolated-page .status-read{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+    padding:9px 16px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+.messages-isolated-page .status-unread{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+
+    padding:9px 16px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+/* ======================================================
+   ACTION BUTTONS
+====================================================== */
+
+.messages-isolated-page .actions-wrap{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+}
+
+.messages-isolated-page .btn-view,
+.messages-isolated-page .btn-whatsapp,
+.messages-isolated-page .btn-delete{
+
+    width:44px;
+
+    height:44px;
+
+    border:none;
+
+    border-radius:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+
+    text-decoration:none;
+}
+
+/* VIEW */
+
+.messages-isolated-page .btn-view{
+
+    background:#f1f5f9;
+
+    color:#0f172a;
+}
+
+.messages-isolated-page .btn-view:hover{
+
+    background:#e2e8f0;
+
+    transform:translateY(-2px);
+}
+
+/* WHATSAPP */
+
+.messages-isolated-page .btn-whatsapp{
+
+    background:#22c55e;
+
+    color:white;
+}
+
+.messages-isolated-page .btn-whatsapp:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(34,197,94,0.25);
+}
+
+/* DELETE */
+
+.messages-isolated-page .btn-delete{
+
+    background:#ef4444;
+
+    color:white;
+}
+
+.messages-isolated-page .btn-delete:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(239,68,68,0.25);
+}
+
+/* ======================================================
+   EMPTY STATE
+====================================================== */
+
+.messages-isolated-page .empty-state{
+
+    text-align:center;
+
+    padding:60px;
+
+    color:#94a3b8;
+
+    font-size:16px;
+
+    font-weight:700;
+}
+
+/* ======================================================
+   MESSAGE MODAL
+====================================================== */
+
+.messages-isolated-page .message-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(15,23,42,0.55);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9999;
+
+    padding:20px;
+}
+
+/* ======================================================
+   MODAL CONTENT
+====================================================== */
+
+.messages-isolated-page .message-modal-content{
+
+    width:700px;
+
+    max-width:100%;
+
+    background:white;
+
+    border-radius:28px;
+
+    padding:30px;
+
+    animation:popupFade 0.3s ease;
+}
+
+/* ======================================================
+   POPUP ANIMATION
+====================================================== */
+
+@keyframes popupFade{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+    }
+}
+
+/* ======================================================
+   MODAL HEADER
+====================================================== */
+
+.messages-isolated-page .modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+}
+
+/* ======================================================
+   CLOSE BUTTON
+====================================================== */
+
+.messages-isolated-page .close-modal-btn{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#f1f5f9;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.messages-isolated-page .close-modal-btn:hover{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+}
+
+/* ======================================================
+   MODAL BODY
+====================================================== */
+
+.messages-isolated-page .modal-content-body{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:22px;
+}
+
+/* ======================================================
+   MODAL GROUP
+====================================================== */
+
+.messages-isolated-page .modal-group{
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.messages-isolated-page .modal-group label{
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:#64748b;
+
+    margin-bottom:8px;
+}
+
+.messages-isolated-page .modal-group p{
+
+    font-size:15px;
+
+    color:#0f172a;
+
+    font-weight:600;
+}
+
+/* ======================================================
+   MESSAGE BOX
+====================================================== */
+
+.messages-isolated-page .message-box{
+
+    background:#f8fafc;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    line-height:1.9;
+
+    color:#334155;
+
+    font-size:15px;
+}
+
+/* ======================================================
+   RESPONSIVE
+====================================================== */
+
+@media(max-width:992px){
+
+    .messages-isolated-page{
+
+        padding:15px;
+    }
+
+    .messages-isolated-page .table-wrapper{
+
+        padding:18px;
+    }
+
+    .messages-isolated-page .messages-stats{
+
+        flex-direction:column;
+    }
+
+    .messages-isolated-page .message-modal-content{
+
+        padding:22px;
+    }
+
+}

@@ -1,0 +1,461 @@
+<style>
+/* ========== TOAST STYLES (global, but unique class – safe) ========== */
+.toast-notification {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1e1e2f;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 10000;
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    pointer-events: none;
+}
+.toast-notification.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+.toast-notification.success {
+    background: #10b981;
+    border-left: 4px solid #059669;
+}
+.toast-notification.error {
+    background: #ef4444;
+    border-left: 4px solid #b91c1c;
+}
+.toast-notification i {
+    font-size: 18px;
+}
+
+/* ========== MODAL STYLES (SCOPED UNDER #signupModal) ========== */
+#signupModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+#signupModal .modal-box.signup-drawer {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 20px;
+    overflow: hidden;
+    animation: slideUp 0.3s ease;
+}
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+#signupModal .modal-hd {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+#signupModal .modal-body {
+    padding: 24px;
+}
+#signupModal .form-group {
+    margin-bottom: 18px;
+}
+#signupModal .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 14px;
+}
+#signupModal .form-group input,
+#signupModal .form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+#signupModal .form-group input:focus,
+#signupModal .form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102,126,234,0.2);
+}
+#signupModal .btn-grad {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: 0.3s;
+}
+#signupModal .btn-grad:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+#signupModal .btn-grad:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+#signupModal .close-modal {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: #fff;
+    color: #dc3545;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+#signupModal .close-modal:hover {
+    background: #dc3545;
+    color: #fff;
+    transform: rotate(90deg);
+}
+#signupModal .password-field {
+    position: relative;
+}
+#signupModal .toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+}
+</style>
+
+<div id="signupModal" class="modal-ov">
+    <div class="modal-box signup-drawer">
+        <!-- HEADER WITH LOGO -->
+        <div class="modal-hd">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                {% if settings.footer_logo %}
+                <img src="{{ settings.footer_logo.url }}" 
+                     alt="Logo" 
+                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 2px solid rgba(255,255,255,0.3);">
+                {% else %}
+                <img src="https://via.placeholder.com/40x40?text=IK" 
+                     alt="Logo" 
+                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 2px solid rgba(255,255,255,0.3);">
+                {% endif %}
+                <h3 style="margin: 0;">Create Account To Continue Order</h3>
+            </div>
+            <button class="close-modal" data-modal="signupModal">&times;</button>
+        </div>
+
+        <!-- BODY -->
+        <div class="modal-body">
+            <form id="ajaxSignupForm" class="signup-form" method="post">
+                {% csrf_token %}
+
+                <!-- FULL NAME -->
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text"
+                           name="full_name"
+                           placeholder="Enter your full name"
+                           minlength="3"
+                           maxlength="50"
+                           required>
+                </div>
+
+                <!-- USERNAME (letters + numbers only, 4-20 chars) -->
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text"
+                           name="username"
+                           placeholder="Choose username"
+                           minlength="4"
+                           maxlength="20"
+                           pattern="[A-Za-z0-9]+"
+                           required>
+                </div>
+
+                <!-- EMAIL -->
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email"
+                           name="email"
+                           placeholder="Enter your email"
+                           required>
+                </div>
+
+                <!-- WHATSAPP NUMBER -->
+                <div class="form-group">
+                    <label>WhatsApp Number</label>
+                    <input type="tel"
+                           name="whatsapp_number"
+                           placeholder="03XXXXXXXXX"
+                           pattern="03[0-9]{9}"
+                           maxlength="11"
+                           required>
+                </div>
+
+                <!-- CITY (only length validation, no regex) -->
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text"
+                           name="city"
+                           placeholder="Enter your city"
+                           minlength="3"
+                           maxlength="30"
+                           required>
+                </div>
+
+                <!-- ADDRESS -->
+                <div class="form-group">
+                    <label>Complete Delivery Address</label>
+                    <textarea name="address"
+                              placeholder="Enter complete address"
+                              rows="3"
+                              minlength="10"
+                              maxlength="200"
+                              required></textarea>
+                </div>
+
+                <!-- PASSWORD -->
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="password-field">
+                        <input type="password"
+                               name="password"
+                               id="signupPassword1"
+                               minlength="8"
+                               required>
+                        <button type="button" class="toggle-password" data-target="signupPassword1">
+                            <i class="fas fa-eye-slash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CONFIRM PASSWORD -->
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <div class="password-field">
+                        <input type="password"
+                               name="confirm_password"
+                               id="signupPassword2"
+                               minlength="8"
+                               required>
+                        <button type="button" class="toggle-password" data-target="signupPassword2">
+                            <i class="fas fa-eye-slash"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SUBMIT BUTTON -->
+                <button type="submit" class="btn-grad signup-btn">
+                    <i class="fas fa-user-check"></i>
+                    Create Account & Continue Checkout
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // ---------- TOAST WITH 4 SECONDS DURATION ----------
+    function showToast(message, type = "success") {
+        const existingToast = document.querySelector('.toast-notification');
+        if(existingToast) existingToast.remove();
+
+        const toast = document.createElement('div');
+        toast.className = `toast-notification ${type}`;
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+        toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+        document.body.appendChild(toast);
+
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);  // 4 seconds
+    }
+
+    function getCSRFToken() {
+        let token = null;
+        if (document.cookie) {
+            const cookies = document.cookie.split(';');
+            for (let c of cookies) {
+                c = c.trim();
+                if (c.startsWith('csrftoken=')) {
+                    token = decodeURIComponent(c.substring(10));
+                    break;
+                }
+            }
+        }
+        if (!token) {
+            const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+            if (csrfInput) token = csrfInput.value;
+        }
+        return token;
+    }
+
+    // Password toggle
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.toggle-password');
+        if (btn) {
+            const targetId = btn.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (input) {
+                input.type = input.type === 'password' ? 'text' : 'password';
+                const icon = btn.querySelector('i');
+                if (icon) icon.classList.toggle('fa-eye-slash');
+            }
+        }
+    });
+
+    const signupForm = document.getElementById('ajaxSignupForm');
+    if (!signupForm) return;
+
+    // Replace with fresh clone to remove old listeners
+    const newForm = signupForm.cloneNode(true);
+    signupForm.parentNode.replaceChild(newForm, signupForm);
+
+    newForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(newForm);
+        const data = {
+            full_name: formData.get('full_name'),
+            username: formData.get('username'),
+            email: formData.get('email'),
+            password: formData.get('password'),
+            confirm_password: formData.get('confirm_password'),
+            whatsapp_number: formData.get('whatsapp_number'),
+            city: formData.get('city'),
+            address: formData.get('address')
+        };
+
+        // ---------- CLIENT-SIDE VALIDATION ----------
+        // 1. Full name: letters and spaces only
+        if (!/^[A-Za-z ]{3,50}$/.test(data.full_name)) {
+            showToast("Name can contain letters and spaces only (3-50 characters)", "error");
+            return;
+        }
+
+        // 2. Username: letters and numbers only, 4-20 chars (no underscores, spaces, special)
+        if (data.username.length < 4 || data.username.length > 20) {
+            showToast("Username must be 4-20 characters long.", "error");
+            return;
+        }
+        if (!/^[A-Za-z0-9]{4,20}$/.test(data.username)) {
+            showToast("Username can contain only letters and numbers (4-20 characters)", "error");
+            return;
+        }
+
+        // 3. Email
+        if (data.email && !/^\S+@\S+\.\S+$/.test(data.email)) {
+            showToast("Enter a valid email address.", "error");
+            return;
+        }
+
+        // 4. WhatsApp
+        if (!/^03\d{9}$/.test(data.whatsapp_number)) {
+            showToast("WhatsApp number must be 11 digits starting with 03 (e.g., 03123456789).", "error");
+            return;
+        }
+
+        // 5. City: only minimum length check (no regex)
+        if (data.city.length < 3) {
+            showToast("Enter valid city name", "error");
+            return;
+        }
+
+        // 6. Address
+        if (data.address.length < 10) {
+            showToast("Please enter a complete address (minimum 10 characters).", "error");
+            return;
+        }
+
+        // 7. Password strength
+        if (data.password.length < 8) {
+            showToast("Password must be at least 8 characters long.", "error");
+            return;
+        }
+        const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+        if (!strongPassword.test(data.password)) {
+            showToast("Password must contain uppercase, lowercase, number and special character (@$!%*?&)", "error");
+            return;
+        }
+
+        // 8. Confirm password
+        if (data.password !== data.confirm_password) {
+            showToast("Passwords do not match.", "error");
+            return;
+        }
+        // ------------------------------------------------
+
+        // ---------- LOADING BUTTON STATE ----------
+        const submitBtn = newForm.querySelector('.signup-btn');
+        const originalBtnHTML = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+
+        try {
+            const response = await fetch('/ajax-register/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken()
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            if (result.status === 'ok') {
+                showToast('Account created successfully. Redirecting...', 'success');
+                document.getElementById('signupModal').style.display = 'none';
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                showToast(result.message || 'Registration failed. Please try again.', 'error');
+            }
+        } catch (err) {
+            showToast('Network error: ' + err.message, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHTML;
+        }
+    });
+
+    // Close modal on cross button or outside click
+    const modal = document.getElementById('signupModal');
+    const closeBtn = modal.querySelector('.close-modal');
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+})();
+</script>

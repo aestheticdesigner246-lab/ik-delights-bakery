@@ -1,0 +1,419 @@
+<div class="messages-isolated-page">
+
+    <!-- =========================================
+         PAGE TITLE
+    ========================================== -->
+
+    <h2 class="page-title">
+
+        <i class="fa-solid fa-envelope"></i>
+
+        Customer Messages
+
+    </h2>
+
+    <!-- =========================================
+         STATS CARDS
+    ========================================== -->
+
+    <div class="messages-stats">
+
+        <div class="stat-card">
+
+            <h3>
+
+                {{ total_messages }}
+
+            </h3>
+
+            <p>
+
+                Total Messages
+
+            </p>
+
+        </div>
+
+        <div class="stat-card unread">
+
+            <h3>
+
+                {{ unread_count|default:"0" }}
+
+            </h3>
+
+            <p>
+
+                Unread Messages
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- =========================================
+         TABLE WRAPPER
+    ========================================== -->
+
+    <div class="table-wrapper">
+
+        <div class="table-scroll">
+
+            <table class="messages-table">
+
+                <!-- TABLE HEAD -->
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Customer</th>
+
+                        <th>Email</th>
+
+                        <th>Phone</th>
+
+                        <th>Subject</th>
+
+                        <th>Message</th>
+
+                        <th>Date</th>
+
+                        <th>Status</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+                <!-- TABLE BODY -->
+
+                <tbody>
+
+                    {% for message in messages %}
+
+                    <tr
+                        class="
+                            {% if not message.is_read %}
+                            unread-row
+                            {% endif %}
+                        ">
+
+                        <!-- ID -->
+
+                        <td>
+
+                            #{{ message.id }}
+
+                        </td>
+
+                        <!-- CUSTOMER -->
+
+                        <td>
+
+                            <div class="customer-box">
+
+                                <div class="customer-avatar">
+
+                                    {{ message.name|slice:":1" }}
+
+                                </div>
+
+                                <div>
+
+                                    <strong>
+
+                                        {{ message.name }}
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <!-- EMAIL -->
+
+                        <td>
+
+                            {{ message.email }}
+
+                        </td>
+
+                        <!-- PHONE -->
+
+                        <td>
+
+                            {{ message.phone|default:"-" }}
+
+                        </td>
+
+                        <!-- SUBJECT -->
+
+                        <td>
+
+                            <span class="subject-badge">
+
+                                {{ message.subject|default:"General Inquiry" }}
+
+                            </span>
+
+                        </td>
+
+                        <!-- MESSAGE -->
+
+                        <td class="message-text">
+
+                            {{ message.message|truncatechars:80 }}
+
+                        </td>
+
+                        <!-- DATE -->
+
+                        <td>
+
+                            {{ message.created_at|date:"d M Y" }}
+
+                        </td>
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            {% if message.is_read %}
+
+                                <span class="status-read">
+
+                                    Read
+
+                                </span>
+
+                            {% else %}
+
+                                <span class="status-unread">
+
+                                    Unread
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- ACTIONS -->
+
+                        <td>
+
+                            <div class="actions-wrap">
+
+                                <!-- VIEW -->
+
+                                <button
+                                    class="btn-view"
+
+                                    onclick="
+                                        openMessageModal(
+                                            '{{ message.name|escapejs }}',
+                                            '{{ message.email|escapejs }}',
+                                            '{{ message.phone|default:''|escapejs }}',
+                                            '{{ message.subject|escapejs }}',
+                                            `{{ message.message|escapejs }}`,
+                                            '{{ message.created_at|date:"d M Y" }}'
+                                        )
+                                    ">
+
+                                    <i class="fa-solid fa-eye"></i>
+
+                                </button>
+
+                                <!-- WHATSAPP -->
+
+                                {% if message.phone %}
+
+                                <a
+                                    href="
+                                    https://wa.me/{{ message.phone }}
+                                    "
+
+                                    target="_blank"
+
+                                    class="btn-whatsapp">
+
+                                    <i class="
+                                        fa-brands
+                                        fa-whatsapp
+                                    "></i>
+
+                                </a>
+
+                                {% endif %}
+
+                                <!-- DELETE -->
+
+                                <button
+                                    class="btn-delete"
+
+                                    onclick="
+                                        deleteMessage(
+                                            {{ message.id }}
+                                        )
+                                    ">
+
+                                    <i class="
+                                        fa-solid
+                                        fa-trash
+                                    "></i>
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="9"
+                            class="empty-state">
+
+                            No Customer Messages Found
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- =========================================
+         MESSAGE MODAL
+    ========================================== -->
+
+    <div id="messageModal"
+         class="message-modal">
+
+        <div class="message-modal-content">
+
+            <!-- HEADER -->
+
+            <div class="modal-header">
+
+                <h3>
+
+                    Message Details
+
+                </h3>
+
+                <button
+                    class="close-modal-btn"
+
+                    onclick="
+                        closeMessageModal()
+                    ">
+
+                    &times;
+
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div class="modal-content-body">
+
+                <div class="modal-group">
+
+                    <label>
+
+                        Customer
+
+                    </label>
+
+                    <p id="modalCustomer"></p>
+
+                </div>
+
+                <div class="modal-group">
+
+                    <label>
+
+                        Email
+
+                    </label>
+
+                    <p id="modalEmail"></p>
+
+                </div>
+
+                <div class="modal-group">
+
+                    <label>
+
+                        Phone
+
+                    </label>
+
+                    <p id="modalPhone"></p>
+
+                </div>
+
+                <div class="modal-group">
+
+                    <label>
+
+                        Subject
+
+                    </label>
+
+                    <p id="modalSubject"></p>
+
+                </div>
+
+                <div class="modal-group">
+
+                    <label>
+
+                        Date
+
+                    </label>
+
+                    <p id="modalDate"></p>
+
+                </div>
+
+                <div class="modal-group">
+
+                    <label>
+
+                        Message
+
+                    </label>
+
+                    <div
+                        id="modalMessage"
+                        class="message-box"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,168 @@
+.customers-page{
+    padding:20px;
+    animation:fadeIn .3s ease;
+}
+
+.customers-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.customers-header h2{
+    font-size:36px;
+    font-weight:700;
+    color:#5b0e2d;
+    margin-bottom:5px;
+}
+
+.customers-header p{
+    color:#666;
+    font-size:15px;
+}
+
+.customers-header input{
+    padding:12px 16px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    width:260px;
+    background:#fff;
+    outline:none;
+    transition:.3s;
+}
+
+.customers-header input:focus{
+    border-color:#5b0e2d;
+}
+
+.customers-table-wrapper{
+    background:#fff;
+    border-radius:24px;
+    padding:20px;
+    overflow-x:auto;
+    box-shadow:0 4px 15px rgba(0,0,0,0.08);
+}
+
+.customers-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.customers-table th{
+    background:#690b35;
+    color:#fff;
+    padding:18px 14px;
+    text-align:left;
+    font-size:15px;
+    font-weight:600;
+}
+
+.customers-table td{
+    padding:18px 14px;
+    border-bottom:1px solid #f1f1f1;
+    font-size:15px;
+    color:#444;
+    vertical-align:middle;
+}
+
+.customers-table tr:hover{
+    background:#faf7f9;
+}
+
+.customer-profile{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #f3f3f3;
+}
+
+.customer-user{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-weight:600;
+    min-width:140px;
+}
+
+.customer-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:nowrap;
+}
+
+.view-btn,
+.edit-btn,
+.delete-btn{
+    border:none;
+    padding:10px 16px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    color:#fff;
+    transition:.3s;
+    min-width:80px;
+}
+
+.view-btn{
+    background:#2196f3;
+}
+
+.edit-btn{
+    background:#ff9800;
+}
+
+.delete-btn{
+    background:#f44336;
+}
+
+.view-btn:hover,
+.edit-btn:hover,
+.delete-btn:hover{
+    transform:translateY(-2px);
+}
+
+@media(max-width:1200px){
+
+    .customer-actions{
+        flex-wrap:wrap;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .customers-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .customers-header input{
+        width:100%;
+    }
+
+    .customers-table th,
+    .customers-table td{
+        padding:14px 10px;
+        font-size:14px;
+    }
+
+}
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}

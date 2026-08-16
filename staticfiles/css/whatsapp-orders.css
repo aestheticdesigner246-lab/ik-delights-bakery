@@ -1,0 +1,336 @@
+/* =====================================================
+   WHATSAPP ORDERS PAGE CSS
+   Professional styling for WhatsApp CRM
+===================================================== */
+
+/* Main Container */
+.whatsapp-orders-container {
+    padding: 24px;
+    background: #f7f4f1;
+    min-height: 100vh;
+}
+
+/* ================= PAGE HEADER ================= */
+.whatsapp-orders-container .table-header {
+    margin-bottom: 20px;
+}
+
+.whatsapp-orders-container .table-header h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #c46a84;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.whatsapp-orders-container .table-header h3 i {
+    font-size: 28px;
+    color: #25D366;
+}
+
+/* ================= STATS BAR ================= */
+.whatsapp-orders-container .table-stats {
+    background: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border-left: 4px solid #25D366;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.whatsapp-orders-container .table-stats h4 {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.whatsapp-orders-container .table-stats h4 span {
+    color: #c46a84;
+    font-weight: 700;
+    font-size: 18px;
+    margin-left: 8px;
+}
+
+/* ================= SEARCH BOX ================= */
+.whatsapp-orders-container .search-box {
+    position: relative;
+    margin-bottom: 20px;
+    max-width: 350px;
+}
+
+.whatsapp-orders-container .search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #c46a84;
+    font-size: 14px;
+    z-index: 1;
+}
+
+.whatsapp-orders-container .search-box input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 2px solid #f3dbe2;
+    border-radius: 12px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.whatsapp-orders-container .search-box input:focus {
+    border-color: #c46a84;
+    box-shadow: 0 0 0 3px rgba(196, 106, 132, 0.1);
+}
+
+.whatsapp-orders-container .search-box input::placeholder {
+    color: #aaa;
+}
+
+/* ================= TABLE ================= */
+.whatsapp-orders-container .table-responsive {
+    background: white;
+    border-radius: 16px;
+    overflow-x: auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.whatsapp-orders-container .table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.whatsapp-orders-container .table thead {
+    background: #fef8fa;
+    border-bottom: 2px solid #f0e6ea;
+}
+
+.whatsapp-orders-container .table th {
+    padding: 14px 12px;
+    text-align: left;
+    color: #c46a84;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.whatsapp-orders-container .table td {
+    padding: 12px;
+    border-bottom: 1px solid #f0e6ea;
+    color: #333;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.whatsapp-orders-container .table tbody tr:hover {
+    background: #fffafc;
+}
+
+/* ================= STATUS SELECT DROPDOWN ================= */
+.whatsapp-orders-container .status-select {
+    padding: 6px 10px;
+    border: 1.5px solid #f3dbe2;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-orders-container .status-select:hover {
+    border-color: #c46a84;
+}
+
+.whatsapp-orders-container .status-select:focus {
+    outline: none;
+    border-color: #c46a84;
+    box-shadow: 0 0 0 2px rgba(196, 106, 132, 0.1);
+}
+
+/* ================= AMOUNT STYLE ================= */
+.whatsapp-orders-container .amount {
+    font-weight: 600;
+    color: #c46a84;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.whatsapp-orders-container .action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Convert Button */
+.whatsapp-orders-container .btn-convert {
+    background: linear-gradient(135deg, #c46a84, #e89ab0);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.whatsapp-orders-container .btn-convert:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(196, 106, 132, 0.3);
+    background: linear-gradient(135deg, #b55a78, #d88ea8);
+}
+
+/* Delete Button */
+.whatsapp-orders-container .btn-delete {
+    background: #fef2f2;
+    color: #dc2626;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.whatsapp-orders-container .btn-delete:hover {
+    background: #dc2626;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* View Order Button */
+.whatsapp-orders-container .btn-view-order {
+    background: #e8f0ff;
+    color: #2563eb;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.whatsapp-orders-container .btn-view-order:hover {
+    background: #2563eb;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* ================= EMPTY STATE ================= */
+.whatsapp-orders-container .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #94a3b8;
+}
+
+.whatsapp-orders-container .empty-state i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #c46a84;
+    opacity: 0.5;
+}
+
+.whatsapp-orders-container .empty-state p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ================= PAGINATION ================= */
+.whatsapp-orders-container .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.whatsapp-orders-container .pagination a {
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #c46a84;
+    background: white;
+    border: 1px solid #f3dbe2;
+    transition: all 0.3s;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.whatsapp-orders-container .pagination a:hover {
+    background: #c46a84;
+    color: white;
+    border-color: #c46a84;
+}
+
+.whatsapp-orders-container .pagination .current {
+    padding: 8px 16px;
+    background: #c46a84;
+    color: white;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+    .whatsapp-orders-container {
+        padding: 16px;
+    }
+    
+    .whatsapp-orders-container .search-box {
+        max-width: 100%;
+    }
+    
+    .whatsapp-orders-container .table th,
+    .whatsapp-orders-container .table td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+    
+    .whatsapp-orders-container .action-buttons {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .whatsapp-orders-container .btn-convert,
+    .whatsapp-orders-container .btn-view-order {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+    
+    .whatsapp-orders-container .btn-delete {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .whatsapp-orders-container .table-header h3 {
+        font-size: 20px;
+    }
+    
+    .whatsapp-orders-container .table {
+        min-width: 650px;
+    }
+}

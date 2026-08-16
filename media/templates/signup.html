@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | IK Delights</title>
+    <link rel="stylesheet" href="{% static 'css/ik.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #fff5f8, #ffe4ed); font-family: 'Poppins', sans-serif; }
+        .signup-container { max-width: 500px; margin: 80px auto; background: white; border-radius: 28px; padding: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 600; color: #c46a84; margin-bottom: 5px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1.5px solid #ffe5ed; border-radius: 12px; }
+        button { background: linear-gradient(135deg, #c46a84, #e89ab0); color: white; border: none; padding: 12px; width: 100%; border-radius: 40px; font-weight: bold; cursor: pointer; }
+        .login-link { text-align: center; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+<div class="signup-container">
+    <h2 style="color:#9e4a64; text-align:center;">Create Account</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" name="phone" placeholder="e.g., 03XXXXXXXXX">
+        </div>
+        <div class="form-group">
+            <label>Address</label>
+            <textarea name="address" rows="2" placeholder="Your full address"></textarea>
+        </div>
+        <div class="form-group">
+            <label>City</label>
+            <input type="text" name="city" placeholder="e.g., Lahore">
+        </div>
+        <button type="submit">Sign Up</button>
+    </form>
+    <div class="login-link">Already have an account? <a href="{% url 'login' %}">Login</a></div>
+</div>
+</body>
+</html>

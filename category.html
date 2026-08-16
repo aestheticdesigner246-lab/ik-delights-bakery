@@ -1,0 +1,806 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token }}">
+<title>{{ category.name }} | IK Delights</title>
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- MAIN CSS -->
+<link rel="stylesheet" href="{% static 'css/ik.css' %}">
+
+<!-- PROFILE CSS -->
+<link rel="stylesheet" href="{% static 'css/profile_modal.css' %}">
+
+<style>
+/* =========================================
+ONLY PRODUCTS SECTION CSS
+========================================= */
+.products-section{
+    padding:4rem 1rem;
+}
+.products-grid{
+    width:100%;
+    max-width:1400px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:24px;
+}
+
+/* User Dropdown Styles */
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.user-dropdown .dropbtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #f5e6ea;
+    border-radius: 40px;
+    color: #c46a84;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.user-dropdown .dropbtn:hover {
+    background: #e8d0d8;
+}
+.user-dropdown .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    min-width: 180px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    border-radius: 12px;
+    z-index: 10000;
+    overflow: hidden;
+    margin-top: 8px;
+}
+.user-dropdown:hover .dropdown-content {
+    display: block;
+}
+.dropdown-content a, .dropdown-content button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 16px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    font-family: inherit;
+}
+.dropdown-content a i, .dropdown-content button i {
+    width: 20px;
+    color: #c46a84;
+}
+.dropdown-content a:hover, .dropdown-content button:hover {
+    background: #fef5f7;
+}
+.dropdown-content hr {
+    margin: 5px 0;
+    border-color: #ffe5ed;
+}
+
+/* Cart Drawer */
+.cart-drawer {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 380px;
+    max-width: 90vw;
+    height: 100%;
+    background: #fff;
+    z-index: 10050;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -3px 0 28px rgba(0,0,0,0.15);
+}
+.cart-drawer.open { right: 0; }
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 10040;
+    display: none;
+}
+.drawer-overlay.open { display: block; }
+.cart-drawer-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #ffe5ed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #c46a84;
+}
+.cart-drawer-header button {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #c46a84;
+}
+.cart-drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+.empty-cart-drawer {
+    text-align: center;
+    padding: 40px 20px;
+    color: #b28b9a;
+}
+.cart-drawer-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #ffe5ed;
+    background: #fff;
+}
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+.cart-drawer-footer .btn-grad {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+}
+
+/* =========================================
+PRODUCT CARD STYLES (same as before)
+========================================= */
+.product-card{
+    background:#fff;
+    border-radius:20px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:.35s;
+}
+.product-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 18px 40px rgba(0,0,0,.12);
+}
+.product-image{
+    display:block;
+    position:relative;
+    height:230px;
+    overflow:hidden;
+}
+.product-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:.5s;
+}
+.product-card:hover .product-image img{
+    transform:scale(1.06);
+}
+.product-hover-icons{
+    position:absolute;
+    top:12px;
+    right:12px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    opacity:0;
+    transform:translateY(10px);
+    transition:.3s;
+    z-index:5;
+}
+.product-card:hover .product-hover-icons{
+    opacity:1;
+    transform:translateY(0);
+}
+.fav-icon{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:50%;
+    background:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    box-shadow:0 8px 18px rgba(0,0,0,.12);
+    transition:.3s;
+}
+.fav-icon:hover{
+    background:#c46a84;
+    color:#fff;
+}
+.share-group{
+    display:flex;
+    gap:7px;
+    background:#fff;
+    padding:8px;
+    border-radius:50px;
+    box-shadow:0 8px 18px rgba(0,0,0,.12);
+}
+.share-icon{
+    width:32px;
+    height:32px;
+    border:none;
+    border-radius:50%;
+    background:#f7f7f7;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    transition:.3s;
+}
+.share-icon:hover{
+    background:#c46a84;
+    color:#fff;
+}
+.product-info{
+    padding:1.1rem;
+    text-align:center;
+}
+.product-name{
+    font-size:1rem;
+    color:#4a2c2c;
+    margin-bottom:.5rem;
+    font-weight:600;
+}
+.product-price{
+    color:#c46a84;
+    font-size:1rem;
+    font-weight:700;
+    margin-bottom:.9rem;
+}
+.cart-btn{
+    border:none;
+    cursor:pointer;
+    background:linear-gradient(135deg, #c46a84, #e89ab0);
+    color:#fff;
+    padding:10px 16px;
+    border-radius:40px;
+    font-weight:600;
+    transition:.3s;
+    width:100%;
+}
+.cart-btn:hover{
+    transform:translateY(-2px);
+}
+.empty-products{
+    text-align:center;
+    padding:5rem 1rem;
+    grid-column:1/-1;
+    color:#777;
+}
+
+/* =========================================
+DROPDOWN STYLES (SAME AS HOMEPAGE)
+========================================= */
+.nav-dd-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: #fff;
+    min-width: 240px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    border: 1px solid #ffe5ed;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: opacity 0.25s ease, visibility 0.25s, transform 0.2s;
+    transition-delay: 0.1s;
+    padding: 8px 0;
+}
+.nav-dd:hover .nav-dd-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+.category-item {
+    position: relative;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #3e2a33;
+}
+.category-item:hover {
+    background: #fef5f7;
+}
+.category-item .fa-chevron-right {
+    color: #b28b9a;
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+}
+.category-submenu {
+    position: absolute;
+    top: 0;
+    left: auto;
+    right: 100%;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    width: 650px;
+    max-width: 85vw;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+    transition-delay: 0.1s;
+    z-index: 1001;
+    border: 1px solid #ffe5ed;
+    pointer-events: none;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+.category-item:hover .category-submenu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+}
+.submenu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+.submenu-product-card {
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.submenu-product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+.submenu-product-img {
+    width: 100%;
+    height: 100px;
+    overflow: hidden;
+}
+.submenu-product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+.submenu-product-card:hover .submenu-product-img img {
+    transform: scale(1.05);
+}
+.submenu-product-info {
+    display: none;  /* hide name/price */
+}
+.category-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: #3e2a33;
+    padding: 0;
+}
+.category-link:hover {
+    color: #c46a84;
+}
+@media (max-width: 768px) {
+    .submenu-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .submenu-product-img {
+        height: 80px;
+    }
+    .category-submenu {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translate(-50%, -50%) !important;
+        width: 90vw !important;
+        max-width: 90vw !important;
+        max-height: 80vh !important;
+    }
+}
+@media (max-width: 960px) {
+    .nav-links {
+        display: none;
+        position: fixed;
+        top: calc(36px + 70px);
+        left: 0;
+        width: 100%;
+        background: #fff9fb;
+        flex-direction: column;
+        padding: 0.5rem 5% 0.85rem;
+        border-bottom: 2px solid #ffe5ed;
+        gap: 2px;
+        z-index: 8998;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    .nav-links.open {
+        display: flex;
+    }
+    .hamburger {
+        display: flex;
+    }
+    .nav-dd-menu {
+        position: static !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        padding-left: 1rem;
+        margin-top: 0.5rem;
+        display: none;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+    }
+    .nav-dd-menu.show {
+        display: block !important;
+    }
+    .category-item .category-submenu {
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none;
+        border: 1px solid #ffe5ed;
+        background: #fff;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        max-height: none;
+        overflow-y: visible;
+        pointer-events: auto;
+        opacity: 1;
+        visibility: visible;
+        display: none;
+    }
+    .category-item.active .category-submenu {
+        display: block;
+    }
+    .category-item.active .fa-chevron-right {
+        transform: rotate(90deg);
+    }
+}
+</style>
+
+</head>
+
+<body data-user-authenticated="{{ user.is_authenticated|lower }}">
+
+<!-- =========================================
+ANNOUNCEMENT STRIP
+========================================= -->
+{% if announcements %}
+<div class="ann-strip">
+  <div class="ann-track">
+    {% for ann in announcements %}
+    <span>{{ ann.text }}</span>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- =========================================
+MAIN WEBSITE NAVBAR (WITH UPDATED DROPDOWN - NO ICONS, SUBMENU IMAGES)
+========================================= -->
+<nav class="navbar" id="navbar">
+  <div class="navbar__inner">
+    <a href="/" class="nav-logo" id="mainLogoBtn">
+      {% if settings.logo %}
+      <img src="{{ settings.logo.url }}" class="nav-logo-img" alt="IK Delights">
+      {% endif %}
+      <div class="logo-text-wrap">
+        <span class="nav-logo-text">{{ settings.bakery_name }}</span>
+        <span class="nav-logo-sub">Premium Home Bakery</span>
+      </div>
+    </a>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/">Home</a></li>
+      <li class="nav-dd">
+        <a href="#">Products <i class="fas fa-chevron-down chev"></i></a>
+        
+        <!-- ✅ DROPDOWN - NO ICONS, CATEGORY NAMES CLICKABLE, SUBMENU PRODUCT IMAGES -->
+        <div class="nav-dd-menu" id="mainDropdown">
+          {% for cat in categories %}
+            <div class="category-item">
+              <a href="/category/{{ cat.slug }}/" class="category-link">
+                {{ cat.name }}
+              </a>
+              <i class="fas fa-chevron-right"></i>
+              <!-- SUBMENU - SHOW UP TO 9 PRODUCT IMAGES -->
+              <div class="category-submenu">
+                <div class="submenu-grid">
+                  {% for product in cat.products.all|slice:":9" %}
+                    <a href="/product/{{ product.slug }}/" class="submenu-product-card">
+                      <div class="submenu-product-img">
+                        {% if product.image %}
+                          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                          <img src="https://placehold.co/150x100/FFB7C5/white?text={{ product.name }}" alt="{{ product.name }}">
+                        {% endif %}
+                      </div>
+                    </a>
+                  {% empty %}
+                    <div class="submenu-product-card" style="justify-content: center; display: flex; align-items: center;">
+                      <div style="padding: 20px;">No products</div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </li>
+      <li><a href="/#about">About</a></li>
+      <li><a href="/#gallery">Gallery</a></li>
+      <li><a href="/#reviews">Reviews</a></li>
+      <li><a href="/#contact">Contact</a></li>
+    </ul>
+
+    <div class="navbar__actions">
+      <div class="user-dropdown">
+        <a href="#" class="dropbtn">
+          <i class="fas fa-user-circle"></i>
+          <i class="fas fa-chevron-down chev"></i>
+        </a>
+        <div class="dropdown-content">
+          {% if user.is_authenticated %}
+            <a href="#" id="profileModalTrigger"><i class="fas fa-id-card"></i> My Profile</a>
+            <hr>
+            <form action="{% url 'logout' %}" method="post" style="margin:0;">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-item">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </form>
+          {% else %}
+            <a href="#" class="open-modal" data-modal="loginModal"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a href="#" class="open-modal" data-modal="signupModal"><i class="fas fa-user-plus"></i> Sign Up</a>
+          {% endif %}
+        </div>
+      </div>
+      <a href="#" class="icon-btn cart-toggle" onclick="openCartDrawer(); return false;">
+        <i class="fas fa-shopping-bag"></i>
+        <span id="cart-badge">0</span>
+      </a>
+      <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- =========================================
+HERO SECTION
+========================================= -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">{{ category.name }}</div>
+    <h1 class="hero-h1">{{ category.name }} <em>Delights</em></h1>
+    <p class="hero-p">Explore our handcrafted {{ category.name|lower }} made with premium ingredients just for you.</p>
+    <div class="hero-btns">
+      <a href="#productsGrid" class="btn-grad">Shop Now</a>
+      <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" class="btn-outline-hero">Order on WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================
+PRODUCTS GRID
+========================================= -->
+<section id="productsGrid" class="products-section">
+  <div class="products-grid">
+    {% for product in products %}
+    <div class="product-card">
+      <a href="/product/{{ product.slug }}/" class="product-image">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% else %}
+        <img src="https://placehold.co/500x400/FFB7C5/white?text={{ product.name }}" alt="{{ product.name }}">
+        {% endif %}
+
+        <div class="product-hover-icons">
+          <button class="fav-icon" onclick="event.preventDefault(); event.stopPropagation(); toggleFavorite(this, {{ product.id }})">
+            <i class="far fa-heart"></i>
+          </button>
+          <div class="share-group">
+            <button class="share-icon" onclick="shareWhatsApp(event,'{{ product.slug }}')">
+              <i class="fab fa-whatsapp"></i>
+            </button>
+            <button class="share-icon" onclick="shareFacebook(event,'{{ product.slug }}')">
+              <i class="fab fa-facebook-f"></i>
+            </button>
+            <button class="share-icon" onclick="copyProductLink(event,'{{ product.slug }}')">
+              <i class="fas fa-link"></i>
+            </button>
+          </div>
+        </div>
+      </a>
+
+      <div class="product-info">
+        <h3 class="product-name">{{ product.name }}</h3>
+        <div class="product-price">Depends Upon Customization</div>
+        <button type="button" 
+                class="cart-btn" 
+                onclick="addToCart(
+                  {{ product.id }},
+                  '{{ product.name|escapejs }}',
+                  
+                  {{ product.price }},
+                  '{{ product.category.slug }}'
+
+                )">
+          <i class="fas fa-shopping-cart"></i> Add To Cart
+        </button>
+      </div>
+    </div>
+    {% empty %}
+    <div class="empty-products">No products available in this category.</div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- =========================================
+FOOTER
+========================================= -->
+<footer class="ik-footer">
+  <div class="footer-wrapper">
+    <div class="footer-brand">
+      {% if settings.footer_logo %}
+      <img src="{{ settings.footer_logo.url }}" alt="IK Delights" class="footer-logo">
+      {% elif settings.logo %}
+      <img src="{{ settings.logo.url }}" alt="IK Delights" class="footer-logo">
+      {% else %}
+      <img src="{% static 'images/logo.png' %}" alt="IK Delights" class="footer-logo">
+      {% endif %}
+      <p>IK Delights brings sweetness, elegance, and premium bakery creations for every celebration.</p>
+      <div class="footer-socials">
+        <a href="{{ settings.facebook|default:'#' }}"><i class="fab fa-facebook-f"></i></a>
+        <a href="{{ settings.instagram|default:'#' }}"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        <a href="{{ settings.tiktok|default:'#' }}"><i class="fab fa-tiktok"></i></a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/#products">Products</a></li>
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#gallery">Gallery</a></li>
+        <li><a href="/#reviews">Reviews</a></li>
+        <li><a href="/#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-contact">
+      <h3>Contact Us</h3>
+      <p><i class="fas fa-map-marker-alt"></i> {{ settings.address|default:"Lahore, Pakistan" }}</p>
+      <p><i class="fas fa-phone"></i> {{ settings.phone|default:"+92 328 4397002" }}</p>
+      <p><i class="fas fa-envelope"></i> {{ settings.email|default:"info@ikdelights.com" }}</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 {{ settings.bakery_name }}. All Rights Reserved.</p>
+    <p>Designed with ❤️ by IK Delights</p>
+  </div>
+</footer>
+
+<!-- MODALS -->
+{% include 'includes/modal_login.html' %}
+{% include 'includes/modal_signup.html' %}
+{% include 'includes/customization_modal.html' %}
+<!-- CART DRAWER -->
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-drawer-header">
+    <h3>🛒 Your Cart</h3>
+    <button onclick="closeCartDrawer()">&times;</button>
+  </div>
+  <div class="cart-drawer-body" id="cartDrawerItems">
+    <div class="empty-cart-drawer">Your cart is empty 🛒</div>
+  </div>
+  <div class="cart-drawer-footer">
+    <div class="cart-total">Total: <span id="drawerCartTotal">Rs 0</span></div>
+    <button class="btn-grad" onclick="proceedToCheckout()">Proceed To Checkout</button>
+  </div>
+</div>
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeCartDrawer()"></div>
+
+<!-- =========================================
+SCRIPTS
+========================================= -->
+<script src="{% static 'js/ik.js' %}?v=14"></script>
+<script>
+/* =========================================
+PAGE-SPECIFIC FUNCTIONS (same as before)
+========================================= */
+
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if(modal) modal.style.display = 'flex';
+}
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if(modal) modal.style.display = 'none';
+}
+function toggleFavorite(button, productId){
+    const icon = button.querySelector('i');
+    if(icon.classList.contains('far')){
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+        if(typeof saveFavorite === 'function') saveFavorite(productId);
+    } else {
+        icon.classList.remove('fas');
+        icon.classList.add('far');
+        if(typeof removeFavorite === 'function') removeFavorite(productId);
+    }
+}
+function shareWhatsApp(event, slug){
+    event.preventDefault(); event.stopPropagation();
+    window.open(`https://wa.me/?text=${window.location.origin}/product/${slug}/`, '_blank');
+}
+function shareFacebook(event, slug){
+    event.preventDefault(); event.stopPropagation();
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/product/${slug}/`, '_blank');
+}
+function copyProductLink(event, slug){
+    event.preventDefault(); event.stopPropagation();
+    navigator.clipboard.writeText(`${window.location.origin}/product/${slug}/`);
+    if(typeof showToast === 'function') showToast('Product link copied!', 'success');
+    else alert('Product link copied!');
+}
+document.addEventListener('click', function(e) {
+    if(e.target.classList && e.target.classList.contains('modal-ov')) {
+        e.target.style.display = 'none';
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+    const profileBtn = document.getElementById("profileModalTrigger");
+    if (profileBtn) {
+        profileBtn.addEventListener("click", async function (e) {
+            e.preventDefault();
+            try {
+                const response = await fetch('/profile/modal-content/');
+                const html = await response.text();
+                document.getElementById("profileModalContent").innerHTML = html;
+                document.getElementById("profileModal").style.display = "flex";
+            } catch (error) {
+                console.error("Profile modal error:", error);
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>

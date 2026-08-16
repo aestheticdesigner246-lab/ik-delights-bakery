@@ -1,0 +1,1113 @@
+/* ======================================================
+   🌸 IK DELIGHTS FINAL PREMIUM DEALS CSS (UPDATED)
+====================================================== */
+
+.deals-isolated-page{
+
+    padding:30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff7fb 0%,
+            #fff0f8 100%
+        );
+
+    min-height:100vh;
+}
+
+/* ======================================================
+   PAGE TITLE
+====================================================== */
+
+.page-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    font-size:34px;
+
+    font-weight:800;
+
+    color:#ff1493;
+
+    margin-bottom:10px;
+}
+
+.page-title i{
+
+    color:#ff4da6;
+}
+
+/* ======================================================
+   SUBTITLE
+====================================================== */
+
+.deals-subtitle{
+
+    font-size:15px;
+
+    font-weight:600;
+
+    color:#777;
+
+    margin-bottom:24px;
+}
+
+/* ======================================================
+   TABLE WRAPPER
+====================================================== */
+
+.table-wrapper{
+
+    background:white;
+
+    border-radius:30px;
+
+    padding:28px;
+
+    box-shadow:
+        0 20px 55px rgba(255,20,147,.08);
+}
+
+/* ======================================================
+   TOP BAR
+====================================================== */
+
+.deals-top-bar{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    margin-bottom:24px;
+}
+
+/* ======================================================
+   ADD BUTTON
+====================================================== */
+
+.btn-add{
+
+    border:none;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:15px 28px;
+
+    border-radius:60px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff1493,
+            #ff4da6
+        );
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    transition:.35s ease;
+
+    box-shadow:
+        0 15px 35px rgba(255,20,147,.25);
+}
+
+.btn-add:hover{
+
+    transform:
+        translateY(-4px)
+        scale(1.03);
+}
+
+/* ======================================================
+   TABLE
+====================================================== */
+
+.deals-table-responsive{
+
+    width:100%;
+
+    overflow-x:auto;
+}
+
+.deals-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    min-width:900px;
+}
+
+.deals-table thead{
+
+    background:
+        linear-gradient(
+            135deg,
+            #0b1020,
+            #11182f
+        );
+
+    color:white;
+}
+
+.deals-table th{
+
+    padding:20px 16px;
+
+    font-size:14px;
+
+    font-weight:800;
+
+    text-align:center;
+}
+
+.deals-table td{
+
+    padding:22px 16px;
+
+    text-align:center;
+
+    border-bottom:1px solid #f6d8e7;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#444;
+}
+
+.deals-table tbody tr:hover{
+
+    background:#fff4fa;
+}
+
+/* ======================================================
+   DEAL IMAGE
+====================================================== */
+
+.deal-image{
+
+    width:80px;
+
+    height:80px;
+
+    object-fit:cover;
+
+    border-radius:20px;
+
+    box-shadow:
+        0 12px 28px rgba(0,0,0,.12);
+}
+
+/* ======================================================
+   LIVE COUNTDOWN
+====================================================== */
+
+.live-countdown{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    padding:12px 18px;
+
+    border-radius:60px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff1493,
+            #ff4da6
+        );
+
+    color:white;
+
+    font-size:13px;
+
+    font-weight:800;
+
+    min-width:200px;
+
+    box-shadow:
+        0 12px 30px rgba(255,20,147,.28);
+}
+
+/* ======================================================
+   STATUS
+====================================================== */
+
+.status-badge{
+
+    padding:10px 20px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:800;
+}
+
+.status-badge.active{
+
+    background:#d7ffe5;
+
+    color:#0b9f4a;
+}
+
+.status-badge.inactive{
+
+    background:#ffe1e1;
+
+    color:#d82222;
+}
+
+/* ======================================================
+   ACTION BUTTONS
+====================================================== */
+
+.action-buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:14px;
+}
+
+.btn-edit,
+.btn-delete{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-size:17px;
+
+    transition:.35s ease;
+}
+
+.btn-edit{
+
+    background:#e9f3ff;
+
+    color:#0077ff;
+}
+
+.btn-delete{
+
+    background:#ffeaea;
+
+    color:#ff3b3b;
+}
+
+.btn-edit:hover,
+.btn-delete:hover{
+
+    transform:
+        translateY(-3px)
+        scale(1.08);
+}
+
+/* ======================================================
+   MODAL & POPUP - FIXED (DELETED .active CONFLICT)
+====================================================== */
+
+.deal-modal,
+.deal-popup{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(10px);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999999;
+    padding:24px;
+}
+
+/* ✅ DELETED: .deal-modal.active, .deal-popup.active block */
+/* ✅ ADDED: Smooth transitions for popup */
+.deal-popup {
+    opacity: 0;
+    visibility: hidden;
+    transition: .3s ease;
+}
+
+/* ✅ ADDED: New .show class for clean popup control */
+.deal-popup.show {
+    opacity: 1;
+    visibility: visible;
+    display: flex !important;
+}
+
+/* Modal active class (keep as is - no conflict) */
+.deal-modal.active {
+    display: flex !important;
+}
+
+/* Body scroll prevent */
+body.popup-open{
+    overflow:hidden;
+}
+
+/* ======================================================
+   MODAL CONTENT
+====================================================== */
+
+.deal-modal-content{
+
+    width:100%;
+
+    max-width:860px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8fc,
+            #fff0f7
+        );
+
+    border-radius:34px;
+
+    padding:30px;
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.28);
+
+    max-height:95vh;
+
+    overflow-y:auto;
+
+    animation:popupShow .4s ease;
+}
+
+@keyframes popupShow{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            scale(.94)
+            translateY(20px);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            scale(1)
+            translateY(0);
+    }
+}
+
+/* ======================================================
+   MODAL TITLE
+====================================================== */
+
+#dealModalTitle{
+
+    text-align:center;
+
+    font-size:32px;
+
+    font-weight:800;
+
+    color:#ff1493;
+
+    margin-bottom:26px;
+}
+
+/* ======================================================
+   INPUTS
+====================================================== */
+
+.input-group,
+.deal-image-upload,
+.deal-timer-box,
+.deal-status-box{
+
+    margin-bottom:24px;
+}
+
+.input-group label,
+.deal-image-upload label,
+.deal-timer-box label,
+.deal-status-box label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:10px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#444;
+}
+
+.input-group input,
+.deal-timer-box input,
+.deal-status-box select{
+
+    width:100%;
+
+    padding:16px 18px;
+
+    border-radius:18px;
+
+    border:2px solid #f3d7e7;
+
+    background:#fffafd;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    outline:none;
+
+    transition:.35s ease;
+}
+
+.input-group input:focus,
+.deal-timer-box input:focus,
+.deal-status-box select:focus{
+
+    border-color:#ff1493;
+
+    box-shadow:
+        0 0 0 5px rgba(255,20,147,.12);
+}
+
+/* ======================================================
+   FILE INPUT
+====================================================== */
+
+#dealImage{
+
+    width:100%;
+
+    padding:16px;
+
+    border-radius:18px;
+
+    border:2px dashed #ffb3d7;
+
+    background:#fff7fb;
+
+    cursor:pointer;
+}
+
+/* ======================================================
+   LIVE PREVIEW
+====================================================== */
+
+.live-timer-preview{
+
+    margin-top:28px;
+
+    margin-bottom:28px;
+}
+
+/* ======================================================
+   PREMIUM POSTER
+====================================================== */
+
+.deal-live-timer-preview{
+
+    position:relative;
+
+    width:100%;
+
+    height:420px;
+
+    border-radius:30px;
+
+    overflow:hidden;
+
+    background:#000;
+
+    box-shadow:
+        0 28px 70px rgba(0,0,0,.22);
+}
+
+/* ======================================================
+   PREVIEW IMAGE
+====================================================== */
+
+#previewDealImage{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+    display:block;
+}
+
+/* ======================================================
+   OVERLAY
+====================================================== */
+
+.deal-preview-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(0,0,0,.58),
+            rgba(0,0,0,.08)
+        );
+
+    z-index:1;
+}
+
+/* ======================================================
+   TIMER
+====================================================== */
+
+.popup-live-timer{
+
+    position:absolute;
+
+    top:14px;
+
+    right:14px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    z-index:20;
+}
+
+/* ======================================================
+   TIMER CARD
+====================================================== */
+
+.time-card{
+
+    width:50px;
+
+    height:50px;
+
+    border-radius:16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,20,147,.96),
+            rgba(255,77,166,.92)
+        );
+
+    color:white;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    backdrop-filter:blur(10px);
+
+    -webkit-backdrop-filter:blur(10px);
+
+    border:
+        1px solid rgba(255,255,255,.16);
+
+    box-shadow:
+        0 12px 28px rgba(255,20,147,.32);
+
+    animation:floatTimer 2s infinite;
+}
+
+.time-card span{
+
+    font-size:16px;
+
+    font-weight:800;
+
+    line-height:1;
+}
+
+.time-card small{
+
+    margin-top:2px;
+
+    font-size:7px;
+
+    letter-spacing:1px;
+}
+
+/* ======================================================
+   TIMER FLOAT
+====================================================== */
+
+@keyframes floatTimer{
+
+    0%{
+
+        transform:translateY(0);
+    }
+
+    50%{
+
+        transform:translateY(-4px);
+    }
+
+    100%{
+
+        transform:translateY(0);
+    }
+}
+
+/* ======================================================
+   OVERLAY CONTENT
+====================================================== */
+
+.preview-overlay-content{
+
+    position:absolute;
+
+    left:24px;
+
+    bottom:24px;
+
+    z-index:10;
+
+    color:white;
+
+    text-shadow:
+        0 5px 16px rgba(0,0,0,.45);
+}
+
+.preview-overlay-content h3{
+
+    font-size:34px;
+
+    font-weight:900;
+
+    margin-bottom:10px;
+}
+
+.preview-overlay-content p{
+
+    font-size:14px;
+
+    font-weight:600;
+}
+
+/* ======================================================
+   MODAL BUTTONS
+====================================================== */
+
+.modal-buttons{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:16px;
+
+    margin-top:30px;
+}
+
+.btn-save,
+.btn-cancel{
+
+    border:none;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    padding:16px 32px;
+
+    border-radius:60px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    transition:.35s ease;
+}
+
+.btn-save{
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff1493,
+            #ff4da6
+        );
+
+    color:white;
+
+    box-shadow:
+        0 15px 35px rgba(255,20,147,.25);
+}
+
+.btn-cancel{
+
+    background:#f3f3f3;
+
+    color:#555;
+}
+
+.btn-save:hover,
+.btn-cancel:hover{
+
+    transform:
+        translateY(-4px)
+        scale(1.03);
+}
+
+/* ======================================================
+   FINAL FRONTEND DEAL POPUP - CLEAN VERSION
+   ✅ FIXED: No .active conflict
+   ✅ ADDED: opacity, visibility, transition
+   ✅ ADDED: .show class
+====================================================== */
+
+.deal-popup{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.75);
+
+    backdrop-filter:blur(12px);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999999;
+
+    padding:20px;
+    
+    /* ✅ ADDED: Smooth transitions */
+    opacity: 0;
+    visibility: hidden;
+    transition: .3s ease;
+}
+
+/* ✅ ADDED: .show class for opening (NO ACTIVE CONFLICT) */
+.deal-popup.show {
+    opacity: 1;
+    visibility: visible;
+    display: flex !important;
+}
+
+.deal-popup-box{
+
+    position:relative;
+
+    width:100%;
+
+    max-width:850px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    animation:popupShow .35s ease;
+
+    z-index:2;
+}
+
+.deal-popup-image{
+
+    width:100%;
+
+    border-radius:28px;
+
+    display:block;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.45);
+    
+    position:relative;
+
+    z-index:1;
+}
+
+/* ======================================================
+   CLOSE BUTTON - FIXED WITH HIGHEST Z-INDEX
+====================================================== */
+
+.deal-popup-close{
+
+    position:absolute !important;
+
+    top:-18px !important;
+
+    right:-18px !important;
+
+    width:54px;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#ff4da6;
+
+    color:white;
+
+    font-size:28px;
+
+    font-weight:800;
+
+    cursor:pointer !important;
+
+    z-index:999999999 !important;
+
+    pointer-events:auto !important;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.35);
+
+    transition:.3s ease;
+}
+
+.deal-popup-close:hover{
+
+    transform:rotate(90deg);
+    background:#ff1493;
+}
+
+/* ======================================================
+   POPUP TIMER
+====================================================== */
+
+.deal-popup-timer{
+
+    position:absolute;
+
+    top:20px;
+
+    right:20px;
+
+    background:rgba(0,0,0,.65);
+
+    color:white;
+
+    padding:14px 18px;
+
+    border-radius:16px;
+
+    font-size:20px;
+
+    font-weight:800;
+
+    backdrop-filter:blur(8px);
+
+    z-index:10;
+}
+
+/* ======================================================
+   POPUP BUTTON
+====================================================== */
+
+.deal-popup-btn{
+
+    margin-top:24px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #25d366,
+            #1ebe5d
+        );
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:18px 42px;
+
+    border-radius:60px;
+
+    font-size:20px;
+
+    font-weight:800;
+
+    box-shadow:
+        0 15px 35px rgba(37,211,102,.3);
+
+    transition:.3s ease;
+
+    z-index:5;
+
+    position:relative;
+}
+
+.deal-popup-btn:hover{
+
+    transform:
+        translateY(-4px)
+        scale(1.03);
+}
+
+/* ======================================================
+   MOBILE RESPONSIVE
+====================================================== */
+
+@media(max-width:768px){
+
+    .deals-isolated-page{
+
+        padding:18px;
+    }
+
+    .deal-modal-content{
+
+        padding:22px;
+    }
+
+    .deal-live-timer-preview{
+
+        height:260px;
+    }
+
+    .popup-live-timer{
+
+        top:10px;
+
+        right:10px;
+
+        gap:6px;
+    }
+
+    .time-card{
+
+        width:42px;
+
+        height:42px;
+
+        border-radius:12px;
+    }
+
+    .time-card span{
+
+        font-size:13px;
+    }
+
+    .time-card small{
+
+        font-size:6px;
+    }
+
+    .preview-overlay-content{
+
+        left:18px;
+
+        bottom:18px;
+    }
+
+    .preview-overlay-content h3{
+
+        font-size:24px;
+    }
+
+    .preview-overlay-content p{
+
+        font-size:12px;
+    }
+
+    .modal-buttons{
+
+        flex-direction:column;
+    }
+
+    .btn-save,
+    .btn-cancel{
+
+        width:100%;
+    }
+    
+    /* Mobile fixes - Close button */
+    .deal-popup-close{
+        top:-10px !important;
+        right:-10px !important;
+        width:44px;
+        height:44px;
+        font-size:22px;
+    }
+    
+    .deal-popup-timer{
+        top:12px;
+        right:12px;
+        padding:8px 12px;
+        font-size:14px;
+    }
+    
+    .deal-popup-btn{
+        padding:14px 32px;
+        font-size:16px;
+    }
+}

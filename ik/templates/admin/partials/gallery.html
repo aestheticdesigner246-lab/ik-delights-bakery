@@ -1,0 +1,324 @@
+<div class="gallery-isolated-page">
+
+    <!-- ======================================================
+         PAGE TITLE
+    ====================================================== -->
+
+    <h2 class="page-title">
+
+        <i class="fa-solid fa-images"></i>
+
+        Gallery Management
+
+    </h2>
+
+    <!-- ======================================================
+         TABLE WRAPPER
+    ====================================================== -->
+
+    <div class="table-wrapper">
+
+        <!-- ======================================================
+             TOP ACTIONS
+        ====================================================== -->
+
+        <div class="gallery-top-actions">
+
+            <button class="btn-add"
+                    type="button"
+                    onclick="window.showGalleryModal()">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Add New Image
+
+            </button>
+
+        </div>
+
+        <!-- ======================================================
+             FILTER BUTTONS
+        ====================================================== -->
+
+        <div class="gallery-filters">
+
+            <button class="filter-btn active"
+                    data-filter="all">
+
+                All Cakes
+
+            </button>
+
+            <button class="filter-btn"
+                    data-filter="birthday">
+
+                Birthday Cakes
+
+            </button>
+
+            <button class="filter-btn"
+                    data-filter="bento">
+
+                Bento Cakes
+
+            </button>
+
+            <button class="filter-btn"
+                    data-filter="brownie">
+
+                Brownies
+
+            </button>
+
+            <button class="filter-btn"
+                    data-filter="dessert">
+
+                Desserts
+
+            </button>
+
+        </div>
+
+        <!-- ======================================================
+             GALLERY GRID
+        ====================================================== -->
+
+        <div class="gallery-grid">
+
+            {% for image in gallery_images %}
+
+            <div class="gallery-card"
+                 data-category="{{ image.category|lower }}">
+
+                <!-- IMAGE -->
+
+                <div class="gallery-image-wrapper">
+
+                    {% if image.image %}
+
+                    <img src="{{ image.image.url }}"
+                         alt="{{ image.name }}"
+                         class="gallery-image">
+
+                    {% else %}
+
+                    <img src="/static/images/no-image.png"
+                         alt="No Image"
+                         class="gallery-image">
+
+                    {% endif %}
+
+                    <!-- OVERLAY -->
+
+                    <div class="gallery-overlay">
+
+                        <button class="gallery-view-btn"
+                                type="button">
+
+                            <i class="fa-solid fa-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- CONTENT -->
+
+                <div class="gallery-content">
+
+                    <span class="gallery-category">
+
+                        {{ image.category }}
+
+                    </span>
+
+                    <h3 class="gallery-title">
+
+                        {{ image.name }}
+
+                    </h3>
+
+                    {% if image.price %}
+
+                    <p class="gallery-price">
+
+                        Rs {{ image.price }}
+
+                    </p>
+
+                    {% endif %}
+
+                    <!-- ACTIONS -->
+
+                    <div class="gallery-actions">
+
+                        <button class="btn-edit"
+                                type="button">
+
+                            <i class="fa-solid fa-pen"></i>
+
+                        </button>
+
+                        <button class="btn-delete"
+                                type="button">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-gallery">
+
+                <i class="fa-solid fa-image"></i>
+
+                <h3>
+
+                    No Gallery Images Found
+
+                </h3>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- ======================================================
+         GALLERY MODAL
+    ====================================================== -->
+
+    <div id="galleryModal"
+         class="gallery-modal">
+
+        <div class="gallery-modal-content">
+
+            <!-- CLOSE -->
+
+            <span class="gallery-close"
+                  onclick="window.closeGalleryModal()">
+
+                &times;
+
+            </span>
+
+            <h3>
+
+                Add Gallery Image
+
+            </h3>
+
+            <!-- ======================================================
+                 FORM
+            ====================================================== -->
+
+            <form id="galleryForm"
+                  enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <!-- IMAGE NAME -->
+
+                <input type="text"
+                       name="name"
+                       placeholder="Image Name"
+                       required>
+
+                <!-- CATEGORY -->
+
+                <select name="category"
+                        required>
+
+                    <option value="birthday">
+
+                        Birthday Cakes
+
+                    </option>
+
+                    <option value="bento">
+
+                        Bento Cakes
+
+                    </option>
+
+                    <option value="brownie">
+
+                        Brownies
+
+                    </option>
+
+                    <option value="dessert">
+
+                        Desserts
+
+                    </option>
+
+                </select>
+
+                <!-- PRICE -->
+
+                <input type="number"
+                       name="price"
+                       placeholder="Price">
+
+                <!-- IMAGE -->
+
+                <input type="file"
+                       name="image"
+                       accept="image/*"
+                       required>
+
+                <!-- BUTTONS -->
+
+                <div class="modal-buttons">
+
+                    <button type="button"
+                            class="btn-save"
+                            onclick="saveGalleryImage()">
+
+                        Save Image
+
+                    </button>
+
+                    <button type="button"
+                            class="btn-cancel"
+                            onclick="window.closeGalleryModal()">
+
+                        Cancel
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- ======================================================
+         LIGHTBOX
+    ====================================================== -->
+
+    <div class="gallery-lightbox">
+
+        <span class="gallery-lightbox-close">
+
+            &times;
+
+        </span>
+
+        <img class="gallery-lightbox-image">
+
+    </div>
+
+</div>

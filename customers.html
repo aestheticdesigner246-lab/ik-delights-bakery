@@ -1,0 +1,226 @@
+<div class="customers-page">
+
+    <div class="customers-header">
+
+        <div>
+
+            <h2>Customers</h2>
+
+            <p>
+                Total Customers:
+                <strong>{{ total_customers }}</strong>
+            </p>
+
+        </div>
+
+        <input
+            type="text"
+            id="customerSearch"
+            placeholder="Search customer..."
+            onkeyup="searchCustomers()"
+        >
+
+    </div>
+
+
+
+    <div class="customers-table-wrapper">
+
+        <table class="customers-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Profile</th>
+
+                    <th>Username</th>
+
+                    <th>Phone</th>
+
+                    <th>City</th>
+
+                    <th>Address</th>
+
+                    <th>Total Orders</th>
+
+                    <th>Created</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+
+
+            <tbody id="customersTableBody">
+
+                {% for customer in customers %}
+
+                <tr id="customer-{{ customer.id }}">
+
+                    <!-- ID -->
+                    <td>
+                        {{ customer.id }}
+                    </td>
+
+
+
+                    <!-- PROFILE -->
+                    <td>
+
+                        <img
+                            class="customer-profile"
+
+                            src="https://ui-avatars.com/api/?name={{ customer.user.username }}"
+
+                            alt="profile"
+                        >
+
+                    </td>
+
+
+
+                    <!-- USERNAME -->
+                    <td>
+
+                        <div class="customer-user">
+
+                            <span>
+                                {{ customer.user.username }}
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+
+                    <!-- PHONE -->
+                    <td>
+                        {{ customer.phone|default:"N/A" }}
+                    </td>
+
+
+
+                    <!-- CITY -->
+                    <td>
+                        {{ customer.city|default:"N/A" }}
+                    </td>
+
+
+
+                    <!-- ADDRESS -->
+                    <td>
+                        {{ customer.address|default:"N/A" }}
+                    </td>
+
+
+
+                    <!-- TOTAL ORDERS -->
+                    <td>
+                        {{ customer.user.order_set.count }}
+                    </td>
+
+
+
+                    <!-- CREATED DATE -->
+                    <td>
+                        {{ customer.user.date_joined|date:"d M Y" }}
+                    </td>
+
+
+
+                    <!-- ACTIONS -->
+                    <td>
+
+                        <div class="customer-actions">
+
+
+
+                            <!-- VIEW -->
+                            <button
+                                class="view-btn"
+
+                                onclick="viewCustomer(
+
+                                    '{{ customer.user.username|escapejs }}',
+
+                                    '{{ customer.phone|default:"No Phone"|escapejs }}',
+
+                                    '{{ customer.city|default:"No City"|escapejs }}',
+
+                                    '{{ customer.address|default:"No Address"|escapejs }}',
+
+                                    '{{ customer.user.order_set.count }}'
+
+                                )">
+
+                                View
+
+                            </button>
+
+
+
+                            <!-- EDIT -->
+                            <button
+                                class="edit-btn"
+
+                                onclick="editCustomer(
+
+                                    {{ customer.id }},
+
+                                    '{{ customer.phone|default:""|escapejs }}',
+
+                                    '{{ customer.city|default:""|escapejs }}',
+
+                                    '{{ customer.address|default:""|escapejs }}'
+
+                                )">
+
+                                Edit
+
+                            </button>
+
+
+
+                            <!-- DELETE -->
+                            <button
+                                class="delete-btn"
+
+                                onclick="deleteCustomer({{ customer.id }})">
+
+                                Delete
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="9" class="text-center">
+
+                        No Customers Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

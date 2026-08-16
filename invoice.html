@@ -1,0 +1,432 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice #{{ order.id }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #fff7f9;
+            padding: 40px;
+            color: #444;
+        }
+
+        .invoice-box {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        /* HEADER */
+        .invoice-header {
+            background: linear-gradient(135deg, #d88ca0, #f3bfd0);
+            padding: 35px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo-wrap img {
+            width: 190px;
+            filter: brightness(0) invert(1);
+        }
+
+        .invoice-title {
+            text-align: right;
+        }
+
+        .invoice-title h1 {
+            margin: 0;
+            font-size: 38px;
+            font-weight: 800;
+            color: white;
+        }
+
+        .invoice-title p {
+            margin-top: 8px;
+            font-size: 16px;
+        }
+
+        .premium-badge {
+            font-size: 12px;
+            letter-spacing: 1px;
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            margin-top: 8px;
+        }
+
+        /* BODY */
+        .invoice-content {
+            padding: 35px;
+        }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: #fff5f7;
+            border-radius: 18px;
+            padding: 18px;
+            border: 1px solid #f3d5df;
+        }
+
+        .info-card strong {
+            display: block;
+            color: #c46a84;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .info-card span {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* ADDRESS */
+        .extra-info {
+            background: #fafafa;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 18px;
+        }
+
+        thead {
+            background: #d88ca0;
+            color: white;
+        }
+
+        th {
+            padding: 16px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #fff8fa;
+        }
+
+        /* CUSTOMIZATION SECTION STYLES */
+        .custom-box{
+            margin-top: 40px;
+            background:#fff8fa;
+            padding:30px;
+            border-radius:24px;
+            border:1px solid #f5dbe3;
+        }
+
+        .custom-box h2{
+            color:#c46a84;
+            margin-bottom:25px;
+            font-size:28px;
+        }
+
+        .custom-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+            gap:18px;
+        }
+
+        .custom-card{
+            background:white;
+            padding:18px;
+            border-radius:16px;
+            border:1px solid #f3d5df;
+        }
+
+        .custom-card strong{
+            display:block;
+            color:#c46a84;
+            margin-bottom:8px;
+            font-size:14px;
+        }
+
+        .custom-card span{
+            font-weight:600;
+        }
+
+        .reference-image{
+            margin-top:35px;
+            text-align:center;
+        }
+
+        .reference-image h3{
+            color:#c46a84;
+            margin-bottom:18px;
+        }
+
+        .reference-image img{
+            width:280px;
+            border-radius:20px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.12);
+        }
+
+        /* TOTAL BOX */
+        .total-box {
+            margin-top: 30px;
+            background: #fff5f7;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: right;
+        }
+
+        .total-box p {
+            margin: 6px 0;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .total-box h2 {
+            color: #c46a84;
+            margin: 10px 0 0;
+            font-size: 32px;
+        }
+
+        /* PAYMENT */
+        .payment-status {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 18px;
+            background: #d88ca0;
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        .payment-status.paid {
+            background: #27ae60;
+        }
+
+        /* FOOTER */
+        .invoice-footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #888;
+            font-size: 15px;
+        }
+
+        .invoice-footer h3 {
+            color: #c46a84;
+            margin-bottom: 8px;
+        }
+
+        /* BUTTONS */
+        .btn-area {
+            margin-top: 35px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #c46a84, #d88ca0);
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 6px 15px rgba(212, 128, 154, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 128, 154, 0.4);
+        }
+
+        /* PRINT FIX */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .btn-area {
+                display: none;
+            }
+            .invoice-box {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-box">
+        <!-- PREMIUM HEADER -->
+        <div class="invoice-header">
+            <div class="logo-wrap">
+                <img src="{% static 'images/logo.png' %}" alt="IK Delights">
+            </div>
+            <div class="invoice-title">
+                <h1>INVOICE</h1>
+                <p>Order #{{ order.id }}</p>
+                <div class="premium-badge">✨ Premium Bakery Management Invoice ✨</div>
+            </div>
+        </div>
+
+        <div class="invoice-content">
+            <!-- PROFESSIONAL INFO GRID -->
+            <div class="info-grid">
+                <div class="info-card">
+                    <strong>Order ID</strong>
+                    <span>#{{ order.id }}</span>
+                </div>
+                <div class="info-card">
+                    <strong>Customer</strong>
+                    <span>{{ order.name }}</span>
+                </div>
+                <div class="info-card">
+                    <strong>Phone</strong>
+                    <span>{{ order.phone }}</span>
+                </div>
+                <div class="info-card">
+                    <strong>Status</strong>
+                    <span>{{ order.get_status_display }}</span>
+                </div>
+                <div class="info-card">
+                    <strong>Date</strong>
+                    <span>{{ order.created_at|date:"d M Y" }}</span>
+                </div>
+            </div>
+
+            <!-- ADDRESS & EVENT TYPE -->
+            <div class="extra-info">
+                <strong>📍 Delivery Address:</strong> {{ order.address }}<br>
+                <strong>🎉 Event Type:</strong> {{ order.customization.event_type|default:"-" }}
+            </div>
+
+            <!-- JAZZCASH PAYMENT INSTRUCTION -->
+            <div class="extra-info">
+                <strong>💰 Advance Payment Instructions:</strong><br>
+                Please send 50% advance payment to:<br><br>
+                <strong>💳 JazzCash:</strong> +{{ business_number }}
+            </div>
+
+            <!-- ITEMS TABLE -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.product_name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>Rs {{ item.product_price|floatformat:2 }}</td>
+                        <td>Rs {% widthratio item.product_price 1 item.quantity %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- CUSTOMIZATION SECTION -->
+            {% if order.customization %}
+            <div class="custom-box">
+                <h2>🎂 Customization Details</h2>
+                <div class="custom-grid">
+                    <div class="custom-card">
+                        <strong>Event Type</strong>
+                        <span>{{ order.customization.event_type|default:"-" }}</span>
+                    </div>
+                    <div class="custom-card">
+                        <strong>Flavor</strong>
+                        <span>{{ order.customization.flavor|default:"-" }}</span>
+                    </div>
+                    <div class="custom-card">
+                        <strong>Theme</strong>
+                        <span>{{ order.customization.theme|default:"-" }}</span>
+                    </div>
+                    <div class="custom-card">
+                        <strong>Cake Size</strong>
+                        <span>{{ order.customization.cake_size|default:"-" }}</span>
+                    </div>
+                    <div class="custom-card">
+                        <strong>Delivery Date</strong>
+                        <span>{{ order.customization.delivery_date|default:"-" }}</span>
+                    </div>
+                    <div class="custom-card">
+                        <strong>Message On Cake</strong>
+                        <span>{{ order.customization.cake_message|default:"—" }}</span>
+                    </div>
+                </div>
+
+                {% if order.customization.reference_image %}
+                <div class="reference-image">
+                    <h3>📸 Reference Design</h3>
+                    <img src="{{ order.customization.reference_image.url }}" alt="Reference Cake">
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- PROFESSIONAL TOTAL BREAKDOWN -->
+            <div class="total-box">
+                <div>
+                    <p>Subtotal: Rs {{ order.total|floatformat:2 }}</p>
+                    <p>Advance Required (50%): Rs {{ order.advance_amount|floatformat:2 }}</p>
+                    <p>Remaining (50%): Rs {{ order.remaining_amount|floatformat:2 }}</p>
+                    <p>Delivery Charges: Free</p>
+                    <h2>Grand Total: Rs {{ order.total|floatformat:2 }}</h2>
+                </div>
+            </div>
+
+            <!-- PAYMENT METHOD + STATUS -->
+            <div class="payment-status {% if order.payment_status == 'paid' %}paid{% endif %}">
+                Payment: {{ order.get_payment_method_display }} | Status: {{ order.payment_status|title }}
+            </div>
+
+            <!-- ACTION BUTTONS -->
+            <div class="btn-area">
+                <a href="{% url 'download_invoice_pdf' order.id %}" class="download-btn">
+                    📄 Download PDF Invoice
+                </a>
+                <button onclick="window.print()" class="download-btn">
+                    🖨️ Print Invoice
+                </button>
+            </div>
+        </div>
+
+        <!-- FOOTER with contact number -->
+        <div class="invoice-footer">
+            <h3>Thank you for choosing IK Delights 💖</h3>
+            <p>Freshly baked happiness in every bite</p>
+            <p>📞 For queries contact: +{{ business_number }}</p>
+        </div>
+    </div>
+</body>
+</html>

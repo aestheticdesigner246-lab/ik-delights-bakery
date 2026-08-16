@@ -1,0 +1,109 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/whatsapp-orders.css' %}">
+
+<div class="whatsapp-orders-container">
+
+    <!-- Header -->
+    <div class="table-header">
+        <h3>
+            <i class="fab fa-whatsapp"></i>
+            WhatsApp Orders
+        </h3>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="table-stats">
+        <h4>Total Orders: <span id="totalWhatsappCount">{{ total_whatsapp_orders }}</span></h4>
+    </div>
+
+    <!-- Search Box -->
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="whatsappSearch" placeholder="Search by phone number or customer name..." onkeyup="searchWhatsAppOrders()">
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Phone Number</th>
+                    <th>Customer Name</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Lead Source</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="whatsappTableBody">
+                {% for order in whatsapp_orders %}
+                <tr id="whatsapp-{{ order.id }}">
+                    <td data-label="ID">{{ order.id }}</td>
+                    <td data-label="Phone">{{ order.phone_number }}</td>
+                    <td data-label="Customer">{{ order.customer_name|default:"—" }}</td>
+                    <td data-label="Status">
+                        <select class="status-select" onchange="updateWhatsAppStatus({{ order.id }}, this.value)">
+                            <option value="lead" {% if order.status == 'lead' %}selected{% endif %}>🟡 New Lead</option>
+                            <option value="followup" {% if order.status == 'followup' %}selected{% endif %}>📞 Follow Up</option>
+                            <option value="working" {% if order.status == 'working' %}selected{% endif %}>⚙️ Working</option>
+                            <option value="converted" {% if order.status == 'converted' %}selected{% endif %}>✅ Converted</option>
+                            <option value="rejected" {% if order.status == 'rejected' %}selected{% endif %}>❌ Rejected</option>
+                        </select>
+                    </td>
+                    <td data-label="Amount" class="amount">Rs {{ order.total_amount|default:"0" }}</td>
+                    <td data-label="Source">{{ order.get_lead_source_display|default:"Manual Entry" }}</td>
+                    <td data-label="Date">{{ order.created_at|date:"d M Y" }}</td>
+                    <td data-label="Actions" class="action-buttons">
+                        <!-- Convert Button -->
+                        {% if order.status != 'converted' %}
+                            <button class="btn-convert" onclick="convertWhatsappToOrder({{ order.id }})" title="Convert to Order">
+                                <i class="fas fa-exchange-alt"></i> Convert
+                            </button>
+                        {% endif %}
+                        
+                        <!-- Delete Button -->
+                        <button class="btn-delete" onclick="deleteWhatsAppOrder({{ order.id }})" title="Delete Lead">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        
+                        <!-- View Order Button -->
+                        {% if order.status == 'converted' and order.order_id %}
+                            <button class="btn-view-order" onclick="viewOrder({{ order.order_id }})" title="View Order Details">
+                                <i class="fas fa-eye"></i> Order #{{ order.order_id }}
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <i class="fab fa-whatsapp"></i>
+                        <p>No WhatsApp orders found.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if whatsapp_orders.has_other_pages %}
+    <div class="pagination">
+        {% if whatsapp_orders.has_previous %}
+            <a href="?page={{ whatsapp_orders.previous_page_number }}">← Previous</a>
+        {% endif %}
+        
+        <span class="current">Page {{ whatsapp_orders.number }} of {{ whatsapp_orders.paginator.num_pages }}</span>
+        
+        {% if whatsapp_orders.has_next %}
+            <a href="?page={{ whatsapp_orders.next_page_number }}">Next →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>
+
+<script src="{% static 'js/whatsapp-orders.js' %}"></script>

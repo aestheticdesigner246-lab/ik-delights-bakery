@@ -1,0 +1,316 @@
+<h2 class="page-title">📦 Orders Management</h2>
+
+<div class="table-wrapper">
+    <table class="orders-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer / Phone</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Transaction ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr class="{% if forloop.first %}latest-order-row{% endif %}">
+                <!-- ID + NEW Badge -->
+                <td>
+                    #{{ order.id }}
+                    {% if order.created_at|timesince|slice:":1" == "0" %}
+                        <span class="new-badge">NEW</span>
+                    {% endif %}
+                </td>
+
+                <!-- Customer + Phone -->
+                <td>
+                    <div class="customer-info">
+                        <strong>{{ order.name|default:"Guest" }}</strong>
+                        <span class="customer-phone">{{ order.phone }}</span>
+                    </div>
+                </td>
+
+                <!-- Total -->
+                <td>Rs {{ order.total }}</td>
+
+                <!-- Status Dropdown -->
+                <td>
+                    <select class="status-select" data-order-id="{{ order.id }}" onchange="updateOrderStatus(this, '{{ order.id }}', '{{ order.phone }}')">
+                        <option value="pending" {% if order.status == "pending" %}selected{% endif %}>Pending</option>
+                        <option value="confirmed" {% if order.status == "confirmed" %}selected{% endif %}>Confirmed</option>
+                        <option value="processing" {% if order.status == "processing" %}selected{% endif %}>Processing</option>
+                        <option value="delivered" {% if order.status == "delivered" %}selected{% endif %}>Delivered</option>
+                        <option value="cancelled" {% if order.status == "cancelled" %}selected{% endif %}>Cancelled</option>
+                    </select>
+                </td>
+
+                <!-- Payment Status (with Amount Input) -->
+                <td>
+                    <select class="status-select"
+                            data-order-id="{{ order.id }}"
+                            onchange="updatePaymentStatus(this, '{{ order.id }}')">
+                        <option value="under_review" {% if order.payment_status == "under_review" %}selected{% endif %}>Under Review</option>
+                        <option value="partial_paid" {% if order.payment_status == "partial_paid" %}selected{% endif %}>Partial Paid</option>
+                        <option value="fully_paid" {% if order.payment_status == "fully_paid" %}selected{% endif %}>Fully Paid</option>
+                        <option value="rejected" {% if order.payment_status == "rejected" %}selected{% endif %}>Rejected</option>
+                    </select>
+
+                    <input type="number"
+                           class="received-amount"
+                           data-order-id="{{ order.id }}"
+                           value="{{ order.received_amount|default:0 }}"
+                           placeholder="Received Amount"
+                           min="0"
+                           step="0.01"
+                           style="width:100%; margin-top:6px; padding:6px; border:1px solid #ddd; border-radius:6px;">
+
+                    <div class="payment-badge">
+                        {% if order.payment_status == "under_review" %}
+                            <span class="status under_review">⏳ Review</span>
+                        {% elif order.payment_status == "partial_paid" %}
+                            <span class="status partial_paid">💰 Paid Rs {{ order.received_amount|default:0 }}</span>
+                        {% elif order.payment_status == "fully_paid" %}
+                            <span class="status fully_paid">✅ Fully Paid</span>
+                        {% elif order.payment_status == "rejected" %}
+                            <span class="status rejected">❌ Rejected</span>
+                        {% endif %}
+                    </div>
+                </td>
+
+                <!-- Transaction ID -->
+                <td>
+                    {% if order.transaction_id %}
+                        <span class="transaction-id">{{ order.transaction_id|truncatechars:20 }}</span>
+                    {% else %}
+                        <span class="no-transaction">-</span>
+                    {% endif %}
+                </td>
+
+                <!-- Actions -->
+                <td>
+                    <div class="action-buttons">
+                        <a href="/invoice/{{ order.id }}/" target="_blank" class="btn-invoice" title="Invoice">🧾</a>
+                        <a href="https://wa.me/92{{ order.phone|slice:'1:' }}?text=Hello%20👋%0A%0AYour%20IK%20Delights%20order%20status%20is:%20{{ order.status|upper }}%0A%0AThank%20you%20🎂" target="_blank" class="btn-whatsapp" title="WhatsApp">💬</a>
+                        <button class="btn-view" onclick="viewOrder('{{ order.id }}')" title="View Details">👁</button>
+                    </div>
+                </td>
+             </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="empty-row">No Orders Found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+// ========== GLOBAL FUNCTIONS FOR ORDERS PAGE ==========
+
+// Get CSRF Token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        let cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Update Payment Status (FIXED URL)
+function updatePaymentStatus(select, orderId) {
+    let paymentStatus = select.value;
+    let amountInput = document.querySelector(`.received-amount[data-order-id="${orderId}"]`);
+    let receivedAmount = amountInput ? parseFloat(amountInput.value) : 0;
+
+    console.log("ORDER ID =", orderId);
+    console.log("STATUS =", paymentStatus);
+    console.log("AMOUNT =", receivedAmount);
+
+    select.disabled = true;
+    showToast('Updating payment status...', 'info');
+
+    fetch(`/admin/update-payment-status/${orderId}/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            payment_status: paymentStatus,
+            received_amount: receivedAmount
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("SERVER RESPONSE =", data);
+        if (data.status === "ok") {
+            showToast("✅ Payment updated successfully!", "success");
+            if (data.whatsapp_link) window.open(data.whatsapp_link, "_blank");
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showToast("❌ Update failed: " + (data.error || "Unknown error"), "error");
+        }
+        select.disabled = false;
+    })
+    .catch(error => {
+        console.error("FETCH ERROR =", error);
+        showToast("❌ Network Error", "error");
+        select.disabled = false;
+    });
+}
+
+// Update Order Status
+function updateOrderStatus(select, orderId, phone) {
+    let newStatus = select.value;
+    let statusText = select.options[select.selectedIndex].text;
+    select.disabled = true;
+    showToast(`Updating order status...`, 'info');
+
+    fetch(`/admin/update-order-status/${orderId}/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie('csrftoken')
+        },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "ok") {
+            showToast(`✅ Order #${orderId} updated to ${statusText}!`, 'success');
+            if (data.whatsapp_link) window.open(data.whatsapp_link, '_blank');
+        } else {
+            showToast(`❌ Error: ${data.error || 'Update failed'}`, 'error');
+        }
+        select.disabled = false;
+    })
+    .catch(error => {
+        showToast(`❌ Network error!`, 'error');
+        select.disabled = false;
+    });
+}
+
+// View Order Details Modal
+function viewOrder(orderId) {
+    fetch(`/api/order/${orderId}/`)
+        .then(response => response.json())
+        .then(data => {
+            let verificationBadge = data.payment_verified
+                ? '<span style="color:#16a34a;">✅ Verified</span>'
+                : '<span style="color:#dc2626;">❌ Pending</span>';
+            let screenshotHtml = data.payment_screenshot
+                ? `<a href="${data.payment_screenshot}" target="_blank"><img src="${data.payment_screenshot}" style="width:100px; border-radius:8px;"></a>`
+                : '<p>No Screenshot</p>';
+            let html = `
+                <div style="padding:15px;">
+                    <h3>📦 Order #${data.id}</h3>
+                    <hr>
+                    <p><b>Customer:</b> ${data.name}</p>
+                    <p><b>Phone:</b> ${data.phone}</p>
+                    <p><b>Total:</b> Rs ${data.total}</p>
+                    <p><b>Advance:</b> Rs ${data.received_amount || 0}</p>
+                    <p><b>Remaining:</b> Rs ${data.remaining_amount || 0}</p>
+                    <p><b>Status:</b> ${data.status}</p>
+                    <p><b>Payment:</b> ${data.payment_status}</p>
+                    <p><b>Transaction:</b> ${data.transaction_id || '-'}</p>
+                    <p><b>Verification:</b> ${verificationBadge}</p>
+                    <hr>
+                    <h4>Payment Screenshot</h4>
+                    ${screenshotHtml}
+                    <div style="text-align:center; margin-top:15px;">
+                        <button onclick="closeModal()" style="background:#c46a84; color:white; border:none; padding:8px 20px; border-radius:8px;">Close</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById("orderDetails").innerHTML = html;
+            document.getElementById("orderModal").style.display = "block";
+        })
+        .catch(error => alert("Error loading order details"));
+}
+
+function closeModal() {
+    let modal = document.getElementById("orderModal");
+    if (modal) modal.style.display = "none";
+}
+
+// Toast Notification
+function showToast(message, type = 'info') {
+    let existingToast = document.querySelector('.custom-toast');
+    if (existingToast) existingToast.remove();
+    let bgColor = type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : '#c46a84';
+    let icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+    let toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.innerHTML = `<span style="margin-right:8px;">${icon}</span> ${message}`;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: ${bgColor};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 99999;
+        font-size: 14px;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// Close modal on outside click
+window.onclick = function(event) {
+    let modal = document.getElementById("orderModal");
+    if (event.target === modal && modal) closeModal();
+}
+
+// Add CSS for toast and modal if not present
+(function addStyles() {
+    if (!document.querySelector('#orderPageStyles')) {
+        let style = document.createElement('style');
+        style.id = 'orderPageStyles';
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            #orderModal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 9999;
+            }
+            #orderModal > div {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                border-radius: 16px;
+                max-width: 500px;
+                width: 90%;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+})();
+</script>
+
+<!-- Optional: Remove any external script includes to avoid conflict -->

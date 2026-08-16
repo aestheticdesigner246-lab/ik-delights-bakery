@@ -1,0 +1,242 @@
+/* ================= PAGE LAYOUT ================= */
+.page-title {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* ================= TABLE WRAPPER ================= */
+.table-wrapper {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    overflow-x: auto;
+}
+
+/* ================= TABLE ================= */
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;  /* Reduced from 1200px for compact view */
+}
+
+.orders-table thead {
+    background: #111827;
+    color: white;
+}
+
+.orders-table th,
+.orders-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.orders-table tbody tr:hover {
+    background: #f9fafb;
+    transition: 0.3s;
+}
+
+/* ================= CUSTOMER INFO (Merged Column) ================= */
+.customer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.customer-info strong {
+    font-size: 14px;
+    color: #1f2937;
+}
+
+.customer-phone {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* ================= STATUS BADGE ================= */
+.status {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.status.pending { background: #fff3cd; color: #856404; }
+.status.processing { background: #cce5ff; color: #004085; }
+.status.delivered { background: #d4edda; color: #155724; }
+.status.cancelled { background: #f8d7da; color: #721c24; }
+.status.under_review { background: #ffe8cc; color: #b45309; }
+.status.paid { background: #d1fae5; color: #065f46; }
+.status.rejected { background: #fee2e2; color: #991b1b; }
+.status.partial_paid { background: #dbeafe; color: #1d4ed8; }
+.status.fully_paid { background: #dcfce7; color: #166534; }
+
+/* ================= PAYMENT BADGE ================= */
+.payment-badge {
+    margin-top: 8px;
+}
+
+/* ================= ACTION BUTTONS ================= */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-view {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    font-size: 13px;
+}
+
+.btn-view:hover {
+    background: #1e40af;
+    transform: scale(1.05);
+}
+
+.btn-whatsapp {
+    background: #25D366;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.btn-whatsapp:hover {
+    background: #128C7E;
+    transform: scale(1.05);
+}
+
+.btn-invoice {
+    background: #7c3aed;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: 0.3s ease;
+}
+
+.btn-invoice:hover {
+    background: #5b21b6;
+    transform: scale(1.05);
+}
+
+/* ================= SELECT DROPDOWN ================= */
+.status-select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    cursor: pointer;
+    background: white;
+    font-size: 13px;
+    transition: 0.3s ease;
+}
+
+.status-select:focus {
+    border-color: #ff4081;
+    box-shadow: 0 0 0 3px rgba(255,64,129,0.15);
+}
+
+/* ================= NEW BADGE ================= */
+.new-badge {
+    background: #ff4081;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
+    display: inline-block;
+    animation: pulseBadge 1.5s infinite;
+}
+
+@keyframes pulseBadge {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+/* ================= EMPTY ROW ================= */
+.empty-row {
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    font-weight: 600;
+}
+
+/* ================= LATEST ORDER HIGHLIGHT ================= */
+.latest-order-row {
+    background: #fff0f7 !important;
+    border-left: 5px solid #ff4081;
+    animation: latestGlow 1.5s infinite;
+}
+
+@keyframes latestGlow {
+    0% { box-shadow: 0 0 0 rgba(255,64,129,0); }
+    50% { box-shadow: 0 0 18px rgba(255,64,129,0.25); }
+    100% { box-shadow: 0 0 0 rgba(255,64,129,0); }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+    .orders-table th,
+    .orders-table td {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+    
+    .page-title {
+        font-size: 20px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .btn-whatsapp, .btn-invoice, .btn-view {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+    
+    .status-select {
+        font-size: 11px;
+        padding: 4px 6px;
+    }
+}
+/* ================= TRANSACTION ID STYLES ================= */
+.transaction-id {
+    font-size: 12px;
+    font-weight: 500;
+    color: #c46a84;
+    background: #fef2f2;
+    padding: 4px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    font-family: monospace;
+}
+
+.no-transaction {
+    font-size: 12px;
+    color: #999;
+    font-style: italic;
+}

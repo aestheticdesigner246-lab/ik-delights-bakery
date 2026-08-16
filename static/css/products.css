@@ -1,0 +1,476 @@
+/* =========================================================
+   PRODUCTS PAGE MAIN
+========================================================= */
+
+.products-isolated-page{
+
+    width:100%;
+
+    min-height:100vh;
+
+    padding:20px;
+
+    overflow-x:hidden;
+}
+
+/* =========================================================
+   HEADER SECTION
+========================================================= */
+
+.products-isolated-page .products-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+    padding:25px 30px;
+
+    border-radius:24px;
+
+    background:linear-gradient(135deg,#ff4fa3,#ff0080);
+
+    box-shadow:0 15px 35px rgba(255,0,128,0.15);
+}
+
+.products-isolated-page .products-header h2{
+
+    color:white;
+
+    font-size:42px;
+
+    font-weight:800;
+
+    margin:0;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+}
+
+/* =========================================================
+   ADD PRODUCT BUTTON
+========================================================= */
+
+.products-isolated-page .add-product-btn{
+
+    padding:18px 30px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:white;
+
+    color:#ff0080;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.products-isolated-page .add-product-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* =========================================================
+   TABLE WRAPPER
+========================================================= */
+
+.products-isolated-page .products-table-wrapper{
+
+    width:100%;
+
+    overflow-x:auto;
+
+    background:white;
+
+    border-radius:30px;
+
+    padding:25px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+}
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.products-isolated-page table{
+
+    width:100%;
+
+    border-collapse:collapse;
+}
+
+.products-isolated-page thead{
+
+    background:linear-gradient(135deg,#ff4fa3,#ff0080);
+}
+
+.products-isolated-page th{
+
+    color:white;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    padding:22px 20px;
+
+    text-align:left;
+
+    white-space:nowrap;
+}
+
+.products-isolated-page td{
+
+    padding:22px 20px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    color:#3b1025;
+
+    vertical-align:middle;
+
+    border-bottom:1px solid #f3f3f3;
+
+    white-space:nowrap;
+}
+
+.products-isolated-page tr:hover{
+
+    background:#fff5fa;
+}
+
+/* =========================================================
+   PRODUCT IMAGE
+========================================================= */
+
+.products-isolated-page td img{
+
+    width:70px;
+
+    height:70px;
+
+    object-fit:cover;
+
+    border-radius:16px;
+
+    border:3px solid #ffe3ef;
+}
+
+/* =========================================================
+   STATUS BADGE
+========================================================= */
+
+.products-isolated-page .status-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:10px 18px;
+
+    border-radius:50px;
+
+    background:#dff5e3;
+
+    color:#1f7a35;
+
+    font-size:16px;
+
+    font-weight:700;
+}
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.products-isolated-page .action-buttons{
+
+    display:flex;
+
+    gap:12px;
+}
+
+.products-isolated-page .btn-edit{
+
+    padding:12px 18px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#fff3d6;
+
+    color:#8a5b00;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.products-isolated-page .btn-delete{
+
+    padding:12px 18px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#ffe1e1;
+
+    color:#b00020;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.products-isolated-page .btn-edit:hover,
+
+.products-isolated-page .btn-delete:hover{
+
+    transform:translateY(-2px);
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.products-isolated-page .product-modal{
+
+    display:none;
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.7);
+
+    backdrop-filter:blur(5px);
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow-y:auto;
+
+    z-index:999999;
+}
+
+/* =========================================================
+   MODAL CONTENT
+========================================================= */
+
+.products-isolated-page .product-modal-content{
+
+    width:450px;
+
+    max-width:90%;
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:30px;
+
+    box-shadow:0 20px 40px rgba(0,0,0,0.2);
+
+    position:relative;
+
+    animation:popupScale 0.3s ease;
+}
+
+/* =========================================================
+   MODAL TITLE
+========================================================= */
+
+.products-isolated-page .product-modal-content h3{
+
+    font-size:36px;
+
+    font-weight:800;
+
+    color:#c45c85;
+
+    margin-bottom:25px;
+
+    text-align:center;
+}
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.products-isolated-page .product-modal-content input,
+
+.products-isolated-page .product-modal-content select{
+
+    width:100%;
+
+    padding:16px 18px;
+
+    border-radius:18px;
+
+    border:2px solid #f2d8e2;
+
+    outline:none;
+
+    margin-bottom:18px;
+
+    font-size:16px;
+}
+
+/* =========================================================
+   MODAL BUTTONS
+========================================================= */
+
+.products-isolated-page .modal-buttons{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-top:20px;
+}
+
+.products-isolated-page .btn-save{
+
+    flex:1;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:linear-gradient(135deg,#ff4fa3,#ff0080);
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+.products-isolated-page .btn-cancel{
+
+    flex:1;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#f1f1f1;
+
+    color:#666;
+
+    font-size:17px;
+
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+/* =========================================================
+   ANIMATION
+========================================================= */
+
+@keyframes popupScale{
+
+    from{
+
+        opacity:0;
+
+        transform:scale(0.9);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:scale(1);
+    }
+}
+
+/* =========================================================
+   FULL PAGE SCROLL
+========================================================= */
+
+html,
+body{
+
+    overflow-y:auto !important;
+
+    overflow-x:hidden;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:768px){
+
+    .products-isolated-page .products-header{
+
+        flex-direction:column;
+
+        gap:20px;
+
+        text-align:center;
+    }
+
+    .products-isolated-page .products-header h2{
+
+        font-size:30px;
+    }
+
+    .products-isolated-page .add-product-btn{
+
+        width:100%;
+    }
+
+    .products-isolated-page td,
+
+    .products-isolated-page th{
+
+        font-size:15px;
+
+        padding:16px 14px;
+    }
+
+    .products-isolated-page .modal-buttons{
+
+        flex-direction:column;
+    }
+}

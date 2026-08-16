@@ -1,0 +1,639 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {{ product.name }} | IK Delights
+    </title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/ik.css' %}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+
+        .product-detail-section{
+
+            padding:140px 20px 80px;
+        }
+
+        .product-detail-container{
+
+            max-width:1300px;
+            margin:auto;
+
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:50px;
+
+            align-items:start;
+        }
+
+        .product-gallery{
+
+            background:#fff;
+            border-radius:25px;
+            padding:25px;
+
+            box-shadow:0 10px 30px rgba(0,0,0,.08);
+        }
+
+        .main-product-image{
+
+            width:100%;
+            height:520px;
+
+            border-radius:20px;
+            overflow:hidden;
+        }
+
+        .main-product-image img{
+
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .product-details{
+
+            background:#fff;
+            border-radius:25px;
+            padding:35px;
+
+            box-shadow:0 10px 30px rgba(0,0,0,.08);
+        }
+
+        .product-category{
+
+            display:inline-block;
+
+            background:#ffe6ee;
+            color:#c46a84;
+
+            padding:8px 18px;
+            border-radius:40px;
+
+            font-size:.9rem;
+            font-weight:600;
+
+            margin-bottom:18px;
+        }
+
+        .product-title{
+
+            font-size:3rem;
+            color:#4a2c2c;
+
+            margin-bottom:15px;
+        }
+
+        .product-price{
+
+            font-size:2rem;
+            font-weight:700;
+
+            color:#c46a84;
+
+            margin-bottom:18px;
+        }
+
+        .product-description{
+
+            color:#666;
+            line-height:1.9;
+
+            margin-bottom:25px;
+        }
+
+        .product-features{
+
+            display:flex;
+            flex-wrap:wrap;
+            gap:12px;
+
+            margin-bottom:30px;
+        }
+
+        .feature-badge{
+
+            background:#fff5f8;
+            color:#c46a84;
+
+            padding:10px 16px;
+            border-radius:40px;
+
+            font-size:.9rem;
+            font-weight:600;
+        }
+
+        .quantity-box{
+
+            display:flex;
+            align-items:center;
+            gap:15px;
+
+            margin-bottom:30px;
+        }
+
+        .qty-btn{
+
+            width:42px;
+            height:42px;
+
+            border:none;
+            border-radius:50%;
+
+            background:#c46a84;
+            color:#fff;
+
+            cursor:pointer;
+            font-size:1rem;
+        }
+
+        .qty-input{
+
+            width:70px;
+            text-align:center;
+
+            border:1px solid #eee;
+            border-radius:10px;
+
+            padding:10px;
+            font-size:1rem;
+        }
+
+        .detail-btns{
+
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+        }
+
+        .buy-btn{
+
+            flex:1;
+
+            background:linear-gradient(
+                135deg,
+                #c46a84,
+                #e89ab0
+            );
+
+            color:#fff;
+            border:none;
+
+            padding:16px 22px;
+            border-radius:50px;
+
+            cursor:pointer;
+
+            font-size:1rem;
+            font-weight:600;
+        }
+
+        .wa-btn{
+
+            flex:1;
+
+            background:#25D366;
+
+            color:#fff;
+            border:none;
+
+            padding:16px 22px;
+            border-radius:50px;
+
+            cursor:pointer;
+
+            font-size:1rem;
+            font-weight:600;
+        }
+
+        .related-section{
+
+            margin-top:80px;
+        }
+
+        .related-title{
+
+            text-align:center;
+            font-size:2.5rem;
+
+            margin-bottom:40px;
+
+            color:#4a2c2c;
+        }
+
+        .related-grid{
+
+            display:grid;
+            grid-template-columns:
+            repeat(auto-fit,minmax(260px,1fr));
+
+            gap:30px;
+        }
+
+        .related-card{
+
+            background:#fff;
+            border-radius:20px;
+
+            overflow:hidden;
+
+            box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+            cursor:pointer;
+
+            transition:.3s;
+        }
+
+        .related-card:hover{
+
+            transform:translateY(-8px);
+        }
+
+        .related-card img{
+
+            width:100%;
+            height:240px;
+
+            object-fit:cover;
+        }
+
+        .related-info{
+
+            padding:18px;
+        }
+
+        .related-name{
+
+            font-size:1.2rem;
+            font-weight:600;
+
+            color:#4a2c2c;
+
+            margin-bottom:8px;
+        }
+
+        .related-price{
+
+            color:#c46a84;
+            font-weight:700;
+        }
+
+        @media(max-width:992px){
+
+            .product-detail-container{
+
+                grid-template-columns:1fr;
+            }
+
+            .main-product-image{
+
+                height:400px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body data-user-authenticated="{% if user.is_authenticated %}true{% else %}false{% endif %}">
+<!-- NAVBAR -->
+<nav class="navbar">
+
+    <div class="navbar__inner">
+
+        <a href="/"
+           class="nav-logo">
+
+
+            <div>
+
+                <span class="nav-logo-text">
+                    I K <span>Delights</span>
+                </span>
+
+                <span class="nav-logo-sub">
+                    Premium Home Bakery
+                </span>
+
+            </div>
+
+        </a>
+
+        <div class="navbar__actions">
+
+            <a href="#"
+               class="icon-btn cart-toggle"
+               onclick="openCartDrawer(); return false;">
+
+                <i class="fas fa-shopping-bag"></i>
+
+                <span id="cart-badge">0</span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- PRODUCT DETAIL -->
+
+<section class="product-detail-section">
+
+    <div class="product-detail-container">
+
+        <!-- LEFT -->
+
+        <div class="product-gallery">
+
+            <div class="main-product-image">
+
+                {% if product.image %}
+
+                    <img src="{{ product.image.url }}"
+                         alt="{{ product.name }}">
+
+                {% else %}
+
+                    <img src="https://placehold.co/700x700">
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div class="product-details">
+
+            <div class="product-category">
+
+                {{ product.category.name }}
+
+            </div>
+
+            <h1 class="product-title">
+
+                {{ product.name }}
+
+            </h1>
+
+            <div class="product-price">
+
+                Rs {{ product.price }}
+
+            </div>
+
+            <p class="product-description">
+
+                {{ product.description|default:"Freshly baked premium delight crafted with love and high-quality ingredients specially for your celebrations." }}
+
+            </p>
+
+            <div class="product-features">
+
+                <div class="feature-badge">
+                    Fresh Ingredients
+                </div>
+
+                <div class="feature-badge">
+                    Customizable
+                </div>
+
+                <div class="feature-badge">
+                    Premium Quality
+                </div>
+
+                <div class="feature-badge">
+                    Same Day Delivery
+                </div>
+
+            </div>
+
+            <!-- QUANTITY -->
+
+            <div class="quantity-box">
+
+                <button class="qty-btn"
+                        onclick="decreaseQty()">
+
+                    -
+                </button>
+
+                <input type="number"
+                       id="detailQty"
+                       class="qty-input"
+                       value="1"
+                       min="1">
+
+                <button class="qty-btn"
+                        onclick="increaseQty()">
+
+                    +
+                </button>
+
+            </div>
+
+            <!-- BUTTONS -->
+
+            <div class="detail-btns">
+
+                <button class="buy-btn"
+                        onclick="addDetailToCart()">
+
+                    🛒 Add To Cart
+
+                </button>
+
+                <a href="https://wa.me/923284397002?text=Hello! I want to order {{ product.name }}"
+                   target="_blank"
+                   style="flex:1;">
+
+                    <button class="wa-btn">
+
+                        WhatsApp Order
+
+                    </button>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RELATED PRODUCTS -->
+
+    <div class="related-section">
+
+        <h2 class="related-title">
+
+            Related Products
+
+        </h2>
+
+        <div class="related-grid">
+
+            {% for item in related_products %}
+
+            <div class="related-card"
+                 onclick="window.location.href='{% if item.slug %}/product/{{ item.slug }}/{% else %}#{% endif %}'">
+
+                {% if item.image %}
+
+                    <img src="{{ item.image.url }}">
+
+                {% endif %}
+
+                <div class="related-info">
+
+                    <div class="related-name">
+
+                        {{ item.name }}
+
+                    </div>
+
+                    <div class="related-price">
+
+                        Rs {{ item.price }}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- CART DRAWER -->
+
+<div class="cart-drawer"
+     id="cartDrawer">
+
+    <div class="cart-drawer-header">
+
+        <h3>
+            🛒 Your Cart
+        </h3>
+
+        <button onclick="closeCartDrawer()">
+
+            &times;
+
+        </button>
+
+    </div>
+
+    <div class="cart-drawer-body"
+         id="cartDrawerItems">
+
+        <div class="empty-cart-drawer">
+
+            Your cart is empty 🛒
+
+        </div>
+
+    </div>
+
+    <div class="cart-drawer-footer">
+
+        <div class="cart-total">
+
+            Total:
+            <span id="drawerCartTotal">
+
+                Rs 0
+
+            </span>
+
+        </div>
+
+        <button class="btn-grad"
+                onclick="proceedToCheckout()">
+
+            Proceed To Checkout
+
+        </button>
+
+    </div>
+
+</div>
+
+<div class="drawer-overlay"
+     id="drawerOverlay"
+     onclick="closeCartDrawer()"></div>
+
+<!-- MODALS -->
+
+{% include 'includes/modal_login.html' %}
+{% include 'includes/modal_signup.html' %}
+
+<script src="{% static 'js/ik.js' %}"></script>
+
+<script>
+
+    function increaseQty(){
+
+        const qty =
+        document.getElementById('detailQty');
+
+        qty.value =
+        parseInt(qty.value) + 1;
+    }
+
+    function decreaseQty(){
+
+        const qty =
+        document.getElementById('detailQty');
+
+        if(parseInt(qty.value) > 1){
+
+            qty.value =
+            parseInt(qty.value) - 1;
+        }
+    }
+
+    async function addDetailToCart(){
+
+        const qty =
+        parseInt(
+            document.getElementById('detailQty').value
+        );
+
+        for(let i = 0; i < qty; i++){
+
+            await addToCart(
+                {{ product.id }},
+                "{{ product.name|escapejs }}",
+                {{ product.price }},
+                "{{ product.product_type }}"
+
+            );
+        }
+    }
+
+</script>
+
+</body>
+</html>

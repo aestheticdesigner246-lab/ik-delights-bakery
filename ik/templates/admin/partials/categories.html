@@ -1,0 +1,34 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/categories.css' %}?v=999">
+
+<div class="categories-page">
+
+    <div class="categories-header">
+        <h2 class="categories-page-title">📁 Categories Management</h2>
+        <button class="categories-add-btn" onclick="window.showAddCategoryModal()">
+            <i class="fa-solid fa-plus"></i> Add New Category
+        </button>
+    </div>
+
+    <div class="categories-table-wrapper">
+        <table class="categories-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th>Products</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="categoriesTableBody">
+                <tr><td colspan="6">Loading Categories...<\/td></tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="{% static 'js/categories.js' %}?v=999"></script>

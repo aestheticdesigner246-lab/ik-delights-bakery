@@ -1,0 +1,418 @@
+{% load static %}
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+{% if is_admin %}
+    <!-- ================= ADMIN VIEW ================= -->
+    <div class="lux-profile-wrapper">
+        <div class="lux-cover">
+            <div class="lux-cover-overlay"></div>
+            <div class="lux-profile-top">
+                <div class="lux-avatar-wrapper">
+                    <div class="admin-avatar-placeholder">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                </div>
+                <div class="lux-user-details">
+                    <h2>{{ request.user.get_full_name|default:request.user.username }}</h2>
+                    <p><i class="fas fa-envelope"></i> {{ request.user.email }}</p>
+                    <div class="lux-badges">
+                        <span><i class="fas fa-crown"></i> Administrator</span>
+                        <span><i class="fas fa-shield-alt"></i> Super Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="lux-card" style="margin-top: 20px; text-align: center; padding: 40px;">
+            <i class="fas fa-shield-alt" style="font-size: 60px; color: #c46a84; margin-bottom: 20px;"></i>
+            <h3>Admin Account</h3>
+            <p class="text-muted">You are logged in as an administrator.</p>
+            <p class="small text-muted">Admin users don't have customer profiles.</p>
+            <hr style="margin: 20px 0;">
+            
+            <div class="admin-actions" style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="/admin/dashboard/" class="lux-btn-primary" style="text-decoration: none;">
+                    <i class="fas fa-tachometer-alt"></i> Go to Admin Dashboard
+                </a>
+                
+                <form action="/logout/" method="post" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="lux-btn-outline" style="width: 100%; cursor: pointer;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <!-- ================= NORMAL USER VIEW ================= -->
+    <div class="lux-profile-wrapper">
+
+        <!-- COVER -->
+        <div class="lux-cover">
+            <div class="lux-cover-overlay"></div>
+            <div class="lux-profile-top">
+                <div class="lux-avatar-wrapper">
+                    <img id="profilePreview"
+                         src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}{% static 'images/default-user.png' %}{% endif %}"
+                         class="lux-profile-img">
+                    <label for="profileImageInput" class="upload-profile-btn">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="profileImageInput" accept="image/*" hidden>
+                </div>
+
+                <div class="lux-user-details">
+                    <h2>{{ request.user.get_full_name|default:request.user.username }}</h2>
+                    <p><i class="fas fa-envelope"></i> {{ request.user.email }}</p>
+                    <div class="lux-badges">
+                        <span><i class="fas fa-crown"></i> Premium Customer</span>
+                        <span><i class="fas fa-check-circle"></i> Verified</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="lux-tabs">
+            <button class="tab-btn active" data-tab="profileTab">
+                <i class="fas fa-user"></i> Overview
+            </button>
+            <button class="tab-btn" data-tab="ordersTab">
+                <i class="fas fa-bag-shopping"></i> Orders
+            </button>
+            <button class="tab-btn" data-tab="favoritesTab">
+                <i class="fas fa-heart"></i> Wishlist
+            </button>
+            <button class="tab-btn" data-tab="passwordTab">
+                <i class="fas fa-lock"></i> Security
+            </button>
+        </div>
+
+        <!-- PROFILE TAB -->
+        <div id="profileTab" class="tab-content active">
+            <div class="lux-grid">
+                <div class="lux-card">
+                    <div class="lux-card-head">
+                        <h3>Personal Information</h3>
+                        <button onclick="
+                            document.getElementById('editProfileForm').style.display='block';
+                            document.getElementById('editProfileForm').scrollIntoView({behavior:'smooth', block:'start'});
+                        ">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+                    <div class="lux-info-list">
+                        <div class="lux-info-item">
+                            <span>Full Name</span>
+                            <h4>{{ request.user.get_full_name|default:request.user.username }}</h4>
+                        </div>
+                        <div class="lux-info-item">
+                            <span>Email Address</span>
+                            <h4>{{ request.user.email }}</h4>
+                        </div>
+                        <div class="lux-info-item">
+                            <span>WhatsApp Number</span>
+                            <h4 class="profile-phone">{{ profile.whatsapp_number|default:"Not Added" }}</h4>
+                        </div>
+                        <div class="lux-info-item">
+                            <span>City</span>
+                            <h4>{{ profile.city|default:"Not Added" }}</h4>
+                        </div>
+                        <div class="lux-info-item">
+                            <span>Delivery Address</span>
+                            <p id="profileAddressDisplay">{{ profile.address|default:"No Address Added" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lux-card">
+                    <div class="lux-card-head">
+                        <h3>Customer Activity</h3>
+                    </div>
+                    <div class="lux-stats">
+                        <div class="lux-stat-box">
+                            <i class="fas fa-box"></i>
+                            <h2>{{ user_orders|length|default:"0" }}</h2>
+                            <p>Total Orders</p>
+                        </div>
+                        <div class="lux-stat-box">
+                            <i class="fas fa-heart"></i>
+                            <h2>{{ wishlist_items|length|default:"0" }}</h2>
+                            <p>Wishlist</p>
+                        </div>
+                        <div class="lux-stat-box">
+                            <i class="fas fa-star"></i>
+                            <h2>5.0</h2>
+                            <p>Customer Rating</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EDIT PROFILE FORM (hidden initially) -->
+            <div id="editProfileForm" class="lux-card" style="display:none; margin-top:25px;">
+                <div class="lux-card-head">
+                    <h3>Edit Profile</h3>
+                </div>
+                <div class="lux-form-grid">
+                    <input type="text" id="editPhone" placeholder="WhatsApp Number" value="{{ profile.whatsapp_number }}" class="lux-input">
+                    <input type="text" id="editCity" placeholder="City" value="{{ profile.city }}" class="lux-input">
+                </div>
+                <textarea id="editAddress" placeholder="Address" class="lux-input lux-textarea">{{ profile.address }}</textarea>
+                <div class="lux-btn-row">
+                    <!-- ✅ FIXED: use window.saveProfileChanges -->
+                    <button class="lux-btn-primary" onclick="window.saveProfileChanges()">Save Changes</button>
+                    <button class="lux-btn-outline" onclick="document.getElementById('editProfileForm').style.display='none'">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ORDERS TAB -->
+        <div id="ordersTab" class="tab-content">
+            <div class="lux-orders-grid">
+                {% for order in user_orders %}
+                <div class="lux-order-card">
+                    <div class="lux-order-top">
+                        <h4>{{ order.product.name|default:"Custom Cake" }}</h4>
+                        <span class="order-status {{ order.status|lower }}">{{ order.status }}</span>
+                    </div>
+                    <p>Order ID: <strong>#IK{{ order.id }}</strong></p>
+                    <p>Order Date: {{ order.created_at|date:"d M Y" }}</p>
+                    <div class="lux-order-actions">
+                        <button class="lux-btn-primary">View Invoice</button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="lux-empty">
+                    <i class="fas fa-bag-shopping"></i>
+                    <h3>No Orders Yet</h3>
+                    <p>Your bakery orders will appear here.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- WISHLIST TAB -->
+        <div id="favoritesTab" class="tab-content">
+            <div class="lux-wishlist-grid">
+                {% for item in wishlist_items %}
+                <div class="lux-wishlist-card">
+                    <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'images/default-cake.jpg' %}{% endif %}" alt="{{ item.product.name }}">
+                    <h4>{{ item.product.name }}</h4>
+                    <p>Rs. {{ item.product.price }}</p>
+                    <button class="lux-btn-primary">Add To Cart</button>
+                </div>
+                {% empty %}
+                <div class="lux-empty">
+                    <i class="fas fa-heart"></i>
+                    <h3>No Wishlist Items</h3>
+                    <p>Your favorite cakes will appear here.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- PASSWORD TAB -->
+        <div id="passwordTab" class="tab-content">
+            <div class="lux-card">
+                <div class="lux-card-head">
+                    <h3>Security Settings</h3>
+                </div>
+                <input type="password" id="oldPassword" placeholder="Current Password" class="lux-input">
+                <input type="password" id="newPassword1" placeholder="New Password" class="lux-input">
+                <input type="password" id="newPassword2" placeholder="Confirm Password" class="lux-input">
+                <div id="pwErrorMsg" class="password-error"></div>
+                <!-- ✅ FIXED: use window.changePasswordFromModal -->
+                <button class="lux-btn-primary" onclick="window.changePasswordFromModal()">Update Password</button>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<style>
+.admin-avatar-placeholder {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    color: white;
+}
+.lux-btn-outline {
+    background: transparent;
+    border: 2px solid #c46a84;
+    color: #c46a84;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.lux-btn-outline:hover {
+    background: #c46a84;
+    color: white;
+}
+.lux-btn-primary {
+    background: linear-gradient(135deg, #c46a84, #e89ab0);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.lux-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(196,106,132,0.3);
+}
+</style>
+
+<script>
+// Helper to get CSRF token (from cookie or hidden input)
+function getCsrfToken() {
+    let token = null;
+    const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (csrfInput) return csrfInput.value;
+    if (document.cookie) {
+        const cookies = document.cookie.split(';');
+        for (let c of cookies) {
+            c = c.trim();
+            if (c.startsWith('csrftoken=')) {
+                token = decodeURIComponent(c.substring(10));
+                break;
+            }
+        }
+    }
+    return token;
+}
+
+// Attach functions to window so they are globally accessible
+window.saveProfileChanges = function() {
+    const phone = document.getElementById("editPhone").value;
+    const city = document.getElementById("editCity").value;
+    const address = document.getElementById("editAddress").value;
+
+    // Basic validation (you can use showToast if available globally)
+    if (!phone || !city || !address) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("phone", phone);
+    formData.append("city", city);
+    formData.append("address", address);
+
+    fetch("/update-profile/", {
+        method: "POST",
+        headers: { "X-CSRFToken": getCsrfToken() },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "ok" || data.message) {
+            alert(data.message || "Profile updated successfully!");
+            location.reload();
+        } else {
+            alert(data.error || "Something went wrong");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Network error. Please try again.");
+    });
+};
+
+window.changePasswordFromModal = function() {
+    const oldPw = document.getElementById("oldPassword").value;
+    const newPw1 = document.getElementById("newPassword1").value;
+    const newPw2 = document.getElementById("newPassword2").value;
+    const errorDiv = document.getElementById("pwErrorMsg");
+
+    if (!oldPw || !newPw1 || !newPw2) {
+        errorDiv.innerText = "All fields are required";
+        return;
+    }
+    if (newPw1 !== newPw2) {
+        errorDiv.innerText = "New passwords do not match";
+        return;
+    }
+
+    fetch("/change-password-ajax/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCsrfToken()
+        },
+        body: JSON.stringify({
+            old_password: oldPw,
+            new_password1: newPw1,
+            new_password2: newPw2
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "ok") {
+            alert("Password changed successfully! Please login again.");
+            location.href = "/logout/";
+        } else {
+            errorDiv.innerText = data.error || "Failed to change password";
+        }
+    })
+    .catch(err => {
+        errorDiv.innerText = "Network error";
+    });
+};
+
+// Profile image upload (optional)
+document.addEventListener("DOMContentLoaded", function() {
+    const fileInput = document.getElementById("profileImageInput");
+    if (fileInput) {
+        fileInput.addEventListener("change", function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append("avatar", file);
+                fetch("/update-profile-avatar/", {
+                    method: "POST",
+                    headers: { "X-CSRFToken": getCsrfToken() },
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "ok") {
+                        location.reload();
+                    } else {
+                        alert("Upload failed");
+                    }
+                });
+            }
+        });
+    }
+});
+
+// Tab switching – use event delegation to avoid duplicate listeners when modal reloads
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    // Remove any existing listener to be safe (simple re-initialization)
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    newBtn.addEventListener('click', function() {
+        const tabId = this.getAttribute('data-tab');
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        const activeTab = document.getElementById(tabId);
+        if (activeTab) activeTab.classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+</script>

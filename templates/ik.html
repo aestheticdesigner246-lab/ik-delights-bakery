@@ -1,0 +1,487 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>I K Delights — Premium Home Bakery · Lahore</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Dancing+Script:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/ik.css' %}">
+
+   
+</head>
+<body>
+
+<!-- CSRF token for AJAX -->
+{% csrf_token %}
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-logo-wrap">
+    <div class="splash-logo-container"><img src="{% static 'images/lg.png' %}" alt="IK Delights" id="splash-logo"></div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="navbar__inner">
+    <a href="#home" class="nav-logo" id="mainLogoBtn">
+      <img src="{% static 'images/lg.png' %}" class="nav-logo-img" alt="IK Delights">
+      <div><span class="nav-logo-text">I K <span>Delights</span></span><span class="nav-logo-sub">Premium Home Bakery</span></div>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#home" class="active">Home</a></li>
+      <li class="nav-dd"><a href="#">Products <i class="fas fa-chevron-down chev"></i></a><div class="nav-dd-menu" id="mainDropdown"></div></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="{% static 'order-tracking.html' %}"><i class="fas fa-box-open"></i>Track Order</a></li>
+    </ul>
+    <div class="navbar__actions">
+      <!-- Single User Icon Dropdown (professional, no separate buttons) -->
+      <div class="user-dropdown">
+        <a href="#" class="dropbtn">
+          <i class="fas fa-user-circle"></i>
+          <i class="fas fa-chevron-down chev"></i>
+        </a>
+        <div class="dropdown-content">
+          {% if user.is_authenticated %}
+            <a href="#" id="profileModalTrigger"><i class="fas fa-id-card"></i> My Profile</a>
+            <form action="{% url 'logout' %}" method="post" style="display: block; margin: 0; padding: 0;">
+              {% csrf_token %}
+              <button type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+          {% else %}
+            <a href="#" class="open-modal" data-modal="loginModal"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a href="#" class="open-modal" data-modal="signupModal"><i class="fas fa-user-plus"></i> Sign Up</a>
+          {% endif %}
+        </div>
+      </div>
+      <!-- Cart Button -->
+      <button class="icon-btn cart-toggle" onclick="toggleCart()"><i class="fas fa-shopping-bag"></i><span id="cart-badge">0</span></button>
+      <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- DYNAMIC ANNOUNCEMENT STRIP (BELOW NAVBAR) -->
+{% if announcements %}
+<div class="ann-strip">
+  <div class="ann-track">
+    {% for ann in announcements %}
+      {% if ann.link %}
+        <a href="{{ ann.link }}" target="_blank">{{ ann.text }}</a>
+      {% else %}
+        <span>{{ ann.text }}</span>
+      {% endif %}
+    {% endfor %}
+    <!-- Duplicate items for seamless loop -->
+    {% for ann in announcements %}
+      {% if ann.link %}
+        <a href="{{ ann.link }}" target="_blank">{{ ann.text }}</a>
+      {% else %}
+        <span>{{ ann.text }}</span>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- HERO SECTION -->
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-tag"><i class="fas fa-crown"></i> Lahore's Premium Home Bakery</div>
+    <div class="hero-sub">Freshly Baked With Love ❤️</div>
+    <h1 class="hero-h1">Delicious <em>Handcrafted</em><br>Bakery Delights</h1>
+    <p class="hero-p">Artisanal cakes, pastries &amp; desserts made with love and the finest ingredients — for every moment worth celebrating.</p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-grad"><i class="fas fa-cake-candles"></i> Explore Menu</a>
+      <a href="https://wa.me/923284397002?text=Hello! I want to order from IK Delights 🎂" target="_blank" class="btn-outline-hero"><i class="fab fa-whatsapp"></i> Order on WhatsApp</a>
+    </div>
+  </div>
+  <a href="#products" class="hero-scroll-arrow"><span>Scroll</span><div class="arrow-icon"><i class="fas fa-chevron-down"></i></div></a>
+</section>
+
+<!-- CIRCULAR EVENT PLANNER BUTTON -->
+<button class="event-planner-circle" id="eventPlannerCircleBtn" onclick="openEventPlannerModal()">
+  <i class="fas fa-calendar-alt"></i><span>Plan Event</span>
+</button>
+
+<!-- FEATURE STRIP -->
+<div class="feat-strip"><div class="feat-strip-inner">
+  <div class="feat-item"><div class="feat-ico"><i class="fas fa-truck"></i></div><div><div class="feat-h">Free Delivery</div><div class="feat-p">On orders above Rs 2,000</div></div></div>
+  <div class="feat-item"><div class="feat-ico"><i class="fas fa-leaf"></i></div><div><div class="feat-h">Fresh Ingredients</div><div class="feat-p">Baked fresh every morning</div></div></div>
+  <div class="feat-item"><div class="feat-ico"><i class="fas fa-palette"></i></div><div><div class="feat-h">Custom Designs</div><div class="feat-p">Your ideas, our artistry</div></div></div>
+  <div class="feat-item"><div class="feat-ico"><i class="fab fa-whatsapp"></i></div><div><div class="feat-h">WhatsApp Orders</div><div class="feat-p">Quick &amp; easy ordering</div></div></div>
+</div></div>
+
+<!-- CATEGORIES GRID (PRODUCTS) -->
+<div class="ikd-grid" id="ikd-grid">
+    {% for category in categories|slice:":4" %}
+    <div class="ikd-card" onclick="window.location.href='/category/{{ category.slug }}/'">
+        <div class="ikd-card__img">
+            {% if category.image %}
+                <img src="{{ category.image.url }}" alt="{{ category.name }}">
+            {% else %}
+                <img src="https://placehold.co/300x200/FFB7C5/white?text={{ category.name }}">
+            {% endif %}
+            <div class="ikd-overlay">
+                <div class="ikd-overlay-text"><h3>{{ category.name }}</h3><p>Explore</p></div>
+            </div>
+            <button class="explore-btn" onclick="event.stopPropagation();window.location.href='/category/{{ category.slug }}/'">
+                <i class="fas fa-arrow-right"></i> Explore
+            </button>
+        </div>
+        <div class="ikd-card__label">
+            <div class="ikd-card__name">{{ category.name }}</div>
+            <div class="ikd-card__sub">Delicious treats</div>
+        </div>
+    </div>
+    {% endfor %}
+    {% if categories|length > 4 %}
+    <div class="ikd-card" id="moreCategoriesCard" onclick="window.location.href='/categories/'">
+        <div class="ikd-card__img" style="background: linear-gradient(135deg, #c46a84, #e89ab0); display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-arrow-right" style="font-size: 3rem; color: white;"></i>
+        </div>
+        <div class="ikd-card__label">
+            <div class="ikd-card__name">More Categories</div>
+            <div class="ikd-card__sub">View all {{ categories|length }} categories</div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- ABOUT SECTION (auto counters) -->
+<section class="about-section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <div class="about-img"><img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=700&q=80" alt="IK Delights Bakery" loading="lazy"></div>
+        <div class="about-float"><span class="big">5+</span><span class="small">Years of Sweetness</span></div>
+      </div>
+      <div>
+        <span class="sec-lbl">Who We Are</span>
+        <h2 class="sec-title">Our <em>Story</em></h2>
+        <div class="divider"></div>
+        <p class="about-p">I K Delights began as a small home bakery with a passion for crafting delightful, elegant cakes...</p>
+        <p class="about-p">Every creation is baked with care using only premium ingredients — from birthdays to weddings, we make your sweetest dreams come true.</p>
+        <div class="about-counters">
+          <div class="cbox"><div class="cnum"><span class="count" id="counter1" data-target="1500">0</span>+</div><div class="clbl">Total Customers</div></div>
+          <div class="cbox"><div class="cnum"><span class="count" id="counter2" data-target="1200">0</span>+</div><div class="clbl">Happy Clients</div></div>
+          <div class="cbox"><div class="cnum"><span class="count" id="counter3" data-target="800">0</span>+</div><div class="clbl">Custom Cakes</div></div>
+        </div>
+        <div class="about-feats">
+          <div class="af"><div class="af-ico"><i class="fas fa-heart"></i></div><div><div class="af-h">Made with Love</div><div class="af-p">Every cake baked with passion</div></div></div>
+          <div class="af"><div class="af-ico"><i class="fas fa-award"></i></div><div><div class="af-h">Premium Quality</div><div class="af-p">Only finest ingredients used</div></div></div>
+          <div class="af"><div class="af-ico"><i class="fas fa-magic"></i></div><div><div class="af-h">Custom Designs</div><div class="af-p">Unique designs for every occasion</div></div></div>
+          <div class="af"><div class="af-ico"><i class="fas fa-clock"></i></div><div><div class="af-h">On-Time Delivery</div><div class="af-p">Always fresh, always on time</div></div></div>
+        </div>
+        <div><a href="#contact" class="btn-grad"><i class="fas fa-envelope"></i> Get in Touch</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY SECTION – NO PAGE RELOAD, ZOOM MODAL ON CLICK -->
+<section class="gallery-section" id="gallery">
+  <div class="container text-center">
+    <span class="sec-lbl">Our Portfolio</span>
+    <h2 class="sec-title">Sweet <em>Gallery</em></h2>
+    <div class="divider divider-center"></div>
+    <p class="sec-sub">Crafted with elegance &amp; baked with perfection.</p>
+    <div class="gal-filters">
+      <button class="gal-filter active" data-filter="all">All Cakes</button>
+      <button class="gal-filter" data-filter="birthday">Birthday Cakes</button>
+      <button class="gal-filter" data-filter="bento">Bento Cakes</button>
+      <button class="gal-filter" data-filter="brownie">Brownies</button>
+      <button class="gal-filter" data-filter="dessert">Desserts</button>
+    </div>
+  </div>
+  <div class="gal-slider">
+    <div class="gal-track" id="gal-track">
+      {% for img in gallery_images %}
+        <div class="gal-card" data-category="{{ img.category }}">
+          <img src="{{ img.image.url }}" alt="{{ img.name }}" loading="lazy" onclick="openZoomModalFromGallery('{{ img.image.url }}', '{{ img.name }}', '{{ img.price }}')">
+          <div class="gal-card-overlay">
+            <div class="gal-card-name">{{ img.name }}</div>
+            <div class="gal-card-price">{{ img.price|default:'' }}</div>
+          </div>
+          <a href="https://wa.me/923284397002?text=I'm interested in: {{ img.name }}" target="_blank" class="gal-wa"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      {% empty %}
+        <div class="gal-card" style="min-width:300px;text-align:center;">No images yet. Add from admin.</div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS SECTION (AJAX) -->
+<section class="reviews-section" id="reviews">
+  <div class="container text-center">
+    <span class="sec-lbl">Happy Customers</span>
+    <h2 class="sec-title">What They <em>Say</em></h2>
+    <div class="divider divider-center"></div>
+    <p class="sec-sub">Real reviews from our sweet family!</p>
+  </div>
+  <div class="reviews-slider-wrap">
+    <div class="reviews-track" id="reviews-track"></div>
+  </div>
+  <div class="container">
+    <div class="add-review-box">
+      <h3>Share Your Experience 💌</h3>
+      <p>IK Delights se order kiya? Apna review share karein!</p>
+      <form id="reviewForm">
+        {% csrf_token %}
+        <div class="rev-row">
+          <div class="rev-fg"><label>Your Name</label><input type="text" id="reviewName" placeholder="e.g. Ayesha Khan" required></div>
+          <div class="rev-fg"><label>City</label><input type="text" id="reviewCity" placeholder="e.g. Lahore" required></div>
+        </div>
+        <div class="rev-fg"><label>Your Rating</label>
+          <div class="star-input">
+            <input type="radio" name="reviewStars" value="5" id="star5" required><label for="star5">★</label>
+            <input type="radio" name="reviewStars" value="4" id="star4"><label for="star4">★</label>
+            <input type="radio" name="reviewStars" value="3" id="star3"><label for="star3">★</label>
+            <input type="radio" name="reviewStars" value="2" id="star2"><label for="star2">★</label>
+            <input type="radio" name="reviewStars" value="1" id="star1"><label for="star1">★</label>
+          </div>
+        </div>
+        <div class="rev-fg"><label>Your Review</label><textarea id="reviewText" rows="3" placeholder="Tell us about your experience..." required></textarea></div>
+        <button type="submit" class="btn-grad" style="width:100%;"><i class="fas fa-paper-plane"></i> Submit Review</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT SECTION -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div>
+        <span class="sec-lbl">Reach Out</span>
+        <h2 class="sec-title">Get in <em>Touch</em></h2>
+        <div class="divider"></div>
+        <p class="about-p">Reach out for custom orders, questions, or just to say hello!</p>
+        <div class="ci-list">
+          <div class="ci-row"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-h">Location</div><div class="ci-v">Lahore, Punjab, Pakistan</div></div></div>
+          <div class="ci-row"><div class="ci-ico"><i class="fas fa-phone"></i></div><div><div class="ci-h">Phone</div><div class="ci-v">+92 328 4397002</div></div></div>
+          <div class="ci-row"><div class="ci-ico"><i class="fas fa-envelope"></i></div><div><div class="ci-h">Email</div><div class="ci-v">ikdelights@gmail.com</div></div></div>
+          <div class="ci-row"><div class="ci-ico"><i class="fas fa-clock"></i></div><div><div class="ci-h">Hours</div><div class="ci-v">Mon–Sat: 9AM – 7PM</div></div></div>
+        </div>
+        <div class="soc-row">
+          <a href="#" class="soc-a"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="soc-a"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/923284397002" class="soc-a"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" class="soc-a"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+      <div class="cform">
+        <h3>Send a Message 💌</h3>
+        <form method="post" action="{% url 'contact_submit' %}" id="contactForm">
+          {% csrf_token %}
+          <div class="frow">
+            <div class="fg"><label>Name</label><input type="text" name="name" placeholder="Full name" required></div>
+            <div class="fg"><label>Email</label><input type="email" name="email" placeholder="your@email.com" required></div>
+          </div>
+          <div class="fg"><label>Phone</label><input type="tel" name="phone" placeholder="03XXXXXXXXX"></div>
+          <div class="fg"><label>Message</label><textarea name="message" rows="4" placeholder="How can we help?" required></textarea></div>
+          <button type="submit" class="btn-grad" style="width:100%;"><i class="fas fa-paper-plane"></i> Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo-wrap"><img src="{% static 'images/logo.png' %}" alt="IK Delights" class="footer-logo-img"><div class="footer-logo-name">I K <span>Delights</span></div></div>
+        <p class="footer-desc">Creating delicious moments and sweet memories with our handcrafted bakery products. Baked with love in Lahore.</p>
+        <div class="footer-soc">
+          <a href="#" class="fsoc"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="fsoc"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/923284397002" target="_blank" class="fsoc"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" class="fsoc"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Quick Links</h4><ul class="footer-links"><li><a href="#home">Home</a></li><li><a href="#products">Products</a></li><li><a href="#about">About Us</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#reviews">Reviews</a></li><li><a href="#contact">Contact</a></li><li><a href="{% static 'order-tracking.html' %}">📦 Track Order</a></li></ul></div>
+      <div class="footer-col"><h4>Our Products</h4><ul class="footer-links"><li><a href="#">Birthday Cakes</a></li><li><a href="#">Wedding Cakes</a></li><li><a href="#">Custom Cakes</a></li><li><a href="#">Brownies</a></li></ul></div>
+      <div class="footer-col"><h4>Contact</h4><ul class="footer-links"><li><a href="#">📍 Lahore, Pakistan</a></li><li><a href="#">📞 +92 328 4397002</a></li><li><a href="#">✉️ ikdelights@gmail.com</a></li><li><a href="#">🕐 Mon–Sat: 9AM–7PM</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 I K Delights. All Rights Reserved.</span><span>Made with ❤️ in Lahore</span></div>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/923284397002?text=Hello! I want to order from IK Delights 🎂" target="_blank" class="wa-float"><i class="fab fa-whatsapp"></i></a>
+
+<!-- CART SIDEBAR -->
+<div id="cart-sidebar">...</div>
+
+<!-- MODALS (order, event, customization, invoice) -->
+<div class="modal-ov" id="orderModal">...</div>
+<div class="modal-ov" id="eventPlannerModal">...</div>
+<div class="modal-ov" id="customizationModal">...</div>
+<div class="modal-ov" id="invoiceModal">...</div>
+
+<div id="toast"></div>
+<div id="overlay" onclick="closeOverlay()"></div>
+
+<!-- DEAL POPUP -->
+<div id="dealPopup" class="deal-popup" style="display: none;">
+    <div class="deal-popup-content">
+        <button class="deal-popup-close" id="closeDealPopup">&times;</button>
+        {% if featured_deal %}
+            <div class="deal-popup-img">
+                <img src="{{ featured_deal.image.url }}" alt="{{ featured_deal.title }}">
+            </div>
+            <div class="deal-popup-body">
+                <h3 class="deal-popup-title">{{ featured_deal.title }}</h3>
+                <p class="deal-popup-desc">{{ featured_deal.subtitle|default:"" }}</p>
+                <div class="deal-popup-price">
+                    {% if featured_deal.original_price %}
+                        <span class="old-price">Rs {{ featured_deal.original_price }}</span>
+                    {% endif %}
+                    <span class="deal-price">Rs {{ featured_deal.deal_price }}</span>
+                </div>
+                <a href="https://wa.me/923284397002?text=I'm%20interested%20in%20{{ featured_deal.title|urlencode }}%20deal%20(Rs%20{{ featured_deal.deal_price }})" target="_blank" class="btn-grad deal-popup-btn">
+                    <i class="fab fa-whatsapp"></i> Order on WhatsApp
+                </a>
+            </div>
+        {% else %}
+            <div class="deal-popup-body">
+                <h3>🎉 Special Offer Coming Soon!</h3>
+                <p>Stay tuned for amazing deals.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal-ov">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h3><i class="fas fa-cake-candles"></i> Welcome Back</h3>
+      <button class="close-modal" data-modal="loginModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="ajaxLoginForm">
+        {% csrf_token %}
+        <div class="form-floating">
+          <input type="text" id="loginUsername" name="username" placeholder=" " required>
+          <label for="loginUsername"><i class="fas fa-user"></i> Username</label>
+        </div>
+        <div class="form-floating password-field">
+          <input type="password" id="loginPassword" name="password" placeholder=" " required>
+          <label for="loginPassword"><i class="fas fa-lock"></i> Password</label>
+          <button type="button" class="toggle-password" data-target="loginPassword">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div class="form-options">
+          <label class="checkbox-label">
+            <input type="checkbox" name="remember"> <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-link">Forgot Password?</a>
+        </div>
+        <div id="loginErrors" class="error-message"></div>
+        <button type="submit" class="btn-grad"><i class="fas fa-sign-in-alt"></i> Login</button>
+      </form>
+      <div class="social-login" style="margin-top: 1.2rem;">
+        <div class="social-buttons" style="justify-content: center;">
+          <button class="social-btn google"><i class="fab fa-google"></i> Continue with Google</button>
+        </div>
+      </div>
+      <div class="modal-footer-link">
+        <a href="#" id="switchToSignup">Don't have an account? <strong>Sign Up</strong></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNUP MODAL -->
+<div id="signupModal" class="modal-ov">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h3><i class="fas fa-cake"></i> Create Account</h3>
+      <button class="close-modal" data-modal="signupModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="ajaxSignupForm">
+        {% csrf_token %}
+        <div class="form-floating">
+          <input type="text" id="signupUsername" name="username" placeholder=" " required>
+          <label for="signupUsername"><i class="fas fa-user"></i> Username</label>
+        </div>
+        <div class="form-floating">
+          <input type="email" id="signupEmail" name="email" placeholder=" " required>
+          <label for="signupEmail"><i class="fas fa-envelope"></i> Email</label>
+        </div>
+        <div class="form-floating password-field">
+          <input type="password" id="signupPassword1" name="password1" placeholder=" " required>
+          <label for="signupPassword1"><i class="fas fa-lock"></i> Password</label>
+          <button type="button" class="toggle-password" data-target="signupPassword1">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div class="form-floating password-field">
+          <input type="password" id="signupPassword2" name="password2" placeholder=" " required>
+          <label for="signupPassword2"><i class="fas fa-lock"></i> Confirm Password</label>
+          <button type="button" class="toggle-password" data-target="signupPassword2">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div class="form-floating">
+          <input type="text" id="signupPhone" name="phone" placeholder=" ">
+          <label for="signupPhone"><i class="fas fa-phone"></i> Phone (optional)</label>
+        </div>
+        <div class="form-floating">
+          <textarea id="signupAddress" name="address" rows="2" placeholder=" "></textarea>
+          <label for="signupAddress"><i class="fas fa-map-marker-alt"></i> Address (optional)</label>
+        </div>
+        <div class="form-floating">
+          <input type="text" id="signupCity" name="city" placeholder=" ">
+          <label for="signupCity"><i class="fas fa-city"></i> City (optional)</label>
+        </div>
+        <div id="signupErrors" class="error-message"></div>
+        <button type="submit" class="btn-grad"><i class="fas fa-user-check"></i> Sign Up</button>
+      </form>
+      <div class="social-login" style="margin-top: 1.2rem;">
+        <div class="social-buttons" style="justify-content: center;">
+          <button class="social-btn google"><i class="fab fa-google"></i> Sign up with Google</button>
+        </div>
+      </div>
+      <div class="modal-footer-link">
+        <a href="#" id="switchToLogin">Already have an account? <strong>Login</strong></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL (POPUP) -->
+<div id="profileModal" class="modal-ov">
+  <div class="modal-box" style="max-width: 550px; max-height: 85vh; overflow-y: auto; padding: 0;">
+    <div class="modal-hd" style="position: sticky; top: 0; background: linear-gradient(135deg, #f8cedb, #fce4ec);">
+      <h3><i class="fas fa-user-circle"></i> My Profile</h3>
+      <button class="close-modal" data-modal="profileModal">&times;</button>
+    </div>
+    <div id="profileModalContent" style="min-height: 200px; background: #fff;">
+      <div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-pulse"></i> Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ZOOM MODAL (for gallery) -->
+<div id="zoomModal" class="zoom-modal">
+  <span class="zoom-close" onclick="closeZoomModal()">&times;</span>
+  <img class="zoom-img" id="zoomImg" src="">
+  <button class="zoom-prev" onclick="prevZoomImage()">❮</button>
+  <button class="zoom-next" onclick="nextZoomImage()">❯</button>
+</div>
+
+<script src="{% static 'js/ik.js' %}"></script>
+</body>
+</html>

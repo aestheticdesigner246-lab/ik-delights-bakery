@@ -1,0 +1,425 @@
+<div class="products-isolated-page"
+     style="
+        width:100%;
+        min-height:100vh;
+        padding:20px;
+        overflow-x:auto;
+">
+
+    <!-- ======================================================
+         HEADER
+    ====================================================== -->
+
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+
+        margin-bottom:25px;
+    ">
+
+        <!-- TITLE -->
+
+        <h2 style="
+            margin:0;
+
+            font-size:34px;
+
+            font-weight:800;
+
+            color:#2b0b2e;
+
+            display:flex;
+
+            align-items:center;
+
+            gap:14px;
+        ">
+
+            <i class="fa-solid fa-cake-candles"
+               style="color:#ff1493;"></i>
+
+            Products Management
+
+        </h2>
+
+        <!-- BUTTON -->
+
+        <button type="button"
+                onclick="window.showAddProductModal()"
+                style="
+                    border:none;
+
+                    background:#ff4fa3;
+
+                    color:white;
+
+                    padding:16px 26px;
+
+                    border-radius:18px;
+
+                    font-size:18px;
+
+                    font-weight:700;
+
+                    cursor:pointer;
+
+                    display:flex;
+
+                    align-items:center;
+
+                    gap:10px;
+
+                    box-shadow:0 6px 15px rgba(255,79,163,0.25);
+                ">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Add New Product
+
+        </button>
+
+    </div>
+
+    <!-- ======================================================
+         TABLE WRAPPER
+    ====================================================== -->
+
+    <div style="
+        width:100%;
+
+        overflow-x:auto;
+
+        background:white;
+
+        border-radius:28px;
+
+        box-shadow:0 10px 25px rgba(0,0,0,0.05);
+    ">
+
+        <table style="
+            width:100%;
+            border-collapse:collapse;
+            min-width:1200px;
+        ">
+
+            <!-- ======================================================
+                 TABLE HEAD
+            ====================================================== -->
+
+            <thead style="
+                background:#3b0a35;
+            ">
+
+                <tr>
+
+                    <th style="
+                        padding:24px 20px;
+                        color:white;
+                        text-align:left;
+                        font-size:20px;
+                    ">
+
+                        ID
+
+                    </th>
+
+                    <th style="
+                        padding:24px 20px;
+                        color:white;
+                        text-align:left;
+                        font-size:20px;
+                    ">
+
+                        Image
+
+                    </th>
+
+                    <th style="
+                        padding:24px 20px;
+                        color:white;
+                        text-align:left;
+                        font-size:20px;
+                    ">
+
+                        Name
+
+                    </th>
+
+                    <th style="
+                        padding:24px 20px;
+                        color:white;
+                        text-align:left;
+                        font-size:20px;
+                    ">
+
+                        Category
+
+                    </th>
+
+                    <th style="
+                        padding:24px 20px;
+                        color:white;
+                        text-align:left;
+                        font-size:20px;
+                    ">
+
+                        Price
+
+                    </th>
+
+                    <th style="
+                        padding:24px 20px;
+                        color:white;
+                        text-align:left;
+                        font-size:20px;
+                    ">
+
+                        Status
+
+                    </th>
+
+                    <th style="
+                        padding:24px 20px;
+                        color:white;
+                        text-align:left;
+                        font-size:20px;
+                    ">
+
+                        Actions
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <!-- ======================================================
+                 TABLE BODY
+            ====================================================== -->
+
+            <tbody>
+
+                {% for product in products %}
+
+                <tr style="
+                    border-bottom:1px solid #f1f1f1;
+
+                    {% cycle 'background:white;' 'background:#fff8fc;' %}
+                ">
+
+                    <!-- ID -->
+
+                    <td style="
+                        padding:24px 20px;
+
+                        font-size:18px;
+
+                        font-weight:700;
+
+                        color:#2b0b2e;
+                    ">
+
+                        {{ product.id }}
+
+                    </td>
+
+                    <!-- IMAGE -->
+
+                    <td style="padding:24px 20px;">
+
+                        {% if product.image %}
+
+                        <img src="{{ product.image.url }}"
+                             alt="{{ product.name }}"
+                             style="
+                                width:75px;
+                                height:75px;
+
+                                object-fit:cover;
+
+                                border-radius:18px;
+
+                                border:3px solid #ffd7ea;
+                             ">
+
+                        {% else %}
+
+                        No Image
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- NAME -->
+
+                    <td style="
+                        padding:24px 20px;
+
+                        font-size:18px;
+
+                        font-weight:800;
+
+                        color:#2b0b2e;
+
+                        white-space:nowrap;
+                    ">
+
+                        {{ product.name }}
+
+                    </td>
+
+                    <!-- CATEGORY -->
+
+                    <td style="
+                        padding:24px 20px;
+
+                        font-size:18px;
+
+                        font-weight:600;
+
+                        color:#2b0b2e;
+                    ">
+
+                        {% if product.category %}
+
+                        {{ product.category.name }}
+
+                        {% else %}
+
+                        No Category
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- PRICE -->
+
+                    <td style="
+                        padding:24px 20px;
+
+                        font-size:18px;
+
+                        font-weight:800;
+
+                        color:#2b0b2e;
+                    ">
+
+                        Rs {{ product.price }}
+
+                    </td>
+
+                    <!-- STATUS -->
+
+                    <td style="padding:24px 20px;">
+
+                        {% if product.is_active %}
+
+                        <span style="
+                            background:#dff1df;
+
+                            color:#176b2c;
+
+                            padding:10px 18px;
+
+                            border-radius:50px;
+
+                            font-size:16px;
+
+                            font-weight:700;
+                        ">
+
+                            Active
+
+                        </span>
+
+                        {% else %}
+
+                        <span style="
+                            background:#ffe2e2;
+
+                            color:#c4002f;
+
+                            padding:10px 18px;
+
+                            border-radius:50px;
+
+                            font-size:16px;
+
+                            font-weight:700;
+                        ">
+
+                            Inactive
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ACTIONS -->
+                    <td style="padding:24px 20px;">
+                        <div style="display:flex; gap:10px;">
+                            <!-- EDIT (UPDATED with onclick) -->
+                            <button type="button"
+                                    onclick="window.editProduct({{ product.id }})"
+                                    style="
+                                        width:46px;
+                                        height:46px;
+                                        border:none;
+                                        border-radius:14px;
+                                        background:#ff4fa3;
+                                        color:white;
+                                        font-size:18px;
+                                        cursor:pointer;
+                                    ">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                            <!-- DELETE (UPDATED with onclick) -->
+                            <button type="button"
+                                    onclick="window.deleteProduct({{ product.id }})"
+                                    style="
+                                        width:46px;
+                                        height:46px;
+                                        border:none;
+                                        border-radius:14px;
+                                        background:#ea3d4f;
+                                        color:white;
+                                        font-size:18px;
+                                        cursor:pointer;
+                                    ">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="7"
+                        style="
+                            padding:40px;
+                            text-align:center;
+                            font-size:22px;
+                            font-weight:800;
+                        ">
+
+                        No Products Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

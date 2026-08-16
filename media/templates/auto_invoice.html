@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Invoice Ready</title></head>
+<body>
+<h2>✅ Order placed successfully!</h2>
+<p>Your invoice has been generated.</p>
+<a href="{{ wa_link }}" target="_blank" class="btn">📱 Send Invoice on WhatsApp</a>
+<a href="{{ invoice_url }}" target="_blank">📄 View Invoice</a>
+<script>
+    // Auto-open WhatsApp in new tab (optional)
+    window.open("{{ wa_link }}", "_blank");
+</script>
+</body>
+</html>

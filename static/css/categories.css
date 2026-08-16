@@ -1,0 +1,254 @@
+/* =========================================
+   CATEGORIES PAGE - COMPLETE CSS
+========================================= */
+
+/* Modal Styles */
+.categories-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100000;
+}
+
+.categories-modal-content {
+    background: white;
+    width: 450px;
+    max-width: 90%;
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: modalPopup 0.3s ease;
+}
+
+@keyframes modalPopup {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.categories-modal-content h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #2d122b;
+}
+
+.categories-modal-content input {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #e0d5cc;
+    border-radius: 12px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.categories-modal-content input:focus {
+    border-color: #ff4d8d;
+    box-shadow: 0 0 0 3px rgba(255, 77, 141, 0.1);
+}
+
+.categories-modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.categories-save-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #ff4d8d, #ff6ca8);
+    border: none;
+    color: white;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.categories-cancel-btn {
+    flex: 1;
+    background: #f0e6e0;
+    border: none;
+    color: #5a3a2a;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.categories-save-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 77, 141, 0.3);
+}
+
+.categories-cancel-btn:hover {
+    background: #e0d0c5;
+}
+
+/* Table Styles */
+.categories-page {
+    padding: 25px;
+}
+
+.categories-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.categories-page-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2d122b;
+    margin: 0;
+}
+
+.categories-add-btn {
+    background: linear-gradient(135deg, #ff4d8d, #ff6ca8);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+}
+
+.categories-add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 77, 141, 0.3);
+}
+
+.categories-table-wrapper {
+    background: white;
+    border-radius: 20px;
+    overflow-x: auto;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.categories-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.categories-table thead {
+    background: #2d122b;
+}
+
+.categories-table thead th {
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.categories-table tbody tr {
+    border-bottom: 1px solid #f0e6e0;
+    transition: 0.3s;
+}
+
+.categories-table tbody tr:hover {
+    background: #fff5f0;
+}
+
+.categories-table td {
+    padding: 15px;
+    vertical-align: middle;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.bg-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.bg-danger {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.bg-secondary {
+    background: #f0e6e0;
+    color: #5a3a2a;
+}
+
+.bg-info {
+    background: #ffe5ef;
+    color: #ff4d8d;
+}
+
+/* Button Styles */
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-outline-primary {
+    background: transparent;
+    border: 1px solid #ff4d8d;
+    color: #ff4d8d;
+}
+
+.btn-outline-primary:hover {
+    background: #ff4d8d;
+    color: white;
+}
+
+.btn-outline-danger {
+    background: transparent;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background: #dc3545;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .categories-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .categories-page-title {
+        font-size: 24px;
+    }
+    
+    .categories-add-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

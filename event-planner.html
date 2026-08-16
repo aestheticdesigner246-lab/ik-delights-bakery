@@ -1,0 +1,730 @@
+{% load static %}
+
+<style>
+    /* ======================================================
+       SMART EVENT PLANNER MODAL – COMPLETE STYLES
+    ====================================================== */
+    .planner-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.65);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(5px);
+        z-index: 99999;
+    }
+    .planner-overlay.active {
+        display: flex;
+    }
+    .smart-planner-modal {
+        width: 90%;
+        max-width: 900px;
+        max-height: 90vh;
+        background: #fff;
+        border-radius: 24px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .planner-header {
+        background: linear-gradient(135deg, #c46a84, #e89ab0);
+        padding: 18px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #fff;
+    }
+    .planner-close-btn {
+        width: 42px;
+        height: 42px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.2);
+        color: #fff;
+        font-size: 22px;
+        cursor: pointer;
+    }
+    .planner-progress-wrapper {
+        padding: 15px 24px;
+        background: #fff8fb;
+    }
+    .planner-progress-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        color: #c46a84;
+        font-weight: 700;
+    }
+    .planner-progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #ffe5ed;
+        border-radius: 50px;
+        overflow: hidden;
+    }
+    #eventProgressFill {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(135deg, #c46a84, #e89ab0);
+    }
+    .planner-main-layout {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        overflow: hidden;
+    }
+    .planner-left-panel {
+        padding: 25px;
+        overflow-y: auto;
+        max-height: 65vh;
+    }
+    #eventStepContent {
+        min-height: 420px;
+    }
+    .planner-right-panel {
+        padding: 20px;
+        background: #fffafc;
+        border-left: 1px solid #ffe5ed;
+        overflow-y: auto;
+    }
+    #liveSummary {
+        max-height: 220px;
+        overflow-y: auto;
+    }
+    #suggestedPackages {
+        max-height: 350px;
+        overflow-y: auto;
+    }
+    #invoicePreview {
+        min-height: 120px;
+    }
+    .summary-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 18px;
+        margin-bottom: 15px;
+        border: 1px solid #ffe5ed;
+    }
+    .summary-card h3 {
+        color: #c46a84;
+        margin-bottom: 10px;
+    }
+    .planner-total {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #c46a84;
+    }
+    .planner-question-box {
+        background: #fff;
+        border: 1px solid #ffe5ed;
+        border-radius: 20px;
+        padding: 24px;
+    }
+    .planner-question-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #c46a84;
+    }
+    .event-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 12px;
+    }
+    .event-card {
+        background: #fff;
+        border: 2px solid #ffe5ed;
+        border-radius: 16px;
+        padding: 14px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+        font-weight: 600;
+    }
+    .event-card:hover {
+        background: #fff5f8;
+        border-color: #c46a84;
+        transform: translateY(-2px);
+    }
+    .form-control {
+        width: 100%;
+        padding: 14px;
+        border: 2px solid #ffe5ed;
+        border-radius: 12px;
+        font-size: 15px;
+        outline: none;
+    }
+    .form-control:focus {
+        border-color: #c46a84;
+    }
+    .planner-footer {
+        padding: 16px 22px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        border-top: 1px solid #ffe5ed;
+        background: #fff8fb;
+    }
+    .planner-btn {
+        padding: 12px 22px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 700;
+    }
+    .planner-next-btn {
+        background: linear-gradient(135deg, #c46a84, #e89ab0);
+        color: #fff;
+    }
+    .planner-back-btn {
+        background: #fff;
+        border: 2px solid #c46a84;
+        color: #c46a84;
+    }
+    @media (max-width: 768px) {
+        .planner-main-layout { grid-template-columns: 1fr; }
+        .planner-footer { flex-direction: column; }
+        .planner-btn { width: 100%; }
+        .planner-left-panel, .planner-right-panel { max-height: none; }
+        .planner-question-title { font-size: 1.1rem; }
+    }
+</style>
+
+<!-- MODAL STRUCTURE -->
+<div id="smartEventModal" class="planner-overlay">
+    <div class="smart-planner-modal">
+        <div class="planner-header">
+            <div>
+                <h2>IK Delights Smart Event Planner</h2>
+                <p>Plan your perfect event in minutes</p>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <button id="plannerVoiceBtn" onclick="togglePlannerVoice()" style="border:none; padding:8px 16px; border-radius:40px; background:rgba(255,255,255,0.2); color:white; cursor:pointer; font-weight:600;">
+                    🔊 Voice ON
+                </button>
+                <button class="planner-close-btn" onclick="closeSmartEventModal()">×</button>
+            </div>
+        </div>
+        <div class="planner-progress-wrapper">
+            <div class="planner-progress-top">
+                <span>EVENT PLANNER</span>
+                <span id="stepIndicator">Question 1 / 15</span>
+            </div>
+            <div class="planner-progress-bar">
+                <div id="eventProgressFill"></div>
+            </div>
+        </div>
+        <div class="planner-main-layout">
+            <div class="planner-left-panel">
+                <div id="eventStepContent"></div>
+            </div>
+            <div class="planner-right-panel">
+                <div class="summary-card">
+                    <h3>📋 Live Summary</h3>
+                    <div id="liveSummary">Start answering questions...</div>
+                </div>
+                <div class="summary-card">
+                    <h3>💰 Estimated Budget</h3>
+                    <div id="plannerTotalDisplay" class="planner-total">PKR 0</div>
+                </div>
+                <div class="summary-card">
+                    <h3>🎁 Recommended Packages</h3>
+                    <div id="suggestedPackages">Complete all questions to view packages.</div>
+                </div>
+                <div class="summary-card">
+                    <h3>🧾 Invoice Preview</h3>
+                    <div id="invoicePreview">Waiting for package selection...</div>
+                </div>
+            </div>
+        </div>
+        <div class="planner-footer">
+            <button class="planner-btn planner-back-btn" onclick="prevPlannerStep()">← Back</button>
+            <button class="planner-btn planner-next-btn" onclick="nextQuestion()">Next →</button>
+        </div>
+    </div>
+</div>
+<script>
+/* =========================================================
+   IK DELIGHTS SMART EVENT PLANNER - FORCED FIRST QUESTION VOICE
+   ✅ First question speaks forcefully on modal open
+   ✅ No welcome message to cancel speech
+   ✅ Pre-warmed speech engine
+========================================================= */
+
+let plannerVoiceEnabled = true;
+let engineWarmed = false;
+
+// Pre-warm speech engine on page load (silent)
+function warmupSpeechEngine() {
+    if (engineWarmed) return;
+    if (!('speechSynthesis' in window)) return;
+    const silent = new SpeechSynthesisUtterance(" ");
+    silent.volume = 0;
+    silent.rate = 2;
+    window.speechSynthesis.speak(silent);
+    engineWarmed = true;
+    console.log("🔊 Speech engine pre-warmed");
+}
+
+function speakQuestion(text) {
+    if (!plannerVoiceEnabled) return;
+    if (!('speechSynthesis' in window)) return;
+    // Cancel only if speaking (but avoid cancelling ourselves)
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+    }
+    const cleanText = text.replace(/[^\w\s]/g, '').trim();
+    if (!cleanText) return;
+    const speech = new SpeechSynthesisUtterance(cleanText);
+    speech.lang = "en-US";
+    speech.rate = 0.9;
+    speech.pitch = 1;
+    speech.volume = 1;
+    speech.onerror = (e) => console.error("Speech error:", e);
+    window.speechSynthesis.speak(speech);
+    console.log("🔊 Speaking:", cleanText);
+}
+
+function togglePlannerVoice() {
+    plannerVoiceEnabled = !plannerVoiceEnabled;
+    const btn = document.getElementById("plannerVoiceBtn");
+    if (btn) btn.innerHTML = plannerVoiceEnabled ? "🔊 Voice ON" : "🔇 Voice OFF";
+    if (!plannerVoiceEnabled) window.speechSynthesis.cancel();
+}
+
+// ==================== PLANNER CORE (keep your existing) ====================
+const SmartPlanner = {
+    currentQuestion: 0,
+    answers: {},
+    questions: [
+        { id: "event_type", question: "Which type of event are you planning?", type: "options", options: ["Birthday", "Wedding", "Anniversary", "Baby Shower", "Engagement", "Corporate"] },
+        { id: "theme", question: "Select event theme", type: "options", options: ["Pink Theme", "Blue Theme", "Golden Theme", "Pastel Theme", "Elegant White", "Custom"] },
+        { id: "guests", question: "How many guests are expected?", type: "number", placeholder: "Enter number of guests" },
+        { id: "budget", question: "What is your estimated budget in PKR?", type: "number", placeholder: "Enter budget" },
+        { id: "cake_required", question: "Do you need a custom cake?", type: "options", options: ["Yes", "No"] },
+        { id: "cake_flavor", question: "Select your preferred cake flavor", type: "options", options: ["Chocolate", "Vanilla", "Red Velvet", "Black Forest", "Pineapple", "Lemon"], condition: (ans) => ans.cake_required === "Yes" },
+        { id: "cake_size", question: "Select cake size", type: "options", options: ["1 Pound", "2 Pound", "3 Pound", "5 Pound", "1 KG", "2 KG", "3 KG"], condition: (ans) => ans.cake_required === "Yes" },
+        { id: "cake_text", question: "Any text on cake?", type: "text", placeholder: "e.g., Happy Birthday Sarah", condition: (ans) => ans.cake_required === "Yes" },
+        { id: "cupcakes", question: "Do you need cupcakes?", type: "options", options: ["Yes", "No"] },
+        { id: "cupcakes_qty", question: "How many cupcakes?", type: "number", placeholder: "Enter quantity", condition: (ans) => ans.cupcakes === "Yes" },
+        { id: "brownies", question: "Do you need brownies?", type: "options", options: ["Yes", "No"] },
+        { id: "brownies_qty", question: "How many brownies?", type: "number", placeholder: "Enter quantity", condition: (ans) => ans.brownies === "Yes" },
+        { id: "donuts", question: "Do you need donuts?", type: "options", options: ["Yes", "No"] },
+        { id: "donuts_qty", question: "How many donuts?", type: "number", placeholder: "Enter quantity", condition: (ans) => ans.donuts === "Yes" },
+        { id: "delivery_date", question: "Delivery or Pickup Date (minimum 1 day ahead)", type: "date" },
+        { id: "pickup_time", question: "Pickup Time", type: "time" },
+        { id: "customer_name", question: "Your full name", type: "text", placeholder: "Enter your name" },
+        { id: "customer_phone", question: "Your phone number", type: "text", placeholder: "03XXXXXXXXX" },
+        { id: "notes", question: "Any special notes or requests?", type: "text", placeholder: "Optional" }
+    ]
+};
+
+function getVisibleQuestions() {
+    return SmartPlanner.questions.filter(q => !q.condition || q.condition(SmartPlanner.answers));
+}
+
+function getCurrentVisibleIndex() {
+    const visible = getVisibleQuestions();
+    const currentId = SmartPlanner.questions[SmartPlanner.currentQuestion]?.id;
+    return visible.findIndex(q => q.id === currentId);
+}
+
+function goToNextVisible() {
+    const visible = getVisibleQuestions();
+    let idx = getCurrentVisibleIndex();
+    if (idx + 1 < visible.length) {
+        let nextId = visible[idx+1].id;
+        let nextIndex = SmartPlanner.questions.findIndex(q => q.id === nextId);
+        if (nextIndex !== -1) {
+            SmartPlanner.currentQuestion = nextIndex;
+            renderQuestion();
+            return true;
+        }
+    }
+    return false;
+}
+
+function goToPrevVisible() {
+    const visible = getVisibleQuestions();
+    let idx = getCurrentVisibleIndex();
+    if (idx - 1 >= 0) {
+        let prevId = visible[idx-1].id;
+        let prevIndex = SmartPlanner.questions.findIndex(q => q.id === prevId);
+        if (prevIndex !== -1) {
+            SmartPlanner.currentQuestion = prevIndex;
+            renderQuestion();
+            return true;
+        }
+    }
+    return false;
+}
+
+// ==================== DYNAMIC PACKAGES (keep your existing) ====================
+function updateDynamicPackages() {
+    const packagesDiv = document.getElementById('suggestedPackages');
+    if (!packagesDiv) return;
+    const budget = parseInt(SmartPlanner.answers.budget) || 0;
+    if (budget < 5000) {
+        packagesDiv.innerHTML = '<p style="color:#c46a84;">💡 Please enter a budget (minimum PKR 5,000) to see packages.</p>';
+        return;
+    }
+    const guests = parseInt(SmartPlanner.answers.guests) || 0;
+    const cakeFlavor = SmartPlanner.answers.cake_flavor || "chocolate";
+    const cakeSize = SmartPlanner.answers.cake_size || "2 Pound";
+    const cakeText = SmartPlanner.answers.cake_text || "";
+    const cupcakes = SmartPlanner.answers.cupcakes === "Yes" ? (parseInt(SmartPlanner.answers.cupcakes_qty) || 0) : 0;
+    const brownies = SmartPlanner.answers.brownies === "Yes" ? (parseInt(SmartPlanner.answers.brownies_qty) || 0) : 0;
+    const donuts = SmartPlanner.answers.donuts === "Yes" ? (parseInt(SmartPlanner.answers.donuts_qty) || 0) : 0;
+    const cakeRequired = SmartPlanner.answers.cake_required || "Yes";
+
+    let silverPrice = Math.round(budget * 0.6);
+    let goldPrice = Math.round(budget * 0.85);
+    let premiumPrice = budget;
+    let extraCost = (cupcakes * 120) + (brownies * 100) + (donuts * 90);
+    silverPrice += Math.round(extraCost * 0.5);
+    goldPrice += extraCost;
+    premiumPrice += extraCost;
+
+    const cakeDetail = cakeRequired === "Yes" ? `${cakeSize} ${cakeFlavor} cake` : "No cake";
+    const textDetail = cakeText ? ` with "${cakeText}"` : "";
+    let dessertDetail = "";
+    if (cupcakes > 0) dessertDetail += `${cupcakes} cupcakes, `;
+    if (brownies > 0) dessertDetail += `${brownies} brownies, `;
+    if (donuts > 0) dessertDetail += `${donuts} donuts, `;
+    dessertDetail = dessertDetail.slice(0, -2) || "No extras";
+
+    let silverFeatures = `🎂 ${cakeDetail}${textDetail}<br>🍰 ${cakeFlavor} flavor<br>⚖️ ${cakeSize} size<br>🍪 ${dessertDetail}`;
+    if (guests > 0) silverFeatures += `<br>👥 Serves up to ${Math.min(guests, 50)} guests`;
+    let goldFeatures = `🎂 Premium ${cakeDetail}${textDetail}<br>🍰 ${cakeFlavor} flavor with premium filling<br>🧁 12 Cupcakes included<br>🍫 Brownies/Donuts as per your selection<br>🍪 ${dessertDetail}`;
+    if (guests > 0) goldFeatures += `<br>👥 Serves up to ${Math.min(guests, 100)} guests`;
+    let premiumFeatures = `🎂 Luxury 3-tier ${cakeDetail}${textDetail}<br>🍰 ${cakeFlavor} flavor + custom frosting<br>🧁 24 Cupcakes + Macarons<br>🍫 Gourmet brownie & donut platter<br>🎈 Cake cutting ceremony setup (free)<br>🍪 ${dessertDetail}`;
+    if (guests > 0) premiumFeatures += `<br>👥 Serves all ${guests} guests`;
+
+    packagesDiv.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:12px;">
+            <div class="package-card" style="padding:12px; border:1px solid #ffe5ed; border-radius:16px; background:white;">
+                <h3 style="color:#c46a84;">🥈 Silver Package</h3>
+                <div style="font-size:1.3rem; font-weight:700;">PKR ${silverPrice.toLocaleString()}</div>
+                <div style="font-size:0.75rem; line-height:1.5;">${silverFeatures}</div>
+                <button class="planner-btn" onclick="selectPackage('Silver', ${silverPrice})" style="margin-top:10px; width:100%; background:#c46a84; color:white; border:none; padding:8px; border-radius:40px;">Select Package</button>
+            </div>
+            <div class="package-card" style="padding:12px; border:2px solid #c46a84; border-radius:16px; background:linear-gradient(135deg,#fff,#fef5f7);">
+                <h3 style="color:#c46a84;">🥇 Gold Package (Bestseller)</h3>
+                <div style="font-size:1.3rem; font-weight:700;">PKR ${goldPrice.toLocaleString()}</div>
+                <div style="font-size:0.75rem; line-height:1.5;">${goldFeatures}</div>
+                <button class="planner-btn" onclick="selectPackage('Gold', ${goldPrice})" style="margin-top:10px; width:100%; background:#c46a84; color:white; border:none; padding:8px; border-radius:40px;">Select Package</button>
+            </div>
+            <div class="package-card" style="padding:12px; border:1px solid #ffe5ed; border-radius:16px; background:white;">
+                <h3 style="color:#c46a84;">💎 Premium Package</h3>
+                <div style="font-size:1.3rem; font-weight:700;">PKR ${premiumPrice.toLocaleString()}</div>
+                <div style="font-size:0.75rem; line-height:1.5;">${premiumFeatures}</div>
+                <button class="planner-btn" onclick="selectPackage('Premium', ${premiumPrice})" style="margin-top:10px; width:100%; background:#c46a84; color:white; border:none; padding:8px; border-radius:40px;">Select Package</button>
+            </div>
+        </div>
+        <p style="font-size:11px; color:#999; margin-top:12px;">* Prices include all taxes. Only cake & desserts – no setup/photo/sitting charges.</p>
+    `;
+}
+
+window.selectPackage = function(pkg, price) {
+    SmartPlanner.answers.selected_package = pkg;
+    SmartPlanner.answers.package_price = price;
+    updateSummary();
+    updateInvoicePreview(pkg, price);
+};
+
+function updateInvoicePreview(pkg, price) {
+    const invoiceDiv = document.getElementById('invoicePreview');
+    if (!invoiceDiv) return;
+    let items = [];
+    if (SmartPlanner.answers.cake_required === "Yes") {
+        items.push(`${SmartPlanner.answers.cake_size || ''} ${SmartPlanner.answers.cake_flavor || ''} cake`);
+        if (SmartPlanner.answers.cake_text) items.push(`Text: "${SmartPlanner.answers.cake_text}"`);
+    }
+    if (SmartPlanner.answers.cupcakes === "Yes") items.push(`${SmartPlanner.answers.cupcakes_qty || 0} cupcakes`);
+    if (SmartPlanner.answers.brownies === "Yes") items.push(`${SmartPlanner.answers.brownies_qty || 0} brownies`);
+    if (SmartPlanner.answers.donuts === "Yes") items.push(`${SmartPlanner.answers.donuts_qty || 0} donuts`);
+    invoiceDiv.innerHTML = `
+        <div style="background:#f9f0f4; border-radius:16px; padding:12px;">
+            <p><strong>📦 Package:</strong> ${pkg}</p>
+            <p><strong>💰 Total:</strong> PKR ${price.toLocaleString()}</p>
+            <p><strong>📋 Items:</strong> ${items.join(', ') || 'Standard package'}</p>
+            <p><strong>👤 Customer:</strong> ${SmartPlanner.answers.customer_name || '—'}</p>
+            <p><strong>📞 Phone:</strong> ${SmartPlanner.answers.customer_phone || '—'}</p>
+            <p><strong>📅 Pickup:</strong> ${SmartPlanner.answers.delivery_date || '—'} ${SmartPlanner.answers.pickup_time || ''}</p>
+        </div>
+    `;
+}
+
+// ==================== RENDER QUESTION ====================
+function renderQuestion() {
+    const container = document.getElementById('eventStepContent');
+    if (!container) return;
+    const visible = getVisibleQuestions();
+    const idx = getCurrentVisibleIndex();
+    if (idx < 0 || idx >= visible.length) {
+        showFinalStep();
+        return;
+    }
+    const q = visible[idx];
+    
+    // Build HTML (same as yours)
+    let html = `<div class="planner-question-box"><h2 class="planner-question-title">${q.question}</h2>`;
+    if (q.type === "options") {
+        html += `<div class="event-cards">`;
+        q.options.forEach(opt => {
+            html += `<div class="event-card" onclick="selectOption('${q.id}', '${opt.replace(/'/g, "\\'")}')">${opt}</div>`;
+        });
+        html += `</div>`;
+    } else if (q.type === "text" || q.type === "number") {
+        let inputType = q.type === "number" ? "number" : "text";
+        let saved = SmartPlanner.answers[q.id] || '';
+        html += `<input type="${inputType}" class="form-control" id="plannerInput" placeholder="${q.placeholder || ''}" value="${saved.replace(/"/g, '&quot;')}"><br><br>
+                 <button class="planner-btn planner-next-btn" onclick="submitInput('${q.id}')">Continue →</button>`;
+    } else if (q.type === "date") {
+        let saved = SmartPlanner.answers[q.id] || '';
+        let today = new Date();
+        let minDate = new Date(today);
+        minDate.setDate(today.getDate() + 1);
+        let minStr = minDate.toISOString().split('T')[0];
+        html += `<input type="date" class="form-control" id="plannerInput" min="${minStr}" value="${saved}"><br><br>
+                 <button class="planner-btn planner-next-btn" onclick="submitInput('${q.id}')">Continue →</button>`;
+    } else if (q.type === "time") {
+        let saved = SmartPlanner.answers[q.id] || '';
+        html += `<input type="time" class="form-control" id="plannerInput" value="${saved}"><br><br>
+                 <button class="planner-btn planner-next-btn" onclick="submitInput('${q.id}')">Continue →</button>`;
+    }
+    html += `</div>`;
+    container.innerHTML = html;
+    
+    // FORCEFULLY SPEAK THE FIRST QUESTION (with a small delay to ensure DOM ready)
+    if (SmartPlanner.currentQuestion === 0 && idx === 0) {
+        setTimeout(() => {
+            speakQuestion(q.question);
+        }, 200);
+    } else {
+        speakQuestion(q.question);
+    }
+    
+    updateProgress();
+    updateSummary();
+}
+
+window.selectOption = function(id, val) {
+    SmartPlanner.answers[id] = val;
+    if (id === 'cake_required' && val === 'No') {
+        delete SmartPlanner.answers.cake_flavor;
+        delete SmartPlanner.answers.cake_size;
+        delete SmartPlanner.answers.cake_text;
+    }
+    updateSummary();
+    updateDynamicPackages();
+    goToNextVisible();
+};
+
+window.submitInput = function(id) {
+    let inp = document.getElementById('plannerInput');
+    if (!inp) return;
+    let val = inp.value.trim();
+    if (id !== 'notes' && val === "") {
+        alert("Please fill the field");
+        return;
+    }
+    if (id === 'customer_phone') {
+        if (!/^03\d{9}$/.test(val)) {
+            alert("Enter valid Pakistani number (03XXXXXXXXX)");
+            return;
+        }
+    }
+    if (id === 'delivery_date') {
+        let today = new Date();
+        let selected = new Date(val);
+        let minDate = new Date();
+        minDate.setDate(today.getDate() + 1);
+        if (selected < minDate) {
+            alert("Pickup date must be at least 1 day from today");
+            return;
+        }
+    }
+    SmartPlanner.answers[id] = val;
+    updateSummary();
+    updateDynamicPackages();
+    if (!goToNextVisible()) {
+        showFinalStep();
+    }
+};
+
+window.nextQuestion = function() { goToNextVisible(); };
+window.prevPlannerStep = function() { goToPrevVisible(); };
+
+function updateSummary() {
+    let summaryDiv = document.getElementById('liveSummary');
+    let totalDiv = document.getElementById('plannerTotalDisplay');
+    if (!summaryDiv) return;
+    let html = '';
+    for (let [k,v] of Object.entries(SmartPlanner.answers)) {
+        if (v && !['selected_package','package_price'].includes(k)) {
+            html += `<p><strong>${formatKey(k)}:</strong> ${v}</p>`;
+        }
+    }
+    if (SmartPlanner.answers.selected_package) {
+        html += `<p><strong>Selected Package:</strong> ${SmartPlanner.answers.selected_package} (PKR ${SmartPlanner.answers.package_price?.toLocaleString()})</p>`;
+    }
+    summaryDiv.innerHTML = html || "Start answering questions...";
+    if (totalDiv && SmartPlanner.answers.budget) {
+        totalDiv.innerHTML = `PKR ${parseInt(SmartPlanner.answers.budget).toLocaleString()}`;
+    } else {
+        totalDiv.innerHTML = "PKR 0";
+    }
+}
+
+function updateProgress() {
+    let fill = document.getElementById('eventProgressFill');
+    let indicator = document.getElementById('stepIndicator');
+    if (!fill || !indicator) return;
+    let visible = getVisibleQuestions();
+    let total = visible.length;
+    if (total <= 0) return;
+    let idx = getCurrentVisibleIndex();
+    let curr = idx + 1;
+    fill.style.width = (curr / total) * 100 + '%';
+    indicator.innerText = `Question ${curr} / ${total}`;
+}
+
+function formatKey(k) {
+    return k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function showFinalStep() {
+    let container = document.getElementById('eventStepContent');
+    if (!container) return;
+    let answersHtml = '';
+    for (let [k,v] of Object.entries(SmartPlanner.answers)) {
+        if (v) answersHtml += `<p><strong>${formatKey(k)}:</strong> ${v}</p>`;
+    }
+    container.innerHTML = `
+        <div class="planner-question-box">
+            <h2>🎉 Thank You!</h2>
+            <p>Your event plan is ready. Select a package above then click below to send on WhatsApp.</p>
+            <div class="summary-card"><h3>Event Summary</h3>${answersHtml}</div>
+            <button class="planner-btn planner-next-btn" onclick="sendToWhatsApp()">📱 Send to WhatsApp</button>
+            <button class="planner-btn" onclick="closeSmartEventModal()" style="background:#ddd;">Close</button>
+        </div>
+    `;
+}
+
+window.sendToWhatsApp = async function() {
+    if (!SmartPlanner.answers.selected_package) {
+        alert("Please select a package first (Silver, Gold, or Premium).");
+        return;
+    }
+
+    const eventData = {
+        customer_name: SmartPlanner.answers.customer_name || "",
+        phone: SmartPlanner.answers.customer_phone || "",
+        relation_name: "",
+        event_type: SmartPlanner.answers.event_type || "",
+        guests: parseInt(SmartPlanner.answers.guests) || 0,
+        budget: parseInt(SmartPlanner.answers.budget) || 0,
+        total_price: SmartPlanner.answers.package_price || 0,
+        advance_payment: 0,
+        remaining_amount: SmartPlanner.answers.package_price || 0,
+        selected_package: SmartPlanner.answers.selected_package || "",
+        order_summary: SmartPlanner.answers,
+        event_date: SmartPlanner.answers.delivery_date || "",
+        pickup_time: SmartPlanner.answers.pickup_time || "",
+        delivery_type: "Pickup",
+        special_instructions: SmartPlanner.answers.notes || "",
+    };
+
+    console.log("Sending Event Data:", eventData);
+
+    const endpoint = "/api/save-event-planner-order/";
+    try {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventData)
+        });
+        const result = await response.json();
+        console.log("Event saved response:", result);
+    } catch (error) {
+        console.warn("Could not save event (network/backend error). Still opening WhatsApp.", error);
+    }
+
+    let msg = `🎂 IK DELIGHTS EVENT PLANNER\n━━━━━━━━━━━━━━━\n\n📦 PACKAGE: ${SmartPlanner.answers.selected_package}\n💰 PRICE: PKR ${SmartPlanner.answers.package_price?.toLocaleString()}\n━━━━━━━━━━━━━━━\n\n`;
+    for (let [k, v] of Object.entries(SmartPlanner.answers)) {
+        if (v && !['selected_package', 'package_price'].includes(k)) {
+            msg += `${formatKey(k)}: ${v}\n`;
+        }
+    }
+    msg += `\n━━━━━━━━━━━━━━━\nThank You 💖`;
+
+    const businessPhone = "923214243501";
+    const whatsappURL = `https://wa.me/${businessPhone}?text=${encodeURIComponent(msg)}`;
+    window.open(whatsappURL, "_blank");
+};
+
+// ==================== MODAL OPEN – FORCE FIRST QUESTION VOICE ====================
+window.openSmartEventPlanner = function() {
+    let modal = document.getElementById('smartEventModal');
+    if (!modal) return;
+    
+    modal.classList.add('active');
+    SmartPlanner.currentQuestion = 0;
+    SmartPlanner.answers = {};
+    
+    // Cancel any previous speech
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    
+    // Warm engine if not done
+    warmupSpeechEngine();
+    
+    // Render the first question (which will speak after 200ms delay inside renderQuestion)
+    renderQuestion();
+    
+    updateProgress();
+    updateSummary();
+    updateDynamicPackages();
+    
+    // EXTRA FALLBACK: force speak the first question again after 500ms (in case the first attempt fails)
+    setTimeout(() => {
+        const firstQ = SmartPlanner.questions[0];
+        if (firstQ && plannerVoiceEnabled) {
+            speakQuestion(firstQ.question);
+        }
+    }, 500);
+    
+    console.log("🗣️ Planner opened – first question forced to speak");
+};
+
+window.closeSmartEventModal = function() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    let modal = document.getElementById('smartEventModal');
+    if (modal) modal.classList.remove('active');
+};
+
+// Enter key support
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        let input = document.getElementById('plannerInput');
+        if (input && input.offsetParent !== null) {
+            let visible = getVisibleQuestions();
+            let idx = getCurrentVisibleIndex();
+            if (idx >= 0 && visible[idx] && ['text','number','date','time'].includes(visible[idx].type)) {
+                e.preventDefault();
+                submitInput(visible[idx].id);
+            }
+        }
+    }
+});
+
+// Page load: warm up speech engine
+document.addEventListener('DOMContentLoaded', () => {
+    warmupSpeechEngine();
+    let modal = document.getElementById('smartEventModal');
+    if (modal) modal.addEventListener('click', e => { if (e.target === modal) closeSmartEventModal(); });
+    console.log("IK Delights Planner – Forceful voice added");
+});
+</script>

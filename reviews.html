@@ -1,0 +1,89 @@
+<div class="reviews-page">
+
+    <div class="reviews-header">
+
+        <div>
+            <h2>Customer Reviews</h2>
+            <p>
+                Total Reviews:
+                <strong>{{ total_reviews }}</strong>
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="reviews-grid">
+
+        {% for review in reviews %}
+
+        <div class="review-card" id="review-{{ review.id }}">
+
+            <div class="review-top">
+
+                <div>
+                    <h3>{{ review.name }}</h3>
+
+                    <span class="city">
+                        {{ review.city }}
+                    </span>
+                </div>
+
+                <div class="rating">
+                    ⭐ {{ review.rating }}/5
+                </div>
+
+            </div>
+
+
+            <div class="review-comment"
+                 id="comment-{{ review.id }}">
+
+                {{ review.comment }}
+
+            </div>
+
+
+            <div class="review-date">
+                {{ review.created_at|date:"d M Y" }}
+            </div>
+
+
+            <div class="review-actions">
+
+                <button
+                    class="edit-btn"
+                    onclick="editReview(
+                        {{ review.id }},
+                        '{{ review.comment|escapejs }}',
+                        {{ review.rating }}
+                    )">
+
+                    Edit
+
+                </button>
+
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteReview({{ review.id }})">
+
+                    Delete
+
+                </button>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="empty-box">
+            No Reviews Found
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>

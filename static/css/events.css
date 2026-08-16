@@ -1,0 +1,711 @@
+/* ======================================================
+   EVENTS MANAGEMENT PAGE
+====================================================== */
+
+.events-isolated-page{
+
+    padding:30px;
+
+    background:#fff8fb;
+
+    min-height:100vh;
+}
+
+/* ======================================================
+   PAGE TITLE
+====================================================== */
+
+.events-isolated-page .page-title{
+
+    font-size:36px;
+
+    font-weight:800;
+
+    color:#0f172a;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    margin-bottom:30px;
+}
+
+/* ======================================================
+   TABLE WRAPPER
+====================================================== */
+
+.events-isolated-page .table-wrapper{
+
+    background:white;
+
+    border-radius:28px;
+
+    padding:25px;
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.05);
+}
+
+/* ======================================================
+   TOP ACTIONS
+====================================================== */
+
+.events-isolated-page .table-top-actions{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    margin-bottom:25px;
+}
+
+/* ======================================================
+   ADD BUTTON
+====================================================== */
+
+.events-isolated-page .btn-add{
+
+    background:#22c55e;
+
+    color:white;
+
+    border:none;
+
+    padding:14px 22px;
+
+    border-radius:16px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.events-isolated-page .btn-add:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 10px 25px rgba(34,197,94,0.25);
+}
+
+/* ======================================================
+   TABLE SCROLL
+====================================================== */
+
+.events-isolated-page .table-scroll{
+
+    overflow-x:auto;
+}
+
+/* ======================================================
+   EVENTS TABLE - IMPROVEMENT 1: wider table
+====================================================== */
+
+.events-isolated-page .events-table{
+
+    width:100%;
+
+    min-width:1800px;
+
+    border-collapse:collapse;
+}
+
+/* ======================================================
+   TABLE HEADER
+====================================================== */
+
+.events-isolated-page .events-table thead{
+
+    background:#0f172a;
+}
+
+.events-isolated-page .events-table thead th{
+
+    color:white;
+
+    padding:18px 16px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+/* ======================================================
+   TABLE BODY
+====================================================== */
+
+.events-isolated-page .events-table tbody tr{
+
+    border-bottom:
+        1px solid #f1f5f9;
+
+    transition:0.3s ease;
+}
+
+.events-isolated-page .events-table tbody tr:hover{
+
+    background:#fffafc;
+}
+
+.events-isolated-page .events-table tbody td{
+
+    padding:18px 16px;
+
+    vertical-align:middle;
+
+    font-size:14px;
+
+    color:#334155;
+}
+
+/* ======================================================
+   PACKAGE CARD
+====================================================== */
+
+.events-isolated-page .package-card{
+
+    background:linear-gradient(
+        135deg,
+        #fff1f5,
+        #ffe4ec
+    );
+
+    border:1px solid #ffd6e7;
+
+    border-radius:18px;
+
+    padding:14px;
+
+    min-width:170px;
+}
+
+.events-isolated-page .package-name{
+
+    font-size:14px;
+
+    font-weight:800;
+
+    color:#e11d48;
+}
+
+.events-isolated-page .package-price{
+
+    margin-top:8px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    color:#64748b;
+}
+
+/* ======================================================
+   PAYMENT DROPDOWN
+====================================================== */
+
+.events-isolated-page .payment-dropdown{
+
+    border:none;
+
+    padding:10px 14px;
+
+    border-radius:14px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    min-width:120px;
+
+    cursor:pointer;
+
+    outline:none;
+}
+
+.events-isolated-page .payment-dropdown.pending{
+
+    background:#fef3c7;
+
+    color:#92400e;
+}
+
+.events-isolated-page .payment-dropdown.partial{
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+}
+
+.events-isolated-page .payment-dropdown.paid{
+
+    background:#dcfce7;
+
+    color:#15803d;
+}
+
+/* ======================================================
+   STATUS DROPDOWN
+====================================================== */
+
+.events-isolated-page .status-dropdown{
+
+    border:none;
+
+    padding:10px 14px;
+
+    border-radius:14px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    min-width:140px;
+
+    cursor:pointer;
+
+    outline:none;
+}
+
+.events-isolated-page .status-dropdown.pending{
+
+    background:#fce7f3;
+
+    color:#be185d;
+}
+
+.events-isolated-page .status-dropdown.preparing{
+
+    background:#fef3c7;
+
+    color:#92400e;
+}
+
+.events-isolated-page .status-dropdown.processing{
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+}
+
+.events-isolated-page .status-dropdown.delivered{
+
+    background:#dcfce7;
+
+    color:#15803d;
+}
+
+.events-isolated-page .status-dropdown.cancelled{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+}
+
+/* ✅ IMPROVEMENT 3: Confirmed status color */
+.events-isolated-page .status-dropdown.confirmed{
+
+    background:#dcfce7;
+
+    color:#15803d;
+}
+
+/* ======================================================
+   ACTION BUTTONS
+====================================================== */
+
+.events-isolated-page .actions-wrap{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+}
+
+/* ======================================================
+   INVOICE BUTTON
+====================================================== */
+
+.events-isolated-page .btn-invoice{
+
+    background:#f8fafc;
+
+    color:#0f172a;
+
+    border:none;
+
+    padding:11px 16px;
+
+    border-radius:14px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.events-isolated-page .btn-invoice:hover{
+
+    background:#e2e8f0;
+
+    transform:translateY(-2px);
+}
+
+/* ======================================================
+   WHATSAPP BUTTON
+====================================================== */
+
+.events-isolated-page .btn-whatsapp{
+
+    background:#22c55e;
+
+    color:white;
+
+    border:none;
+
+    padding:11px 14px;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.events-isolated-page .btn-whatsapp:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(34,197,94,0.25);
+}
+
+/* ======================================================
+   DELETE BUTTON
+====================================================== */
+
+.events-isolated-page .btn-delete{
+
+    background:#ef4444;
+
+    color:white;
+
+    border:none;
+
+    padding:11px 14px;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.events-isolated-page .btn-delete:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(239,68,68,0.25);
+}
+
+/* ======================================================
+   MODAL
+====================================================== */
+
+.events-isolated-page .event-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(15,23,42,0.55);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9999;
+
+    padding:20px;
+}
+
+/* ======================================================
+   MODAL CONTENT - IMPROVEMENT 4: wider modal
+====================================================== */
+
+.events-isolated-page .event-modal-content{
+
+    width:1100px;
+
+    max-width:100%;
+
+    max-height:92vh;
+
+    overflow-y:auto;
+
+    background:white;
+
+    border-radius:28px;
+
+    padding:30px;
+}
+
+/* ======================================================
+   MODAL HEADER
+====================================================== */
+
+.events-isolated-page .event-modal-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+}
+
+/* ======================================================
+   CLOSE BUTTON
+====================================================== */
+
+.events-isolated-page .close-modal-btn{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#f1f5f9;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.events-isolated-page .close-modal-btn:hover{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+}
+
+/* ======================================================
+   FORM GRID
+====================================================== */
+
+.events-isolated-page .event-form-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:20px;
+}
+
+/* ======================================================
+   FORM GROUP
+====================================================== */
+
+.events-isolated-page .form-group{
+
+    display:flex;
+
+    flex-direction:column;
+}
+
+.events-isolated-page .form-group label{
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#334155;
+
+    margin-bottom:10px;
+}
+
+/* ======================================================
+   INPUTS
+====================================================== */
+
+.events-isolated-page input,
+.events-isolated-page select,
+.events-isolated-page textarea{
+
+    width:100%;
+
+    padding:15px;
+
+    border:
+        1px solid #e2e8f0;
+
+    border-radius:14px;
+
+    font-size:15px;
+
+    transition:0.3s ease;
+
+    box-sizing:border-box;
+}
+
+.events-isolated-page input:focus,
+.events-isolated-page select:focus,
+.events-isolated-page textarea:focus{
+
+    outline:none;
+
+    border-color:#ec4899;
+
+    box-shadow:
+        0 0 0 4px rgba(236,72,153,0.12);
+}
+
+/* ✅ IMPROVEMENT 2: readonly fields style */
+.events-isolated-page input[readonly]{
+
+    background:#f8fafc;
+
+    color:#64748b;
+
+    font-weight:700;
+
+    cursor:not-allowed;
+}
+
+/* ======================================================
+   FULL WIDTH
+====================================================== */
+
+.events-isolated-page .full-width{
+
+    grid-column:1 / -1;
+}
+
+/* ======================================================
+   MODAL BUTTONS
+====================================================== */
+
+.events-isolated-page .modal-buttons{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:14px;
+
+    margin-top:30px;
+
+    flex-wrap:wrap;
+}
+
+/* ======================================================
+   SAVE BUTTON
+====================================================== */
+
+.events-isolated-page .btn-save{
+
+    background:#ec4899;
+
+    color:white;
+
+    border:none;
+
+    padding:14px 24px;
+
+    border-radius:14px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.events-isolated-page .btn-save:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 10px 24px rgba(236,72,153,0.25);
+}
+
+/* ======================================================
+   CANCEL BUTTON
+====================================================== */
+
+.events-isolated-page .btn-cancel{
+
+    background:#e2e8f0;
+
+    color:#334155;
+
+    border:none;
+
+    padding:14px 24px;
+
+    border-radius:14px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.3s ease;
+}
+
+.events-isolated-page .btn-cancel:hover{
+
+    background:#cbd5e1;
+}
+
+/* ======================================================
+   RESPONSIVE
+====================================================== */
+
+@media(max-width:992px){
+
+    .events-isolated-page{
+
+        padding:15px;
+    }
+
+    .events-isolated-page .event-form-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .events-isolated-page .table-wrapper{
+
+        padding:18px;
+    }
+
+}
