@@ -2,3 +2,4 @@ Django>=4.2.0
 gunicorn
 Pillow
 python-dotenv
+reportlab
