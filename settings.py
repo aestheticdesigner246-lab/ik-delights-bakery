@@ -18,8 +18,7 @@ SECRET_KEY = 'django-insecure-@%1jg_^ln9jzu@)0iw%le6ihzzsh-f+z^btzln#82$q(9rh4ve
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ik-delights-bakery-1.onrender.com', 'localhost', '127.0.0.1', '*']
-
+ALLOWED_HOSTS = ['*']
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
