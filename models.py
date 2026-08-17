@@ -38,6 +38,9 @@ class Category(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        app_label = 'ik'
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.name)
@@ -53,7 +56,6 @@ class Product(models.Model):
         ('cookie', 'Cookie'),
         ('brownie', 'Brownie'),
         ('bento', 'Bento'),
-
     )
 
     name = models.CharField(max_length=200)
@@ -91,6 +93,9 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0, help_text="Available stock quantity")
     is_featured = models.BooleanField(default=False, help_text="Show on homepage featured section")
 
+    class Meta:
+        app_label = 'ik'
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.name)
@@ -111,15 +116,20 @@ class Cart(models.Model):
     session_key = models.CharField(max_length=40, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        app_label = 'ik'
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
+    class Meta:
+        app_label = 'ik'
+
 
 class Order(models.Model):
-    # PAYMENT CHOICES
     PAYMENT_CHOICES = [
         ('jazzcash', 'JazzCash'),
         ('easypaisa', 'EasyPaisa'),
@@ -213,7 +223,6 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True, help_text="Last updated timestamp")
     city = models.CharField(max_length=100, blank=True, help_text="Customer city")
     
-    # Remaining payment tracking fields
     remaining_transaction_id = models.CharField(
         max_length=50,
         blank=True,
@@ -261,6 +270,9 @@ class Order(models.Model):
         'delivered': [],
         'cancelled': [],
     }
+
+    class Meta:
+        app_label = 'ik'
 
     @property
     def required_advance_amount(self):
@@ -357,6 +369,9 @@ class OrderItem(models.Model):
     product_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField()
 
+    class Meta:
+        app_label = 'ik'
+
 
 # ============================================================
 # 2. CUSTOMER ENGAGEMENT
@@ -368,6 +383,9 @@ class Review(models.Model):
     rating = models.IntegerField()
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        app_label = 'ik'
 
     def __str__(self):
         return f"{self.name} - {self.rating}★"
@@ -455,7 +473,6 @@ class EventBooking(models.Model):
         blank=True
     )
 
-    # ========== NEW FIELDS ADDED FOR PAYMENT & DASHBOARD ==========
     advance_payment = models.DecimalField(
         max_digits=10,
         decimal_places=2,
@@ -503,7 +520,9 @@ class EventBooking(models.Model):
         blank=True,
         help_text="Any special requests"
     )
-    # ============================================================
+
+    class Meta:
+        app_label = 'ik'
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -516,10 +535,8 @@ class EventBooking(models.Model):
             except EventBooking.DoesNotExist:
                 old_status = None
 
-        # Auto‑calculate remaining amount
         self.remaining_amount = max(0, self.total_price - self.advance_payment)
 
-        # Auto‑adjust payment status based on advance
         if self.advance_payment >= self.total_price:
             self.payment_status = 'fully_paid'
         elif self.advance_payment > 0:
@@ -538,7 +555,6 @@ class EventBooking(models.Model):
             wa_url = send_whatsapp_message(self.phone, message)
             if wa_url:
                 EventBooking.objects.filter(pk=self.pk).update(whatsapp_sent=True)
-                print(f"[WHATSAPP URL] {wa_url}")
 
     def _get_status_message(self):
         base = f"Assalam-o-Alaikum {self.customer_name}\n\n"
@@ -563,6 +579,7 @@ class Favorite(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        app_label = 'ik'
         unique_together = ('user', 'product')
 
 
@@ -585,6 +602,7 @@ class Gallery(models.Model):
     sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:
+        app_label = 'ik'
         ordering = ['sort_order', 'name']
         verbose_name_plural = "Gallery"
 
@@ -616,6 +634,9 @@ class FlashSale(models.Model):
     show_whatsapp = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        app_label = 'ik'
+
     def __str__(self):
         return self.title
 
@@ -631,6 +652,7 @@ class Deal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        app_label = 'ik'
         ordering = ['sort_order', '-created_at']
         verbose_name = "Deal"
         verbose_name_plural = "Deals"
@@ -641,7 +663,6 @@ class Deal(models.Model):
     @property
     def is_expired(self):
         if self.expiry:
-            from django.utils import timezone
             return self.expiry <= timezone.now()
         return False
     
@@ -649,7 +670,6 @@ class Deal(models.Model):
     def time_remaining(self):
         if not self.expiry:
             return None
-        from django.utils import timezone
         now = timezone.now()
         if self.expiry <= now:
             return {'expired': True}
@@ -671,6 +691,9 @@ class Deal(models.Model):
 class UsedTransaction(models.Model):
     txn_id = models.CharField(max_length=50, unique=True)
     used_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        app_label = 'ik'
 
     def __str__(self):
         return self.txn_id
@@ -698,6 +721,9 @@ class ContactMessage(models.Model):
         default='medium',
     )
 
+    class Meta:
+        app_label = 'ik'
+
     def __str__(self):
         return f"Message from {self.name} - {self.created_at.strftime('%Y-%m-%d')}"
 
@@ -710,6 +736,7 @@ class Announcement(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        app_label = 'ik'
         ordering = ['order', '-created_at']
         verbose_name = "Announcement"
         verbose_name_plural = "Announcements"
@@ -737,6 +764,9 @@ class Profile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        app_label = 'ik'
+
     def __str__(self):
         return f"Profile of {self.user.username}"
 
@@ -758,6 +788,7 @@ class HomepageSettings(models.Model):
     show_section = models.BooleanField(default=True)
 
     class Meta:
+        app_label = 'ik'
         verbose_name = "Homepage Setting"
         verbose_name_plural = "Homepage Settings"
 
@@ -783,6 +814,7 @@ class EventChatSession(models.Model):
     answers = models.JSONField(default=dict, blank=True)
 
     class Meta:
+        app_label = 'ik'
         ordering = ['-created_at']
 
     def __str__(self):
@@ -809,6 +841,7 @@ class BakingInquiry(models.Model):
     order_id = models.IntegerField(null=True, blank=True)
 
     class Meta:
+        app_label = 'ik'
         ordering = ['-created_at']
 
     def __str__(self):
@@ -825,6 +858,9 @@ class DealProduct(models.Model):
     quantity = models.CharField(max_length=50)
     cost_price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Our cost")
     selling_price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price charged to customer")
+
+    class Meta:
+        app_label = 'ik'
 
     def __str__(self):
         return f"{self.product_name} x{self.quantity}"
@@ -910,200 +946,9 @@ class WhatsAppNumber(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        app_label = 'ik'
         unique_together = ('session_key', 'phone_number')
         ordering = ['-created_at']
-        indexes = [
-            models.Index(fields=['status']),
-            models.Index(fields=['phone_number']),
-            models.Index(fields=['created_at']),
-            models.Index(fields=['payment_verified']),
-            models.Index(fields=['lead_source']),
-        ]
-
-    def save(self, *args, **kwargs):
-        self.remaining_amount = max(0, self.total_amount - self.advance_amount)
-        if self.remaining_amount <= 0 and self.total_amount > 0:
-            self.status = 'converted'
-        super().save(*args, **kwargs)
-
-    def is_converted(self):
-        return self.order_id is not None
 
     def __str__(self):
-        name = self.customer_name or "Unknown"
-        return f"{name} - {self.phone_number} ({self.get_status_display()})"
-
-
-# ============================================================
-# 11. EVENT PACKAGES, INQUIRY, ORDER
-# ============================================================
-
-class EventPackage(models.Model):
-    EVENT_TYPES = [
-        ('birthday', 'Birthday'),
-        ('wedding', 'Wedding'),
-        ('anniversary', 'Anniversary'),
-        ('baby_shower', 'Baby Shower'),
-        ('graduation', 'Graduation'),
-        ('corporate', 'Corporate'),
-    ]
-    name = models.CharField(max_length=100)
-    event_type = models.CharField(max_length=20, choices=EVENT_TYPES)
-    description = models.TextField(blank=True)
-    base_price = models.DecimalField(max_digits=10, decimal_places=2)
-    cake_size = models.CharField(max_length=50, blank=True)
-    cake_flavor = models.CharField(max_length=50, blank=True)
-    includes_extras = models.TextField(blank=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    min_budget = models.PositiveIntegerField(default=0, help_text="Minimum budget")
-    max_budget = models.PositiveIntegerField(default=1000000, help_text="Maximum budget")
-    min_guests = models.PositiveIntegerField(default=1)
-    max_guests = models.PositiveIntegerField(default=1000)
-    image = models.ImageField(upload_to='event_packages/', blank=True, null=True)
-    recommended = models.BooleanField(default=False)
-    is_featured = models.BooleanField(default=False)
-    display_order = models.PositiveIntegerField(default=0)
-
-    def clean(self):
-        if self.min_budget > self.max_budget:
-            raise ValidationError("Minimum budget cannot be greater than maximum budget")
-        if self.min_guests > self.max_guests:
-            raise ValidationError("Minimum guests cannot be greater than maximum guests")
-
-    def __str__(self):
-        return f"{self.name} (PKR {self.base_price})"
-
-
-class EventInquiry(models.Model):
-    INQUIRY_STATUS = [
-        ('new', 'New'),
-        ('contacted', 'Contacted'),
-        ('converted', 'Converted'),
-        ('lost', 'Lost'),
-    ]
-    name = models.CharField(max_length=100)
-    email = models.EmailField(blank=True, null=True)
-    
-    phone = models.CharField(
-        max_length=20,
-        validators=[
-            RegexValidator(
-                regex=r'^03\d{9}$',
-                message='Phone number must be in format 03XXXXXXXXX'
-            )
-        ],
-        help_text="Enter Pakistani number like 03XXXXXXXXX"
-    )
-    
-    event_type = models.CharField(max_length=50, choices=EventPackage.EVENT_TYPES, blank=True)
-    guests = models.IntegerField(default=25)
-    budget = models.IntegerField(default=5000)
-    preferred_date = models.DateField(blank=True, null=True)
-    message = models.TextField(blank=True)
-    status = models.CharField(max_length=20, choices=INQUIRY_STATUS, default='new')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    planner_answers = models.JSONField(default=dict, blank=True)
-    reference_image = models.ImageField(upload_to='event_inquiries/', blank=True, null=True)
-    selected_package = models.ForeignKey(EventPackage, on_delete=models.SET_NULL, null=True, blank=True)
-    notes = models.TextField(blank=True)
-
-    def __str__(self):
-        return f"Inquiry from {self.name} - {self.created_at.date()}"
-    
-
-class EventOrder(models.Model):
-    ORDER_STATUS = [
-        ('pending', 'Pending'),
-        ('processing', 'Processing'),
-        ('delivered', 'Delivered'),
-        ('cancelled', 'Cancelled'),
-    ]
-    
-    PAYMENT_STATUS = [
-        ('unpaid', 'Unpaid'),
-        ('partial', 'Partial'),
-        ('paid', 'Paid'),
-    ]
-    
-    inquiry = models.OneToOneField(EventInquiry, on_delete=models.SET_NULL, null=True, blank=True)
-    package = models.ForeignKey(EventPackage, on_delete=models.SET_NULL, null=True)
-    order_number = models.CharField(max_length=20, unique=True, blank=True)
-    customer_name = models.CharField(max_length=100)
-    email = models.EmailField(blank=True, null=True)
-    phone = models.CharField(max_length=20)
-    address = models.TextField()
-    event_date = models.DateField()
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    advance_paid = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    remaining = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    status = models.CharField(max_length=20, choices=ORDER_STATUS, default='pending')
-    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='unpaid')
-    transaction_id = models.CharField(max_length=100, blank=True)
-    notes = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def save(self, *args, **kwargs):
-        if not self.order_number:
-            import random
-            self.order_number = f"EVT-{random.randint(100000, 999999)}"
-        self.remaining = max(0, self.total_amount - self.advance_paid)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"Order {self.order_number} - {self.customer_name}"
-
-
-# ============================================================
-# 12. SITE SETTINGS
-# ============================================================
-
-class SiteSettings(models.Model):
-    bakery_name = models.CharField(max_length=200)
-    email = models.EmailField()
-    phone = models.CharField(max_length=20)
-    address = models.TextField()
-    logo = models.ImageField(upload_to='settings/', blank=True, null=True)
-    footer_logo = models.ImageField(upload_to='settings/', blank=True, null=True)
-    admin_logo = models.ImageField(upload_to='settings/', blank=True, null=True)
-    facebook = models.URLField(blank=True)
-    instagram = models.URLField(blank=True)
-    whatsapp = models.URLField(blank=True)
-    tiktok = models.URLField(blank=True)
-    jazzcash_number = models.CharField(max_length=20, blank=True, null=True)
-    easypaisa_number = models.CharField(max_length=20, blank=True, null=True)
-    youtube = models.URLField(blank=True)
-    whatsapp_number = models.CharField(max_length=20, blank=True)
-    whatsapp_message = models.TextField(blank=True)
-    dark_mode = models.BooleanField(default=False)
-    primary_color = models.CharField(max_length=20, default='#ff4081')
-    username = models.CharField(max_length=100, blank=True)
-
-    def __str__(self):
-        return self.bakery_name
-
-
-# ============================================================
-# 13. PROFILE SIGNALS (FIXED)
-# ============================================================
-
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        if not instance.is_staff and not instance.is_superuser:
-            Profile.objects.create(user=instance)
-            print(f"✅ Profile created for normal user: {instance.username}")
-        else:
-            print(f"⚠️ Admin/Superuser {instance.username} - Profile not created")
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    if hasattr(instance, 'profile'):  
-        instance.profile.save()
+        return f"{self.phone_number} ({self.customer_name or 'No name'})"
